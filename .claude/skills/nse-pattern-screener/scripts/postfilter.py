@@ -27,12 +27,24 @@ import polars as pl
 def enrich(hits: list[dict], parquet: str, bars_per_day: int,
            target_pct: float) -> list[dict]:
     df = pl.read_parquet(parquet).sort(["symbol", "ts"])
+    # Universe-wide newest closed bar. Any hit whose own last_ts predates this
+    # is priced on stale data even though the universe as a whole is fresh --
+    # the caller needs to know so quoted levels are not paraded as current.
+    universe_last = df["ts"].max()
+    # Distinct hourly bars per symbol, so "bars_behind_universe" is measured in
+    # actual bars rather than clock time (a 15:15 stub is only 15 minutes past
+    # the 15:00 close but is still one bar).
+    bars_ordered = sorted(df["ts"].unique().to_list())
+    bar_index = {ts: i for i, ts in enumerate(bars_ordered)}
+    last_bar_pos = bar_index[universe_last]
     out = []
     for h in hits:
         g = df.filter(pl.col("symbol") == h["symbol"])
         c = g["close"].to_numpy().astype(float)
         v = g["volume"].to_numpy().astype(float)
         hi = g["high"].to_numpy().astype(float)
+        sym_last = g["ts"].max()
+        h["bars_behind_universe"] = last_bar_pos - bar_index.get(sym_last, last_bar_pos)
 
         # median hourly turnover -> approx daily Rs crore
         turn = np.median(c[-120:] * v[-120:]) / 1e7 * bars_per_day
@@ -85,7 +97,25 @@ def main() -> None:
             r.append(f"gap-driven {h['max_bar_share']}")
         return r
 
+    # Edge-proximity flag: how close each PASSING hit sat to the filter that
+    # would have cut it. JUBLFOOD passed max_bar_share at exactly 0.50 against
+    # a >0.50 reject rule -- a rounding-boundary pass indistinguishable from a
+    # margin pass in the JSON. This surfaces the margin per hit so the visual
+    # pass and the report can weight it. Does NOT change what passes.
+    def edges(h: dict) -> list[str]:
+        eps = 0.02  # "within one bucket" -- deliberate, not a tuning knob
+        r = []
+        if abs(h["max_bar_share"] - args.max_bar_share) <= eps:
+            r.append(f"max_bar_share {h['max_bar_share']} vs cut {args.max_bar_share}")
+        if abs(h["turnover_cr"] - args.min_turnover) <= args.min_turnover * 0.1:
+            r.append(f"turnover {h['turnover_cr']}cr vs floor {args.min_turnover}")
+        if abs(h["pct_of_60d_high"] - args.min_pct_60d_high) <= 0.5:
+            r.append(f"pct_of_60d_high {h['pct_of_60d_high']}% vs floor {args.min_pct_60d_high}")
+        return r
+
     clean = [h for h in hits if not why(h)]
+    for h in clean:
+        h["edge_flags"] = edges(h)
     rejected = [(h, why(h)) for h in hits if why(h)]
     clean.sort(key=lambda r: -r["rrr_structural"])
 
@@ -109,6 +139,22 @@ def main() -> None:
         if n_bad:
             print(f"\n{n_bad}/{len(clean)} have the fixed-% stop INSIDE the base.")
             print("Report risk_pct_to_base_low as the real structural risk.")
+
+        n_stale = sum(1 for h in clean if h.get("bars_behind_universe", 0) > 0)
+        if n_stale:
+            print(f"\n{n_stale}/{len(clean)} priced BEHIND the universe's last bar:")
+            for h in clean:
+                b = h.get("bars_behind_universe", 0)
+                if b > 0:
+                    print(f"  {h['symbol']:14s} {b} bar(s) behind (last_ts {h['last_ts']})")
+            print("Quote these hits at their last_ts, not the universe last_closed_bar.")
+
+        edge_hits = [h for h in clean if h.get("edge_flags")]
+        if edge_hits:
+            print(f"\n{len(edge_hits)}/{len(clean)} passed within an edge of a filter:")
+            for h in edge_hits:
+                print(f"  {h['symbol']:14s} {'; '.join(h['edge_flags'])}")
+            print("A boundary pass is not the same evidence as a margin pass.")
         print("\nRRR ranks the GEOMETRY, not the odds. It says what the trade pays")
         print("if it works, never how often it works. Do not present it as a")
         print("probability of success or as a recommendation to buy the top name.")
@@ -123,12 +169,17 @@ def main() -> None:
                 "base_depth_pct", "curvature", "r2", "vertex_x", "dist_from_lip_pct",
                 "vol_ratio", "turnover_cr", "pct_of_60d_high", "max_bar_share",
                 "entry", "sl", "t1", "t2", "base_low", "risk_pct_to_base_low",
-                "stop_inside_base", "rrr_structural", "score", "last_ts"]
+                "stop_inside_base", "rrr_structural", "score", "last_ts",
+                "bars_behind_universe", "edge_flags"]
         with open(args.csv, "w", newline="") as f:
             w = csv.DictWriter(f, fieldnames=cols, extrasaction="ignore")
             w.writeheader()
             for r in clean:
-                w.writerow(r)
+                row = dict(r)
+                # edge_flags is a list -- flatten to a semicolon-joined string
+                # so the CSV stays one-row-per-hit and readable in a spreadsheet
+                row["edge_flags"] = "; ".join(r.get("edge_flags", []))
+                w.writerow(row)
         print(f"\ncsv -> {args.csv}")
 
     print("\nNext: plot_hits.py, then VIEW the png before reporting anything.")
