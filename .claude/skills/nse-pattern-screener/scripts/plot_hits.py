@@ -96,8 +96,20 @@ def main() -> None:
     for ax in flat[len(hits):]:
         ax.set_visible(False)
 
-    stamp = hits[0].get("last_ts", "")
-    plt.suptitle(f"{args.title}  (last closed bar: {stamp})", color="w")
+    # last_ts varies per symbol -- Yahoo may not yet have published the newest
+    # bar for every ticker at fetch time. hits[0] would stamp whatever the
+    # top-ranked hit happened to have, which today read 14:15 while
+    # run_meta.json said 15:15. Use the newest close in the batch, and note
+    # when not every symbol has caught up.
+    stamps = [h.get("last_ts", "") for h in hits if h.get("last_ts")]
+    if stamps:
+        newest = max(stamps)
+        stale = sum(1 for s in stamps if s != newest)
+        note = f" ({stale} of {len(stamps)} one bar behind)" if stale else ""
+        suffix = f"newest closed bar: {newest}{note}"
+    else:
+        suffix = "no timestamps in hits"
+    plt.suptitle(f"{args.title}  ({suffix})", color="w")
     plt.tight_layout()
     plt.savefig(args.out, dpi=115, facecolor=BG)
     print(f"wrote {args.out}")

@@ -50,9 +50,9 @@ def enrich(hits: list[dict], parquet: str, bars_per_day: int,
 
         # Structural reward-to-risk: target measured off the lip, risk measured
         # to the base low -- the only stop the pattern's structure supports.
-        # Reduces to target_pct / base_depth_pct. This is the ranking criterion:
-        # it is the one number that ties the geometry to position sizing.
-        h["rrr_structural"] = round(target_pct * 100 / h["base_depth_pct"], 2)
+        # Both numerator and denominator are percentages; the ratio is unitless
+        # and ties the geometry to position sizing. This is the ranking key.
+        h["rrr_structural"] = round(target_pct / h["base_depth_pct"], 2)
         out.append(h)
     return out
 
@@ -67,8 +67,9 @@ def main() -> None:
     ap.add_argument("--min-pct-60d-high", type=float, default=97.0)
     ap.add_argument("--max-bar-share", type=float, default=0.5)
     ap.add_argument("--bars-per-day", type=int, default=7, help="7 for NSE hourly")
-    ap.add_argument("--target-pct", type=float, default=0.15,
-                    help="profit target off the lip, used as the RRR numerator")
+    ap.add_argument("--target-pct", type=float, default=15.0,
+                    help="profit target off the lip in PERCENT (15.0 == 15%%), "
+                         "used as the RRR numerator")
     args = ap.parse_args()
 
     hits = enrich(json.load(open(args.hits)), args.parquet, args.bars_per_day,

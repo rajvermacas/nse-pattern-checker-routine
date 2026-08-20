@@ -17,7 +17,7 @@ set -uo pipefail
 
 SKILL="${SKILL:-.claude/skills/nse-pattern-screener}"
 WORK="${WORK:-work}"
-UNIVERSE="${UNIVERSE:-nifty500}"   # nifty500 | nifty200 | midcap150 | EQ
+UNIVERSE="${UNIVERSE:-EQ}"         # EQ | nifty500 | nifty200 | midcap150 | ...
 PERIOD="${PERIOD:-60d}"
 INTERVAL="${INTERVAL:-1h}"
 BATCH="${BATCH:-40}"
@@ -32,6 +32,18 @@ S="../$SKILL/scripts"
 
 die() { echo "FAIL: $*" >&2; exit 40; }
 
+# ------------------------------------------------------------ 0. dependencies
+# The environment's setup-script cache is not always warm (a rebuilt container,
+# a fresh session, a routine firing right after an image change). Without this
+# preflight, missing deps show up as `FAIL: universe fetch` at step 1 -- a
+# misleading message that sends the diagnosis down the wrong path.
+if ! python -c "import yfinance, polars, pandas, pyarrow, numpy, matplotlib, requests" 2>/dev/null; then
+  echo "== installing pipeline dependencies"
+  pip install --break-system-packages -q \
+    yfinance polars pandas pyarrow numpy matplotlib requests \
+    || die "dependency install"
+fi
+
 # ---------------------------------------------------------------- 1. universe
 echo "== universe: $UNIVERSE"
 if [ "$UNIVERSE" = "EQ" ]; then
@@ -39,7 +51,11 @@ if [ "$UNIVERSE" = "EQ" ]; then
 else
   python "$S/fetch_universe.py" --index "$UNIVERSE" --out universe.txt || die "universe fetch"
 fi
-N_SYMBOLS=$(wc -l < universe.txt)
+# Count non-empty lines. `wc -l` misses the final entry when the file has no
+# trailing newline (which it does not), producing `500/499 (100%)` cosmetics
+# and, more seriously, an inflated coverage percentage that would let a
+# partial scan slip past the MIN_COVERAGE floor.
+N_SYMBOLS=$(grep -c . universe.txt)
 echo "   $N_SYMBOLS symbols"
 [ "$N_SYMBOLS" -gt 10 ] || die "universe looks empty ($N_SYMBOLS)"
 
@@ -56,9 +72,28 @@ for pass in $(seq 1 "$MAX_FETCH_PASSES"); do
   HAVE=$(ls parts/*.parquet 2>/dev/null | wc -l)
   echo "   pass $pass: $HAVE/$EXPECTED_PARTS parts"
   [ "$HAVE" -ge "$EXPECTED_PARTS" ] && break
+  # Pass 1 producing zero parts is a terminal transport failure -- retrying
+  # walks over every batch again for another guaranteed failure. Stop now and
+  # let the zero-batch guard below give the right diagnostic.
+  [ "$pass" -eq 1 ] && [ "$HAVE" -eq 0 ] && { echo "   pass 1 produced nothing"; break; }
   [ "$HAVE" -eq "$PREV" ] && { echo "   no progress, stopping retries"; break; }
   PREV=$HAVE
 done
+
+# Fetch reached nothing -> exit 41. A distinct code so the routine prompt can
+# distinguish "the network path to Yahoo is broken" from "a pipeline stage
+# died" (40), from "no market data today" (20). Merge would otherwise fail
+# with the wrong stage name in the error.
+if [ "$(ls parts/*.parquet 2>/dev/null | wc -l)" -eq 0 ]; then
+  {
+    echo "fetch produced zero parquet batches - no data reached disk."
+    echo "This is a transport failure, not a market or holiday condition."
+    echo "Check the TLS path to Yahoo (curl_cffi vs the egress proxy) and"
+    echo "the presence of nsearchives.nseindia.com / *.finance.yahoo.com in"
+    echo "the environment's network allowlist before treating as a data issue."
+  } >&2
+  exit 41
+fi
 
 python "$S/fetch_data.py" --merge parts --out all.parquet || die "merge"
 
@@ -133,7 +168,8 @@ fi
 # ---------------------------------------------------------- 5. context filters
 echo "== context filters"
 python "$S/postfilter.py" --hits hits.json --parquet all_closed.parquet \
-  --out hits_clean.json --min-turnover "$MIN_TURNOVER" \
+  --out hits_clean.json --csv hits_clean.csv \
+  --min-turnover "$MIN_TURNOVER" \
   --target-pct "$TARGET_PCT" || die "postfilter"
 CLEAN=$(python -c "import json;print(len(json.load(open('hits_clean.json'))))")
 echo "   clean hits: $CLEAN"

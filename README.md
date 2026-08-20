@@ -56,12 +56,15 @@ does not mean the screen worked.
 
 ## Things worth knowing before you rely on it
 
-**Every run is a fresh clone, so there is no parquet cache.** That is the real
-cost of the cloud model here: a full ~2,300-symbol EQ pull takes 15–40 minutes
-and burns it on every run. `UNIVERSE` therefore defaults to `nifty500`, which
-finishes in about five minutes. This is a genuine narrowing versus the skill's
-own default, and the report says so. If you want the full universe, set
-`UNIVERSE=EQ` as an environment variable and expect long, expensive runs.
+**Every run is a fresh clone, so there is no parquet cache.** `UNIVERSE`
+defaults to `EQ` — the full ~2,300-symbol NSE equity list, matching the skill's
+own default. The fetch is serial (Yahoo rate-limits parallel sessions) and
+runs 10–20 minutes on cold caches; the resumable batch loop survives single
+command timeouts. Coverage typically lands near 92% — recent listings lack 60
+days of history and some symbols don't map to `SYMBOL.NS` on Yahoo. The
+`MIN_COVERAGE=80` floor rejects anything worse than that with exit 30. To
+scan a narrower slice for testing, set `UNIVERSE=nifty500` (or `nifty200`,
+`midcap150`, …) as an environment variable on the routine.
 
 **Routines draw down your subscription usage and have a daily run cap.** One
 weekday run is comfortable; hourly intraday scanning is not what this is for.
