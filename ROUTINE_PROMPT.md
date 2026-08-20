@@ -51,10 +51,24 @@ Run the daily NSE hourly pattern screen.
    check — for every name, print `risk_pct_to_base_low` next to a 3% stop and
    say plainly when the two are incompatible, which they usually are.
 
+   This screen runs on intraday hourly candles and may fire several times a
+   day, so the report must make its two timestamps unambiguous, both from
+   `run_meta.json`:
+   - **Executed at** — `run_ts_ist` (IST), the wall-clock time this run ran.
+   - **Latest data bar** — `last_closed_bar` / `session_date`, the newest
+     candle screened. When `session_age_days` is nonzero, say so explicitly
+     and label the whole report as the `session_date` session, not today's.
+   Put both at the very top of the report so two runs an hour apart can never
+   be confused for each other.
+
 6. Deliver it:
    - Upload `work/report.md` and `work/hits_clean.csv` to the Google Drive
-     folder `NSE Screener` (create it if missing). Name them
-     `YYYY-MM-DD-nse-screen.md` and `YYYY-MM-DD-nse-screen.csv`. Both are
+     folder `NSE Screener` (create it if missing). Because several runs can
+     land on one date, put the run time in the filename, not just the date:
+     name them `YYYY-MM-DD-HHMM-nse-screen.md` and
+     `YYYY-MM-DD-HHMM-nse-screen.csv`, where `YYYY-MM-DD-HHMM` is the IST
+     `run_ts_ist` from `run_meta.json` (the same date+HHMM the archive slot
+     uses), so an intraday re-run never overwrites an earlier one. Both are
      text and go through the Google Drive connector without issue.
    - The chart (`work/hits.png`) cannot go through the connector at
      legible quality — its base64 encoding is prohibitively large for a
