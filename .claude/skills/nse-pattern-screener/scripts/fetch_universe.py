@@ -33,6 +33,8 @@ HEADERS = {
     "Connection": "keep-alive",
 }
 
+HOME_URL = "https://www.nseindia.com/"
+
 EQUITY_URL = "https://nsearchives.nseindia.com/content/equities/EQUITY_L.csv"
 INDEX_URLS = {
     "nifty50": "https://nsearchives.nseindia.com/content/indices/ind_nifty50list.csv",
@@ -45,11 +47,44 @@ INDEX_URLS = {
 
 
 def _get(url: str) -> pd.DataFrame:
-    r = requests.get(url, headers=HEADERS, timeout=30)
-    r.raise_for_status()
-    df = pd.read_csv(io.StringIO(r.text))
-    df.columns = [c.strip() for c in df.columns]
-    return df
+    # One session so the cookie NSE sets on the home page rides along to the
+    # archives host. The edge's 403 is not purely header-based -- on a cold
+    # client it also wants the cookie a browser would already hold, so a first
+    # pass can fail where a primed second pass succeeds. Prime once, then retry
+    # once. Never retry more than that: a persistent 403 is a real block, and
+    # hammering it walks straight into rate limiting.
+    s = requests.Session()
+    s.headers.update(HEADERS)
+    last: requests.Response | None = None
+    for attempt in (1, 2):
+        try:
+            if attempt == 2:
+                # Prime: fetch the home page so Set-Cookie lands in the jar,
+                # then reissue the archives request with the cookie attached.
+                try:
+                    s.get(HOME_URL, timeout=30)
+                except requests.RequestException:
+                    pass  # priming is best-effort; the retry still tries
+            r = s.get(url, timeout=30)
+            last = r
+            if r.status_code == 200:
+                df = pd.read_csv(io.StringIO(r.text))
+                df.columns = [c.strip() for c in df.columns]
+                return df
+        except requests.RequestException as exc:
+            # A transport error (TLS/proxy/DNS) is worth one primed retry too,
+            # but keep the message so a terminal failure is diagnosable.
+            if attempt == 2:
+                sys.exit(f"universe fetch: {url} failed transport: {exc}")
+
+    # Both passes returned a non-200. Surface the actual status and a snippet
+    # of the body instead of a bare HTTPError -- the difference between "NSE
+    # blocked us (403)" and "wrong path (404)" is the whole diagnosis, and the
+    # old raise_for_status() buried it behind a generic stage-fail message.
+    code = last.status_code if last is not None else "no-response"
+    body = (last.text[:200].replace("\n", " ") if last is not None else "")
+    sys.exit(f"universe fetch: {url} returned HTTP {code} after a primed "
+             f"retry. First 200 bytes: {body!r}")
 
 
 def main() -> None:

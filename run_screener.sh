@@ -135,6 +135,22 @@ df.write_parquet("all_closed.parquet")
 last = df["ts"].max()
 print("last closed bar:", last)
 
+# Recency-aware coverage. The plain "symbols_with_data" count treated a symbol
+# whose newest bar was hours ago the same as one that had the current bar,
+# which let run_meta advertise coverage_pct=100 while 38% of the universe was
+# behind the reported last_closed_bar. That timestamp then rode into the
+# report as the price time for hits that were actually an hour stale. The
+# guard here is the missing dimension: how many symbols carry the newest bar,
+# and what the modal last bar looks like across the universe.
+per_sym_last = df.group_by("symbol").agg(pl.col("ts").max().alias("last"))
+n_total = per_sym_last.height
+at_last = per_sym_last.filter(pl.col("last") == last).height
+pct_at_last = round(at_last / n_total * 100, 1) if n_total else 0.0
+consensus = (per_sym_last.group_by("last").len()
+             .sort("len", descending=True).head(1))
+consensus_ts = str(consensus["last"][0])
+consensus_n = int(consensus["len"][0])
+
 # Holiday / stale-data guard: cron fires on NSE holidays too, and yfinance will
 # happily hand back the previous session. Reporting that as today's scan is the
 # failure mode worth spending an exit code on.
@@ -142,9 +158,15 @@ stale = last.date() != now.date()
 json.dump({
     "run_ts_ist": now.isoformat(),
     "last_closed_bar": str(last),
+    "symbols_at_last_bar": at_last,
+    "pct_at_last_bar": pct_at_last,
+    "consensus_last_bar": consensus_ts,
+    "consensus_last_bar_symbols": consensus_n,
     "market_open_at_run": market_open,
     "stale": stale,
 }, open("bar_meta.json", "w"), indent=2)
+print(f"symbols carrying {last}: {at_last}/{n_total} ({pct_at_last}%); "
+      f"universe consensus last bar: {consensus_ts} ({consensus_n} symbols)")
 if stale:
     print(f"STALE: newest bar is {last.date()}, today is {now.date()} "
           "(NSE holiday, or data not published yet)")
@@ -196,6 +218,19 @@ meta.update({
 })
 json.dump(meta, open("run_meta.json", "w"), indent=2)
 print(json.dumps(meta, indent=2))
+
+# Loud, machine-readable staleness warning: if a meaningful chunk of the
+# universe is behind the reported last_closed_bar, every downstream reader
+# needs to know before they quote those levels as current. The threshold is
+# deliberately soft (>=5% behind) -- a couple of stragglers on Yahoo is
+# normal; a third of the universe being an hour behind is not.
+if meta["pct_at_last_bar"] < 95:
+    print(f"WARN: only {meta['symbols_at_last_bar']}/{meta['symbols_in_universe']} "
+          f"symbols carry the reported last bar {meta['last_closed_bar']}. "
+          f"Universe consensus is {meta['consensus_last_bar']} "
+          f"({meta['consensus_last_bar_symbols']} symbols). "
+          f"Individual hits may be priced earlier -- check bars_behind_universe "
+          f"in hits_clean.json before quoting levels.")
 PY
 
 echo "== done. NOTHING here has been visually verified yet."

@@ -10,7 +10,9 @@ Run the daily NSE hourly pattern screen.
      Do not report yesterday's charts as today's scan.
    - **30** — fetch coverage below the floor. Report the coverage number and
      that the scan is not trustworthy today. Do not publish a shortlist.
-   - **40** — a stage failed. If the failure is environmental (TLS/proxy/
+   - **40** — a stage failed. `fetch_universe.py` reports the actual HTTP
+     status and a snippet of the response body on a terminal failure — read
+     it before diagnosing. If the failure is environmental (TLS/proxy/
      network/dependencies) and fixable **without touching any detector
      threshold, filter parameter, or ranking logic**: fix it, re-run once,
      and state exactly what you changed. Otherwise say which stage failed
@@ -23,7 +25,11 @@ Run the daily NSE hourly pattern screen.
    - **0** — continue.
 
 3. Read `work/run_meta.json` for coverage, the last closed bar timestamp, and
-   the funnel counts.
+   the funnel counts. Also check `pct_at_last_bar`: if it is well below 100 the
+   universe's `last_closed_bar` is *not* the price time for every symbol. Per-hit
+   staleness lives in `bars_behind_universe` inside `hits_clean.json`; when it
+   is nonzero, quote that hit at its own `last_ts`, not at the universe last
+   bar. The pipeline prints a WARN line when this matters.
 
 4. **Open `work/hits.png` with the Read tool and actually look at every panel.**
    This step is not optional and cannot be replaced by reading the JSON. A
@@ -54,11 +60,15 @@ Run the daily NSE hourly pattern screen.
      path and works), and include the Artifact URL near the top of the
      Google Drive report so the Drive copy has a one-click route to the
      chart.
-   - Then commit `report.md`, `hits.png`, `hits_clean.csv`, `run_meta.json`
-     and `hits_clean.json` to `runs/YYYY-MM-DD/` on the
-     `claude/screener-runs` branch as a durable archive, and push it. Do
-     NOT merge that branch into `master` — routines re-clone `master` on
-     every run, so archived runs must stay on their own branch.
+   - Then archive to `claude/screener-runs`. Run `bash archive_run.sh` — it
+     stages `report.md`, `hits.png`, `hits_clean.csv`, `run_meta.json` and
+     `hits_clean.json` into `runs/YYYY-MM-DD/HHMM-<universe>/`, clearing
+     the slot first so a stale file from an earlier run in the same slot
+     cannot masquerade as part of this one. The per-run subdirectory keeps
+     multiple runs on the same date from silently overwriting each other.
+     After it stages, commit and push on `claude/screener-runs`. Do NOT
+     merge that branch into `master` — routines re-clone `master` on every
+     run, so archived runs must stay on their own branch.
 
 Honesty requirements, which override any instinct to produce a tidy result:
 - These are **candidates matching a geometry, not recommendations**. Say so.
