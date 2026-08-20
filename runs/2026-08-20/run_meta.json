@@ -1,5 +1,5 @@
 {
-  "run_ts_ist": "2026-08-20T16:34:47.769387+05:30",
+  "run_ts_ist": "2026-08-20T21:08:02.607060+05:30",
   "last_closed_bar": "2026-08-20 15:15:00",
   "market_open_at_run": false,
   "stale": false,
@@ -8,7 +8,7 @@
   "symbols_with_data": 500,
   "coverage_pct": 100,
   "interval": "1h",
-  "raw_hits": 9,
-  "clean_hits": 7,
+  "raw_hits": 8,
+  "clean_hits": 6,
   "chart": "hits.png"
 }
