@@ -57,11 +57,16 @@ finance.yahoo.com
 **4. Setup script**: contents of `setup.sh`. It's cached, so it won't re-run
 every session.
 
-**5. Trigger**: the **weekdays** preset, at **16:15 IST**. Times are entered in
-your local zone. Runs stagger a few minutes after the scheduled time, which is
-why 16:15 rather than 16:00 — the 15:15 hourly bar closes at 15:30 and Yahoo
-takes a few minutes to settle. Minimum interval is one hour; for a custom cron
-use `/schedule update` in the CLI.
+**5. Trigger**: the **weekdays** preset, at **16:15 IST**, is the baseline
+end-of-day run. Times are entered in your local zone. Runs stagger a few
+minutes after the scheduled time, which is why 16:15 rather than 16:00 — the
+15:15 hourly bar closes at 15:30 and Yahoo takes a few minutes to settle.
+Minimum interval is one hour; for a custom cron use `/schedule update` in the
+CLI. The screen works on intraday hourly candles, so you can add mid-session
+triggers (e.g. hourly through the day) to catch bases as they form — each run
+records both its execution time and the bar it screened, and the Drive files
+and archive slots are keyed by `YYYY-MM-DD-HHMM`, so intraday re-runs coexist
+instead of overwriting each other. Mind the usage note below.
 
 **6. Click Run now** and read the transcript before trusting the schedule. A
 green status only means the session exited without an infrastructure error — it
@@ -79,8 +84,12 @@ days of history and some symbols don't map to `SYMBOL.NS` on Yahoo. The
 scan a narrower slice for testing, set `UNIVERSE=nifty500` (or `nifty200`,
 `midcap150`, …) as an environment variable on the routine.
 
-**Routines draw down your subscription usage and have a daily run cap.** One
-weekday run is comfortable; hourly intraday scanning is not what this is for.
+**Routines draw down your subscription usage and have a daily run cap.** Each
+run does a full serial fetch of the universe (10–20 min, no cross-run cache),
+so cost scales with how many times a day you fire it. A handful of intraday
+runs is fine; a run every hour on the full EQ universe will eat usage and can
+bump the daily cap. If you want frequent intraday scans, point `UNIVERSE` at a
+narrower slice (`nifty500`, `nifty200`, …) to keep each run cheap.
 
 **The partial-bar logic is inverted from the skill's snippet, deliberately.**
 The skill drops `max(ts)` unconditionally because it assumes you're running

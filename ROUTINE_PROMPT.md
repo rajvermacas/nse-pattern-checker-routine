@@ -24,10 +24,15 @@ Run the daily NSE hourly pattern screen.
 3. Read `work/run_meta.json` for coverage, the last closed bar timestamp, and
    the funnel counts. There is no holiday/staleness exit: the run always
    screens the latest available session. Check `session_age_days` — when it is
-   nonzero the latest session predates today (NSE holiday, feed not yet
-   published, or the run fired after IST midnight). That is not an error;
-   screen it anyway, but label everything as the `session_date` session, never
-   as today's. Also check `pct_at_last_bar`: if it is well below 100 the
+   nonzero the latest session predates today (NSE holiday, weekend, the run
+   fired before 09:15 IST or after midnight IST, or the feed has not yet
+   published). That is not an error; screen it anyway, but label everything as
+   the `session_date` session, never as today's. If `session_age_days` is
+   large (roughly `> 4`, i.e. more than a long weekend), the feed is likely
+   stale on Yahoo's side rather than an off-hour timing artifact — say so
+   prominently at the top of the report and flag the whole scan as suspect
+   rather than presenting it as a normal run. Also check `pct_at_last_bar`:
+   if it is well below 100 the
    universe's `last_closed_bar` is *not* the price time for every symbol. Per-hit
    staleness lives in `bars_behind_universe` inside `hits_clean.json`; when it
    is nonzero, quote that hit at its own `last_ts`, not at the universe last
