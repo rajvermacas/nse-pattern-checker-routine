@@ -23,9 +23,29 @@ import warnings
 warnings.filterwarnings("ignore")
 
 import pandas as pd
+import requests
 import yfinance as yf
 
 COLS = ["symbol", "ts", "open", "high", "low", "close", "volume"]
+
+# yfinance defaults to curl_cffi, which impersonates a browser TLS fingerprint.
+# Behind an HTTPS-inspecting egress proxy that handshake is reset (curl error 35
+# / SSLError), so every ticker fails and the run merges zero parts. A plain
+# requests session traverses the proxy, but Yahoo answers a cold session with
+# HTTP 429 -- it wants the cookies a browser picks up first. Priming one quote
+# page yields cookies that make the chart endpoint return 200.
+_UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+       "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
+
+
+def make_session(suffix: str) -> requests.Session:
+    s = requests.Session()
+    s.headers.update({"User-Agent": _UA, "Accept-Language": "en-US,en;q=0.9"})
+    try:
+        s.get(f"https://finance.yahoo.com/quote/RELIANCE{suffix}/", timeout=25)
+    except Exception as e:
+        print(f"session prime failed ({e}); continuing uncookied", flush=True)
+    return s
 
 
 def fetch(universe: str, period: str, interval: str, out_dir: str,
@@ -33,6 +53,7 @@ def fetch(universe: str, period: str, interval: str, out_dir: str,
     syms = [s.strip() for s in open(universe) if s.strip()]
     tickers = [s + suffix for s in syms]
     os.makedirs(out_dir, exist_ok=True)
+    session = make_session(suffix)
 
     done = 0
     for i in range(0, len(tickers), batch):
@@ -43,13 +64,21 @@ def fetch(universe: str, period: str, interval: str, out_dir: str,
 
         chunk = tickers[i:i + batch]
         d = None
-        for _ in range(2):
+        for attempt in range(2):
             try:
+                # threads=False: a requests.Session is not thread-safe, and the
+                # serial pace is also what keeps Yahoo from rate-limiting us.
                 d = yf.download(chunk, period=period, interval=interval,
-                                group_by="ticker", threads=True,
-                                progress=False, auto_adjust=False)
-                break
+                                group_by="ticker", threads=False,
+                                progress=False, auto_adjust=False,
+                                session=session)
+                if d is not None and not d.dropna(how="all").empty:
+                    break
+                # Empty frame usually means the cookies went stale -> 429.
+                session = make_session(suffix)
+                d = None
             except Exception:
+                session = make_session(suffix)
                 time.sleep(3)
         if d is None:
             print(f"FAIL batch {i}", flush=True)
