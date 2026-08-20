@@ -26,6 +26,10 @@ from dataclasses import dataclass
 import numpy as np
 import polars as pl
 
+import obs
+
+LOG = obs.get_logger("detect")
+
 
 @dataclass
 class Params:
@@ -211,13 +215,23 @@ def run(parquet: str, p: Params, sl=0.03, t1=0.03, t2=0.15) -> list[dict]:
           .select(["symbol", "ts", "open", "high", "low", "close", "volume"])
           .sort(["symbol", "ts"]).collect())
     hits = []
+    n_syms = crashed = 0
     for (sym,), grp in df.group_by(["symbol"], maintain_order=True):
+        n_syms += 1
         try:
             r = scan_symbol(str(sym), grp, p)
-        except Exception:
+        except Exception as e:
+            # A crash here previously read as "no pattern found" -- a detector
+            # bug and a quiet stock looked identical. Log it, count it, keep going.
+            crashed += 1
+            obs.log_exception(LOG, f"detector crashed on {sym}", e)
             continue
         if r:
             hits.append(attach_levels(r, sl, t1, t2))
+    # ERROR (not just info) if the detector threw on any symbol: a nonzero count
+    # means the scan silently under-covered and the threshold audit is suspect.
+    (LOG.error if crashed else LOG.info)(
+        "detect: %d symbols scanned, %d hits, %d crashed", n_syms, len(hits), crashed)
     return sorted(hits, key=lambda r: r["score"], reverse=True)
 
 
