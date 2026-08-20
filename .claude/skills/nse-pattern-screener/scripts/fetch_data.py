@@ -56,8 +56,12 @@ LOG = obs.get_logger("fetch")
 # requests session traverses the proxy, but Yahoo answers a cold session with
 # HTTP 429 -- it wants the cookies a browser picks up first. Priming one quote
 # page yields cookies that make the chart endpoint return 200.
+# Kept in step with fetch_universe.py's UA. Yahoo does not currently gate on
+# Chrome major version the way NSE does (Chrome/126 was fetching fine), but a
+# stale UA is a cheap thing to get wrong and an expensive one to diagnose --
+# see the version table in fetch_universe.py.
 _UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-       "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
+       "(KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36")
 
 
 def make_session(suffix: str) -> requests.Session:
