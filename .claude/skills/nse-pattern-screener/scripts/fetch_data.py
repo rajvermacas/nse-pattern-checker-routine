@@ -5,6 +5,14 @@ so re-running the same command continues where a timeout left off. A full
 ~2300-symbol hourly pull takes 15-40 minutes serially and will not finish in
 one command invocation -- that is expected, just run it again.
 
+Because parts are written per BATCH, a batch that returns only some of its
+symbols (rate limiting does exactly this) still leaves a part file and would be
+skipped forever by the resume check. After the batch pass, a gap-fill stage
+therefore works at SYMBOL granularity: it recomputes who is missing, backs off
+to let the rate limiter drain, and refetches just those symbols into g*.parquet
+files. --gap-rounds controls how many times (0 disables). Without it, transient
+429s get permanently mislabelled "no data".
+
 yfinance intraday history limits: 1h and below -> ~60 days; 1m -> 7 days.
 
 Speed: yfinance issues one Yahoo chart request PER SYMBOL (there is no batched
@@ -96,6 +104,15 @@ def _extract(d: pd.DataFrame, chunk: list[str], suffix: str, min_bars: int,
             obs.log_exception(LOG, f"extract {t}", e)
             drops.add("parse_error", t)
             continue
+        if len(sub) == 0:
+            # The column exists but every Close is NaN. yfinance materialises
+            # the ticker even when its download FAILED (rate limit, transport),
+            # so this is a fetch failure wearing the costume of "no data" --
+            # and it is RECOVERABLE, unlike a genuinely short history. Counting
+            # it as too_few_bars is what let 107 rate-limited symbols (incl.
+            # SHRIRAMFIN, a Nifty 50 name) get written off as unavailable.
+            drops.add("no_data_returned", t)
+            continue
         if len(sub) < min_bars:
             drops.add("too_few_bars", f"{t}:{len(sub)}<{min_bars}")
             continue
@@ -110,7 +127,8 @@ def _extract(d: pd.DataFrame, chunk: list[str], suffix: str, min_bars: int,
 
 
 def fetch(universe: str, period: str, interval: str, out_dir: str,
-          batch: int, suffix: str, min_bars: int, workers: int) -> dict:
+          batch: int, suffix: str, min_bars: int, workers: int,
+          gap_rounds: int = 2) -> dict:
     syms = [s.strip() for s in open(universe) if s.strip()]
     tickers = [s + suffix for s in syms]
     os.makedirs(out_dir, exist_ok=True)
@@ -188,6 +206,16 @@ def fetch(universe: str, period: str, interval: str, out_dir: str,
     if failed_batches:
         LOG.error("%d/%d batches failed outright this pass", failed_batches, n_batches)
 
+    # ---------------------------------------------------------- gap-fill
+    # The part files are written per BATCH, so a batch that returned 25 of 40
+    # symbols still leaves a p*.parquet on disk and is skipped forever by the
+    # resume check -- the outer retry loop can never reach those 15 symbols.
+    # Rate limiting produces exactly that shape. So after the main pass, work
+    # at SYMBOL granularity: recompute who is actually missing, back off to let
+    # the rate limiter drain, and refetch just them into their own part files.
+    kept += _gap_fill(syms, suffix, out_dir, period, interval, batch, min_bars,
+                      gap_rounds, drops)
+
     # Reconciliation across everything on disk -- the real coverage number, not
     # just this invocation's. This is what turns "a symbol vanished" into a
     # counted, named gap.
@@ -206,6 +234,7 @@ def fetch(universe: str, period: str, interval: str, out_dir: str,
         "workers_requested": workers,
         "workers_ended": active_workers,
         "degraded_to_serial": active_workers != workers,
+        "gap_fill_rounds": gap_rounds,
         "drops_this_pass": drops.report(kept, len(tickers)),
     }
     report_path = os.path.join(os.path.dirname(out_dir) or ".", "fetch_report.json")
@@ -219,6 +248,67 @@ def fetch(universe: str, period: str, interval: str, out_dir: str,
     LOG.info("DONE (%d batch files in %s; %d already present; report -> %s)",
              n_parts, out_dir, done, report_path)
     return report
+
+
+def _gap_fill(syms: list[str], suffix: str, out_dir: str, period: str,
+              interval: str, batch: int, min_bars: int, rounds: int,
+              drops: obs.Drops) -> int:
+    """Refetch symbols still missing after the batch pass, at symbol granularity.
+
+    Rate limiting is transient, so the fix is to wait and ask again for exactly
+    the symbols we lack -- not to re-walk batches that are already complete.
+    Backoff grows per round because a rate limiter that just fired needs longer
+    than a network blip. Returns the number of symbols recovered.
+    """
+    recovered = 0
+    for rnd in range(1, rounds + 1):
+        missing = sorted(set(syms) - _symbols_on_disk(out_dir))
+        if not missing:
+            LOG.info("gap-fill: nothing missing, universe complete")
+            return recovered
+        wait = 30 * rnd
+        LOG.warning("gap-fill round %d/%d: %d symbols still missing; "
+                    "waiting %ds for the rate limiter to drain",
+                    rnd, rounds, len(missing), wait)
+        time.sleep(wait)
+
+        session = make_session(suffix)
+        before = len(_symbols_on_disk(out_dir))
+        for j in range(0, len(missing), batch):
+            part = os.path.join(out_dir, f"g{rnd:02d}_{j:05d}.parquet")
+            if os.path.exists(part):
+                continue
+            chunk = [s + suffix for s in missing[j:j + batch]]
+            try:
+                d = yf.download(chunk, period=period, interval=interval,
+                                group_by="ticker", threads=1, progress=False,
+                                auto_adjust=False, session=session)
+            except Exception as e:
+                obs.log_exception(LOG, f"gap-fill round {rnd} chunk {j}", e)
+                session = make_session(suffix)
+                time.sleep(5)
+                continue
+            if d is None or d.dropna(how="all").empty:
+                LOG.warning("gap-fill round %d chunk %d: still empty", rnd, j)
+                session = make_session(suffix)
+                continue
+            # Drops here are counted separately: a symbol missing after a
+            # dedicated retry is far more likely to be genuinely absent from
+            # Yahoo than transiently throttled.
+            rows = _extract(d, chunk, suffix, min_bars, obs.Drops(LOG, f"gapfill-r{rnd}"))
+            if rows:
+                pd.concat(rows, ignore_index=True).to_parquet(part, index=False)
+            time.sleep(1.0)
+
+        gained = len(_symbols_on_disk(out_dir)) - before
+        recovered += gained
+        LOG.warning("gap-fill round %d recovered %d symbols", rnd, gained)
+        if gained == 0:
+            LOG.warning("gap-fill round %d recovered nothing -- remaining "
+                        "symbols are probably genuinely absent from Yahoo, "
+                        "not throttled; stopping early", rnd)
+            break
+    return recovered
 
 
 def _symbols_on_disk(out_dir: str) -> set[str]:
@@ -271,6 +361,9 @@ def main() -> None:
     ap.add_argument("--workers", type=int, default=1,
                     help="yfinance thread pool size; 1 = serial (safe default). "
                          "Auto-degrades to 1 on repeated rate-limit failures.")
+    ap.add_argument("--gap-rounds", type=int, default=2,
+                    help="retry rounds for symbols still missing after the "
+                         "batch pass (rate-limit recovery); 0 disables")
     ap.add_argument("--merge", default=None, help="merge this parts dir instead of fetching")
     ap.add_argument("--out", default="all.parquet")
     ap.add_argument("--tz", default="Asia/Kolkata")
@@ -285,7 +378,8 @@ def main() -> None:
         if not args.universe:
             raise SystemExit("--universe required when fetching")
         fetch(args.universe, args.period, args.interval, args.out_dir,
-              args.batch, args.suffix, args.min_bars, args.workers)
+              args.batch, args.suffix, args.min_bars, args.workers,
+              args.gap_rounds)
 
 
 if __name__ == "__main__":
