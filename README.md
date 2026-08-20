@@ -7,7 +7,7 @@ routine, on Anthropic's infrastructure, with no machine of yours awake.
 .claude/skills/nse-pattern-screener/   the skill + its scripts (cloned each run)
 run_screener.sh                        the deterministic pipeline
 setup.sh                               dependency install (paste into the environment)
-ROUTINE_PROMPT.md                      the prompt to paste into the routine
+ROUTINE_PROMPT.md                      the instructions the routine reads each run
 ```
 
 ## Setup
@@ -21,7 +21,20 @@ available to the session. Make sure `run_screener.sh` is executable
 [claude.ai/code/routines](https://claude.ai/code/routines) → **New routine**.
 The web form is worth using here because you need to touch the environment.
 
-- **Instructions**: contents of `ROUTINE_PROMPT.md`
+- **Instructions**: a thin pointer, not a copy — the routine reads the real
+  instructions from the repo on every run, so `ROUTINE_PROMPT.md` and the
+  code it depends on stay in one commit and cannot drift apart:
+
+  ```
+  Run the daily NSE hourly pattern screen.
+
+  Read ROUTINE_PROMPT.md at the repository root and follow it exactly.
+  That file is the authoritative instruction set; this message only
+  points at it.
+
+  If ROUTINE_PROMPT.md is missing or unreadable, stop immediately and
+  report that — do not attempt the screen from memory.
+  ```
 - **Repositories**: this repo
 - **Connectors**: keep Google Drive. Remove Asana, Sentry, and Gmail —
   a routine can call every tool on an included connector, including writes,

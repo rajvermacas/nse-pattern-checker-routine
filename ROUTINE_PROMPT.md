@@ -1,11 +1,3 @@
-# Routine prompt
-
-Paste everything below the line into the routine's **Instructions** box. It has
-to be self-contained: the run is autonomous, there is no one to ask, and each
-run starts from a fresh clone with zero prior context.
-
----
-
 Run the daily NSE hourly pattern screen.
 
 1. Execute `bash run_screener.sh` from the repository root. It may take 5–30
