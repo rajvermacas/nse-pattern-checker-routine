@@ -19,7 +19,19 @@ import sys
 import pandas as pd
 import requests
 
-UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+      "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36")
+
+# NSE's edge rejects requests that carry only a User-Agent with a bare 403.
+# Sending the rest of what a browser sends -- Accept, Accept-Language, and a
+# Referer from the site itself -- is what the archives host actually checks.
+HEADERS = {
+    "User-Agent": UA,
+    "Accept": "text/csv,application/csv,text/plain,*/*;q=0.8",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Referer": "https://www.nseindia.com/",
+    "Connection": "keep-alive",
+}
 
 EQUITY_URL = "https://nsearchives.nseindia.com/content/equities/EQUITY_L.csv"
 INDEX_URLS = {
@@ -33,7 +45,7 @@ INDEX_URLS = {
 
 
 def _get(url: str) -> pd.DataFrame:
-    r = requests.get(url, headers={"User-Agent": UA}, timeout=30)
+    r = requests.get(url, headers=HEADERS, timeout=30)
     r.raise_for_status()
     df = pd.read_csv(io.StringIO(r.text))
     df.columns = [c.strip() for c in df.columns]
