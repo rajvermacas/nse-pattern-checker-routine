@@ -2,13 +2,32 @@
 
 Writes one parquet per batch into --out-dir and SKIPS batches already on disk,
 so re-running the same command continues where a timeout left off. A full
-~2300-symbol hourly pull takes 15-40 minutes and will not finish in one
-command invocation -- that is expected, just run it again.
+~2300-symbol hourly pull takes 15-40 minutes serially and will not finish in
+one command invocation -- that is expected, just run it again.
 
 yfinance intraday history limits: 1h and below -> ~60 days; 1m -> 7 days.
 
+Speed: yfinance issues one Yahoo chart request PER SYMBOL (there is no batched
+OHLCV endpoint); a symbol list is just parallelised by yfinance's own thread
+pool. --workers N sets that pool (threads=N). Default 1 == serial. MEASURED on
+2026-08-20 with the proxy-required requests.Session: workers=6 gave 15.8s vs
+19.0s serial on 200 symbols (~17%), and workers=10 vs 1 at batch=200 gave
+14.96s vs 15.56s (indistinguishable). The custom Session's per-host connection
+pool lock serialises what threads=N tries to parallelise, so on this transport
+the lever is mostly dead. Kept anyway: it does no harm, auto-degrades to serial
+after 2 consecutive bad batches, and becomes useful if the transport ever
+changes (e.g. curl_cffi works through the proxy again).
+
+Observability: every dropped symbol is counted and categorised, every caught
+exception is logged with type + message + the batch it hit, and each stage ends
+with a reconciliation line (universe N -> data M -> dropped by reason) that logs
+at WARNING/ERROR when anything is lost. A machine-readable fetch_report.json is
+written next to the parts dir. Nothing a symbol's absence could hide stays
+silent. Export SCREENER_LOG=DEBUG for per-drop examples and tracebacks.
+
 Usage:
     python fetch_data.py --universe universe.txt --period 60d --interval 1h --out-dir parts
+    python fetch_data.py --universe universe.txt --workers 6 --out-dir parts
     python fetch_data.py --merge parts --out all.parquet
 """
 
@@ -26,7 +45,10 @@ import pandas as pd
 import requests
 import yfinance as yf
 
+import obs
+
 COLS = ["symbol", "ts", "open", "high", "low", "close", "volume"]
+LOG = obs.get_logger("fetch")
 
 # yfinance defaults to curl_cffi, which impersonates a browser TLS fingerprint.
 # Behind an HTTPS-inspecting egress proxy that handshake is reset (curl error 35
@@ -42,82 +64,192 @@ def make_session(suffix: str) -> requests.Session:
     s = requests.Session()
     s.headers.update({"User-Agent": _UA, "Accept-Language": "en-US,en;q=0.9"})
     try:
-        s.get(f"https://finance.yahoo.com/quote/RELIANCE{suffix}/", timeout=25)
-    except Exception as e:
-        print(f"session prime failed ({e}); continuing uncookied", flush=True)
+        r = s.get(f"https://finance.yahoo.com/quote/RELIANCE{suffix}/", timeout=25)
+        LOG.debug("primed session: HTTP %s, %d cookies",
+                  r.status_code, len(s.cookies))
+    except requests.RequestException as e:
+        # Not fatal -- an uncookied session may still work or get re-primed on
+        # the first empty batch -- but it is a leading indicator of 429s, so it
+        # must be visible rather than a bare one-liner.
+        obs.log_exception(LOG, "session prime failed (continuing uncookied)", e)
     return s
 
 
+def _extract(d: pd.DataFrame, chunk: list[str], suffix: str, min_bars: int,
+             drops: obs.Drops) -> list[pd.DataFrame]:
+    """Pull each ticker out of a multi-ticker frame, categorising every drop."""
+    rows = []
+    for t in chunk:
+        try:
+            sub = d[t].dropna(subset=["Close"])
+        except KeyError:
+            # Ticker absent from the response entirely -- usually Yahoo has no
+            # data for it (delisted, wrong .NS mapping). Expected but counted.
+            drops.add("missing_from_response", t)
+            continue
+        except Exception as e:
+            # A parse/shape error is NOT expected and must not read as "no data".
+            obs.log_exception(LOG, f"extract {t}", e)
+            drops.add("parse_error", t)
+            continue
+        if len(sub) < min_bars:
+            drops.add("too_few_bars", f"{t}:{len(sub)}<{min_bars}")
+            continue
+        sub = sub.reset_index()
+        sub.columns = [str(c).lower() for c in sub.columns]
+        tc = "datetime" if "datetime" in sub.columns else sub.columns[0]
+        rows.append(pd.DataFrame({
+            "symbol": t[: -len(suffix)], "ts": sub[tc],
+            "open": sub["open"], "high": sub["high"], "low": sub["low"],
+            "close": sub["close"], "volume": sub["volume"]}))
+    return rows
+
+
 def fetch(universe: str, period: str, interval: str, out_dir: str,
-          batch: int, suffix: str, min_bars: int) -> None:
+          batch: int, suffix: str, min_bars: int, workers: int) -> dict:
     syms = [s.strip() for s in open(universe) if s.strip()]
     tickers = [s + suffix for s in syms]
     os.makedirs(out_dir, exist_ok=True)
     session = make_session(suffix)
 
-    done = 0
-    for i in range(0, len(tickers), batch):
+    drops = obs.Drops(LOG, "fetch")     # per-symbol drops, this invocation
+    n_batches = (len(tickers) + batch - 1) // batch
+    LOG.info("fetch start: %d symbols, %d batches of %d, workers=%d",
+             len(tickers), n_batches, batch, workers)
+
+    active_workers = workers
+    consecutive_bad = 0
+    done = failed_batches = kept = 0
+
+    for bi, i in enumerate(range(0, len(tickers), batch)):
         part = os.path.join(out_dir, f"p{i:05d}.parquet")
         if os.path.exists(part):
             done += 1
             continue
 
         chunk = tickers[i:i + batch]
+        span = f"batch {bi + 1}/{n_batches} [{chunk[0]}..{chunk[-1]}]"
         d = None
+        last_reason = "unknown"
         for attempt in range(2):
             try:
-                # threads=False: a requests.Session is not thread-safe, and the
-                # serial pace is also what keeps Yahoo from rate-limiting us.
+                # threads=int -> yfinance's own pool (thread-safe within one
+                # download call; guarded by its ctx.lock). 1 == serial.
                 d = yf.download(chunk, period=period, interval=interval,
-                                group_by="ticker", threads=False,
+                                group_by="ticker", threads=active_workers,
                                 progress=False, auto_adjust=False,
                                 session=session)
                 if d is not None and not d.dropna(how="all").empty:
                     break
-                # Empty frame usually means the cookies went stale -> 429.
+                # All-empty frame == Yahoo returned nothing, usually stale
+                # cookies / 429. Re-prime and retry once.
+                last_reason = "empty_frame(429?)"
+                LOG.warning("%s: empty frame (attempt %d), re-priming session",
+                            span, attempt + 1)
                 session = make_session(suffix)
                 d = None
-            except Exception:
+            except Exception as e:
+                last_reason = obs.exc_line(e)
+                obs.log_exception(LOG, f"{span} download (attempt {attempt + 1})", e)
                 session = make_session(suffix)
                 time.sleep(3)
+
         if d is None:
-            print(f"FAIL batch {i}", flush=True)
+            failed_batches += 1
+            consecutive_bad += 1
+            drops.add("batch_failed", f"{span} ({last_reason})")
+            LOG.error("%s FAILED after 2 attempts: %s (%d symbols lost)",
+                      span, last_reason, len(chunk))
+            # A run of bad batches under concurrency == we are being rate
+            # limited. Fall back to serial for the rest rather than shipping a
+            # thin scan; make the decision loud.
+            if active_workers > 1 and consecutive_bad >= 2:
+                LOG.error("2 consecutive bad batches at workers=%d -> "
+                          "DEGRADING to serial for the remainder", active_workers)
+                active_workers = 1
             continue
 
-        rows = []
-        for t in chunk:
-            try:
-                sub = d[t].dropna(subset=["Close"])
-            except Exception:
-                continue
-            if len(sub) < min_bars:
-                continue
-            sub = sub.reset_index()
-            sub.columns = [str(c).lower() for c in sub.columns]
-            tc = "datetime" if "datetime" in sub.columns else sub.columns[0]
-            rows.append(pd.DataFrame({
-                "symbol": t[: -len(suffix)], "ts": sub[tc],
-                "open": sub["open"], "high": sub["high"], "low": sub["low"],
-                "close": sub["close"], "volume": sub["volume"]}))
-
+        consecutive_bad = 0
+        rows = _extract(d, chunk, suffix, min_bars, drops)
         if rows:
-            pd.concat(rows, ignore_index=True).to_parquet(part, index=False)
-        print(f"{min(i + batch, len(tickers))}/{len(tickers)}", flush=True)
+            merged = pd.concat(rows, ignore_index=True)
+            merged.to_parquet(part, index=False)
+            kept += merged["symbol"].nunique()
+        else:
+            LOG.warning("%s: 0 usable symbols after extract", span)
+        LOG.info("%s: wrote %d/%d symbols (%d/%d)", span, len(rows), len(chunk),
+                 min(i + batch, len(tickers)), len(tickers))
         time.sleep(0.4)
 
+    if failed_batches:
+        LOG.error("%d/%d batches failed outright this pass", failed_batches, n_batches)
+
+    # Reconciliation across everything on disk -- the real coverage number, not
+    # just this invocation's. This is what turns "a symbol vanished" into a
+    # counted, named gap.
+    on_disk = _symbols_on_disk(out_dir)
+    universe = {s for s in syms}
+    missing = sorted(universe - on_disk)
+    report = {
+        "universe": len(universe),
+        "symbols_on_disk": len(on_disk),
+        "coverage_pct": round(100 * len(on_disk) / max(len(universe), 1), 1),
+        "missing_count": len(missing),
+        "missing_sample": missing[:25],
+        "batches_total": n_batches,
+        "batches_skipped_present": done,
+        "batches_failed_this_pass": failed_batches,
+        "workers_requested": workers,
+        "workers_ended": active_workers,
+        "degraded_to_serial": active_workers != workers,
+        "drops_this_pass": drops.report(kept, len(tickers)),
+    }
+    report_path = os.path.join(os.path.dirname(out_dir) or ".", "fetch_report.json")
+    obs.write_report(report_path, report)
+
+    lvl = LOG.warning if missing else LOG.info
+    lvl("coverage: %d/%d on disk (%.1f%%), %d missing%s",
+        len(on_disk), len(universe), report["coverage_pct"], len(missing),
+        f" e.g. {missing[:10]}" if missing else "")
     n_parts = len(glob.glob(os.path.join(out_dir, "*.parquet")))
-    print(f"DONE ({n_parts} batch files in {out_dir}; {done} were already present)")
+    LOG.info("DONE (%d batch files in %s; %d already present; report -> %s)",
+             n_parts, out_dir, done, report_path)
+    return report
+
+
+def _symbols_on_disk(out_dir: str) -> set[str]:
+    got: set[str] = set()
+    for f in glob.glob(os.path.join(out_dir, "*.parquet")):
+        try:
+            got |= set(pd.read_parquet(f, columns=["symbol"])["symbol"].unique())
+        except Exception as e:
+            obs.log_exception(LOG, f"reading {f} for reconciliation", e)
+    return got
 
 
 def merge(parts_dir: str, out: str, tz: str) -> None:
     files = sorted(glob.glob(os.path.join(parts_dir, "*.parquet")))
     if not files:
         raise SystemExit(f"no parquet files in {parts_dir}")
-    d = pd.concat([pd.read_parquet(f) for f in files], ignore_index=True)
+    frames, bad = [], 0
+    for f in files:
+        try:
+            frames.append(pd.read_parquet(f))
+        except Exception as e:
+            bad += 1
+            obs.log_exception(LOG, f"merge: skipping unreadable {f}", e)
+    if not frames:
+        raise SystemExit(f"every parquet in {parts_dir} was unreadable")
+    if bad:
+        LOG.error("merge: %d/%d part files were unreadable and skipped",
+                  bad, len(files))
+    d = pd.concat(frames, ignore_index=True)
     d["ts"] = (pd.to_datetime(d["ts"], utc=True)
                .dt.tz_convert(tz).dt.tz_localize(None))
     d = d[COLS].sort_values(["symbol", "ts"]).reset_index(drop=True)
     d.to_parquet(out, index=False)
+    LOG.info("merged rows %d  symbols %d  last ts %s -> %s",
+             len(d), d.symbol.nunique(), d.ts.max(), out)
     print(f"rows {len(d)}  symbols {d.symbol.nunique()}  last ts {d.ts.max()}")
     print(f"-> {out}")
     print("NOTE: drop the in-progress bar before screening if the market is open.")
@@ -132,10 +264,16 @@ def main() -> None:
     ap.add_argument("--batch", type=int, default=40)
     ap.add_argument("--suffix", default=".NS", help=".NS for NSE, .BO for BSE")
     ap.add_argument("--min-bars", type=int, default=60)
+    ap.add_argument("--workers", type=int, default=1,
+                    help="yfinance thread pool size; 1 = serial (safe default). "
+                         "Auto-degrades to 1 on repeated rate-limit failures.")
     ap.add_argument("--merge", default=None, help="merge this parts dir instead of fetching")
     ap.add_argument("--out", default="all.parquet")
     ap.add_argument("--tz", default="Asia/Kolkata")
     args = ap.parse_args()
+
+    if args.workers < 1:
+        raise SystemExit("--workers must be >= 1")
 
     if args.merge:
         merge(args.merge, args.out, args.tz)
@@ -143,7 +281,7 @@ def main() -> None:
         if not args.universe:
             raise SystemExit("--universe required when fetching")
         fetch(args.universe, args.period, args.interval, args.out_dir,
-              args.batch, args.suffix, args.min_bars)
+              args.batch, args.suffix, args.min_bars, args.workers)
 
 
 if __name__ == "__main__":

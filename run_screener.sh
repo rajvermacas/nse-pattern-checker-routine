@@ -21,6 +21,7 @@ UNIVERSE="${UNIVERSE:-EQ}"         # EQ | nifty500 | nifty200 | midcap150 | ...
 PERIOD="${PERIOD:-60d}"
 INTERVAL="${INTERVAL:-1h}"
 BATCH="${BATCH:-40}"
+WORKERS="${WORKERS:-1}"             # yfinance threads; 1 = serial (safe default)
 MAX_FETCH_PASSES="${MAX_FETCH_PASSES:-6}"
 MIN_COVERAGE="${MIN_COVERAGE:-80}"   # percent of universe with usable data
 MIN_TURNOVER="${MIN_TURNOVER:-5}"    # rupees crore/day
@@ -37,11 +38,17 @@ die() { echo "FAIL: $*" >&2; exit 40; }
 # a fresh session, a routine firing right after an image change). Without this
 # preflight, missing deps show up as `FAIL: universe fetch` at step 1 -- a
 # misleading message that sends the diagnosis down the wrong path.
-if ! python -c "import yfinance, polars, pandas, pyarrow, numpy, matplotlib, requests" 2>/dev/null; then
+# Show the real ImportError instead of hiding it: a broken install (ABI
+# mismatch, half-written wheel) is not the same as "not installed", and
+# 2>/dev/null made the two look identical.
+if ! import_err=$(python -c "import yfinance, polars, pandas, pyarrow, numpy, matplotlib, requests" 2>&1); then
+  echo "== dependencies not importable: ${import_err##*$'\n'}"
   echo "== installing pipeline dependencies"
   pip install --break-system-packages -q \
     yfinance polars pandas pyarrow numpy matplotlib requests \
     || die "dependency install"
+  python -c "import yfinance, polars, pandas, pyarrow, numpy, matplotlib, requests" \
+    || die "dependencies still not importable after install"
 fi
 
 # ---------------------------------------------------------------- 1. universe
@@ -64,13 +71,23 @@ echo "   $N_SYMBOLS symbols"
 # already on disk. A full EQ pull exceeds a single command timeout, so call it
 # repeatedly until the part count stops growing.
 EXPECTED_PARTS=$(( (N_SYMBOLS + BATCH - 1) / BATCH ))
-echo "== fetch: expecting ~$EXPECTED_PARTS parts"
+echo "== fetch: expecting ~$EXPECTED_PARTS parts (workers=$WORKERS)"
 PREV=-1
 for pass in $(seq 1 "$MAX_FETCH_PASSES"); do
+  # A non-zero exit from fetch_data used to be swallowed by `|| true`, so a
+  # crash on pass 1 looked identical to "some batches remain". Capture the
+  # code and log it -- but keep going, because a partial pass is still useful
+  # progress on the resumable parts dir.
   python "$S/fetch_data.py" --universe universe.txt --period "$PERIOD" \
-    --interval "$INTERVAL" --out-dir parts --batch "$BATCH" || true
+    --interval "$INTERVAL" --out-dir parts --batch "$BATCH" \
+    --workers "$WORKERS"
+  rc=$?
   HAVE=$(ls parts/*.parquet 2>/dev/null | wc -l)
-  echo "   pass $pass: $HAVE/$EXPECTED_PARTS parts"
+  if [ "$rc" -ne 0 ]; then
+    echo "   pass $pass: fetch_data exited $rc (parts on disk: $HAVE/$EXPECTED_PARTS)"
+  else
+    echo "   pass $pass: $HAVE/$EXPECTED_PARTS parts"
+  fi
   [ "$HAVE" -ge "$EXPECTED_PARTS" ] && break
   # Pass 1 producing zero parts is a terminal transport failure -- retrying
   # walks over every batch again for another guaranteed failure. Stop now and

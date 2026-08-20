@@ -33,7 +33,15 @@ HEADERS = {
     "Connection": "keep-alive",
 }
 
-HOME_URL = "https://www.nseindia.com/"
+# Two priming stops. The bare home page 403s on some evenings and only sets one
+# cookie when it does answer 200 -- not enough to unblock the archives host. The
+# securities-available-for-trading page reliably yields the fuller cookie set
+# (bm_sv/bm_sz/ak_bmsc) that nsearchives.nseindia.com actually checks. Prime
+# both, in order, and let the first-page failure be non-fatal.
+PRIME_URLS = [
+    "https://www.nseindia.com/",
+    "https://www.nseindia.com/market-data/securities-available-for-trading",
+]
 
 EQUITY_URL = "https://nsearchives.nseindia.com/content/equities/EQUITY_L.csv"
 INDEX_URLS = {
@@ -59,12 +67,21 @@ def _get(url: str) -> pd.DataFrame:
     for attempt in (1, 2):
         try:
             if attempt == 2:
-                # Prime: fetch the home page so Set-Cookie lands in the jar,
-                # then reissue the archives request with the cookie attached.
-                try:
-                    s.get(HOME_URL, timeout=30)
-                except requests.RequestException:
-                    pass  # priming is best-effort; the retry still tries
+                # Prime: walk both stops so Set-Cookie lands in the jar, then
+                # reissue the archives request with the fuller cookie set
+                # attached. Prime pages are HTML, so we send Accept:text/html
+                # for them (the session's default Accept:text/csv causes NSE to
+                # reject the prime, which then never sets cookies -- the whole
+                # trip is wasted). Priming is best-effort per-URL: one may 403
+                # while the other succeeds; the retry still tries.
+                html_hdrs = {"Accept":
+                             "text/html,application/xhtml+xml,"
+                             "application/xml;q=0.9,*/*;q=0.8"}
+                for p in PRIME_URLS:
+                    try:
+                        s.get(p, headers=html_hdrs, timeout=30)
+                    except requests.RequestException:
+                        continue
             r = s.get(url, timeout=30)
             last = r
             if r.status_code == 200:
