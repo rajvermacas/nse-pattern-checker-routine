@@ -1,0 +1,6 @@
+# Pipeline scratch. run_screener.sh writes everything here: the universe list,
+# per-batch parquet parts, the merged frames, and the run's JSON/PNG output.
+# It is all derived from the fetch and regenerable, and the parquet caches run
+# to tens of MB per run. Durable artifacts are committed under runs/<date>/
+# on the claude/screener-runs branch instead.
+work/
