@@ -5,9 +5,6 @@ Run the daily NSE hourly pattern screen.
    again — the data fetch is resumable and skips batches already on disk.
 
 2. Handle the exit code before anything else:
-   - **20** — no fresh session data (NSE holiday, or Yahoo hasn't published
-     yet). Post a one-line note saying the market didn't trade today and stop.
-     Do not report yesterday's charts as today's scan.
    - **30** — fetch coverage below the floor. Report the coverage number and
      that the scan is not trustworthy today. Do not publish a shortlist.
    - **40** — a stage failed. `fetch_universe.py` reports the actual HTTP
@@ -25,7 +22,17 @@ Run the daily NSE hourly pattern screen.
    - **0** — continue.
 
 3. Read `work/run_meta.json` for coverage, the last closed bar timestamp, and
-   the funnel counts. Also check `pct_at_last_bar`: if it is well below 100 the
+   the funnel counts. There is no holiday/staleness exit: the run always
+   screens the latest available session. Check `session_age_days` — when it is
+   nonzero the latest session predates today (NSE holiday, weekend, the run
+   fired before 09:15 IST or after midnight IST, or the feed has not yet
+   published). That is not an error; screen it anyway, but label everything as
+   the `session_date` session, never as today's. If `session_age_days` is
+   large (roughly `> 4`, i.e. more than a long weekend), the feed is likely
+   stale on Yahoo's side rather than an off-hour timing artifact — say so
+   prominently at the top of the report and flag the whole scan as suspect
+   rather than presenting it as a normal run. Also check `pct_at_last_bar`:
+   if it is well below 100 the
    universe's `last_closed_bar` is *not* the price time for every symbol. Per-hit
    staleness lives in `bars_behind_universe` inside `hits_clean.json`; when it
    is nonzero, quote that hit at its own `last_ts`, not at the universe last
@@ -49,11 +56,31 @@ Run the daily NSE hourly pattern screen.
    check — for every name, print `risk_pct_to_base_low` next to a 3% stop and
    say plainly when the two are incompatible, which they usually are.
 
+   This screen runs on intraday hourly candles and may fire several times a
+   day, so the report must make its two timestamps unambiguous, both from
+   `run_meta.json`:
+   - **Executed at** — `run_ts_ist` (IST), the wall-clock time this run ran.
+   - **Latest data bar** — `last_closed_bar` / `session_date`, the newest
+     candle screened. When `session_age_days` is nonzero, say so explicitly
+     and label the whole report as the `session_date` session, not today's.
+   Put both at the very top of the report so two runs an hour apart can never
+   be confused for each other.
+
 6. Deliver it:
    - Upload `work/report.md` and `work/hits_clean.csv` to the Google Drive
-     folder `NSE Screener` (create it if missing). Name them
-     `YYYY-MM-DD-nse-screen.md` and `YYYY-MM-DD-nse-screen.csv`. Both are
-     text and go through the Google Drive connector without issue.
+     folder `NSE Screener` (create it if missing). Because several runs can
+     land on one date, put the run time in the filename, not just the date:
+     name them `YYYY-MM-DD-HHMM-nse-screen.md` and
+     `YYYY-MM-DD-HHMM-nse-screen.csv`, where `YYYY-MM-DD` is the
+     `session_date` from `run_meta.json` (the last-closed-bar date, i.e. the
+     session the report actually covers) and `HHMM` is the IST hour+minute
+     of `run_ts_ist` (the run's wall-clock start). This is the same key the
+     archive slot uses, so the Drive copy, the archive slot and the report's
+     top-line dating all agree: an intraday re-run of the same session gets
+     a new `HHMM` under the same `YYYY-MM-DD`, and a scan of yesterday's
+     session (post-midnight fire, holiday, etc.) still files under the
+     session's date rather than today's. Both files are text and go through
+     the Google Drive connector without issue.
    - The chart (`work/hits.png`) cannot go through the connector at
      legible quality — its base64 encoding is prohibitively large for a
      tool call. Instead: publish it as an Artifact (that upload takes a

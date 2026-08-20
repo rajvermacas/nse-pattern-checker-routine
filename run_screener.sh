@@ -10,9 +10,14 @@
 #
 # Exit codes:
 #   0   pipeline completed (hits may be zero; check run_meta.json)
-#   20  no fresh session data (NSE holiday, or data not published yet) - not an error
 #   30  fetch coverage too low to trust the scan
 #   40  a pipeline stage failed
+#   41  fetch reached zero batches (transport failure, not a quiet market)
+#
+# There is deliberately no "stale data" exit any more. The run screens the
+# latest available session whatever its date; `session_date` and
+# `session_age_days` in run_meta.json carry the dating that the report must
+# quote.
 set -uo pipefail
 
 SKILL="${SKILL:-.claude/skills/nse-pattern-screener}"
@@ -27,11 +32,20 @@ MIN_COVERAGE="${MIN_COVERAGE:-80}"   # percent of universe with usable data
 MIN_TURNOVER="${MIN_TURNOVER:-5}"    # rupees crore/day
 TARGET_PCT="${TARGET_PCT:-15}"
 
-mkdir -p "$WORK"
-cd "$WORK"
-S="../$SKILL/scripts"
+# True start-of-run wall clock, captured before the 10-30 minute fetch. The
+# dating step used to stamp run_ts_ist with its own `now`, which is post-fetch
+# -- so a 16:15 run advertised itself as ~16:40 in the report, the Drive
+# filename and the archive slot, all three of which document it as the run's
+# start time. Capture it once, here, and let the dating step record its own
+# (genuinely later) clock separately as data_snapshot_ist.
+RUN_STARTED_IST="$(TZ=Asia/Kolkata date +%Y-%m-%dT%H:%M:%S%:z)"
+export RUN_STARTED_IST
 
 die() { echo "FAIL: $*" >&2; exit 40; }
+
+mkdir -p "$WORK"
+cd "$WORK" || die "cannot enter work dir $WORK"
+S="../$SKILL/scripts"
 
 # ------------------------------------------------------------ 0. dependencies
 # The environment's setup-script cache is not always warm (a rebuilt container,
@@ -118,8 +132,7 @@ done
 
 # Fetch reached nothing -> exit 41. A distinct code so the routine prompt can
 # distinguish "the network path to Yahoo is broken" from "a pipeline stage
-# died" (40), from "no market data today" (20). Merge would otherwise fail
-# with the wrong stage name in the error.
+# died" (40). Merge would otherwise fail with the wrong stage name in the error.
 if [ "$(ls parts/*.parquet 2>/dev/null | wc -l)" -eq 0 ]; then
   {
     echo "fetch produced zero parquet batches - no data reached disk."
@@ -149,14 +162,24 @@ fi
 # unconditionally because it assumes an intraday run. Post-close the 15:15 stub
 # is a genuine close, and dropping it silently ages every "distance from lip"
 # by an hour.
-python - <<'PY' || exit 40
-import json, sys
+# The `rc=$?` dispatch below turns any non-zero status from this heredoc into a
+# stage failure (40). (An earlier version wrote `python - <<'PY' || exit 40`,
+# which preempted a then-live multi-code dispatch and made it dead code; the
+# dispatch is the surviving, correct form.)
+python - <<'PY'
+import json, os
 from datetime import datetime, time
 from zoneinfo import ZoneInfo
 import polars as pl
 
 IST = ZoneInfo("Asia/Kolkata")
+# run_ts_ist is the run's START, captured in the shell before the multi-minute
+# fetch (RUN_STARTED_IST). `now` here is the later dating-step clock, recorded
+# separately as data_snapshot_ist. "today" for staleness keys off the run
+# start, so the report's "Executed at" and its session-age reasoning agree.
 now = datetime.now(IST)
+run_started = datetime.fromisoformat(os.environ["RUN_STARTED_IST"])
+today = run_started.date()
 market_open = (now.weekday() < 5 and time(9, 15) <= now.time() < time(15, 30))
 
 df = pl.read_parquet("all.parquet")
@@ -187,35 +210,47 @@ consensus = (per_sym_last.group_by("last").len()
 consensus_ts = str(consensus["last"][0])
 consensus_n = int(consensus["len"][0])
 
-# Holiday / stale-data guard: cron fires on NSE holidays too, and yfinance will
-# happily hand back the previous session. Reporting that as today's scan is the
-# failure mode worth spending an exit code on.
-stale = last.date() != now.date()
+# Session dating. This used to be a hard guard that exited 20 whenever the
+# newest bar was not dated today; it now only records what it sees. The run
+# screens whatever the latest available session is -- an NSE holiday, a
+# not-yet-published feed and a post-midnight-IST firing all just mean "the
+# latest session is older than the wall clock", which is a fact to report,
+# not a reason to refuse.
+#
+# The dating still has to survive into the report: a scan of a three-day-old
+# session is a legitimate scan of that session and an illegitimate scan of
+# today. `session_date` and `session_age_days` are what downstream prose must
+# quote so the two can never be confused.
+session_age = (today - last.date()).days
 json.dump({
-    "run_ts_ist": now.isoformat(),
+    "run_ts_ist": run_started.isoformat(),
+    "data_snapshot_ist": now.isoformat(),
     "last_closed_bar": str(last),
+    "session_date": str(last.date()),
+    "session_age_days": session_age,
     "symbols_at_last_bar": at_last,
     "pct_at_last_bar": pct_at_last,
     "consensus_last_bar": consensus_ts,
     "consensus_last_bar_symbols": consensus_n,
     "market_open_at_run": market_open,
-    "stale": stale,
 }, open("bar_meta.json", "w"), indent=2)
 print(f"symbols carrying {last}: {at_last}/{n_total} ({pct_at_last}%); "
       f"universe consensus last bar: {consensus_ts} ({consensus_n} symbols)")
-if stale:
-    print(f"STALE: newest bar is {last.date()}, today is {now.date()} "
-          "(NSE holiday, or data not published yet)")
-    sys.exit(20)
+if session_age != 0:
+    print(f"NOTE: latest available session is {last.date()}, {session_age} day(s) "
+          f"before the run date ({today}). Screening it anyway, as configured. "
+          f"Report it as the {last.date()} session, NOT as today's. "
+          f"A large age (roughly >4 days) means the feed is likely stale -- "
+          f"say so prominently rather than publishing it as a normal scan.")
 PY
 rc=$?
-[ "$rc" -eq 20 ] && exit 20
 [ "$rc" -ne 0 ] && exit 40
 
 # ------------------------------------------------------------------ 4. detect
 echo "== detect"
 python "$S/screener.py" --parquet all_closed.parquet --json hits.json || die "screener"
-RAW=$(python -c "import json;print(len(json.load(open('hits.json'))))")
+RAW=$(python -c "import json;print(len(json.load(open('hits.json'))))") || die "raw hit count"
+[ -n "$RAW" ] || die "raw hit count came back empty"
 echo "   raw hits: $RAW"
 
 if [ "$RAW" -eq 0 ]; then
@@ -229,7 +264,8 @@ python "$S/postfilter.py" --hits hits.json --parquet all_closed.parquet \
   --out hits_clean.json --csv hits_clean.csv \
   --min-turnover "$MIN_TURNOVER" \
   --target-pct "$TARGET_PCT" || die "postfilter"
-CLEAN=$(python -c "import json;print(len(json.load(open('hits_clean.json'))))")
+CLEAN=$(python -c "import json;print(len(json.load(open('hits_clean.json'))))") || die "clean hit count"
+[ -n "$CLEAN" ] || die "clean hit count came back empty"
 echo "   clean hits: $CLEAN"
 
 # -------------------------------------------------------------------- 6. plot
@@ -239,7 +275,16 @@ if [ "$CLEAN" -gt 0 ]; then
     --out hits.png || die "plot"
 fi
 
-python - <<PY
+# `work/` persists across runs (the fetch is resumable), so an unguarded
+# failure here is the one path that ships a silently wrong report: the script
+# would exit 0 while run_meta.json still held the PREVIOUS run's timestamps,
+# coverage and funnel counts, paired with this run's hits and chart. The Drive
+# filename and the archive slot both key off run_ts_ist, so a stale one also
+# overwrites the earlier run's archive. Since run_meta.json is now the only
+# durable carrier of session_date/session_age_days, that must be a hard fail.
+# Remove the stale file first so a crash can never leave a plausible one.
+rm -f run_meta.json
+python - <<PY || die "run_meta"
 import json
 meta = json.load(open("bar_meta.json"))
 meta.update({
