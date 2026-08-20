@@ -19,8 +19,17 @@ import sys
 import pandas as pd
 import requests
 
+# NSE's edge gates on the Chrome major version in the UA, not just on the
+# presence of browser-ish headers. Measured 2026-08-20 against EQUITY_L.csv,
+# unprimed, one request each:
+#     Chrome/124 -> 403      Chrome/131 -> 200
+#     Chrome/126 -> 403      Chrome/139 -> 200
+#     curl/8.5.0 -> timeout  Firefox/130, Safari/17, Edge/131 -> 200
+# So a UA that merely looks like a browser is not enough; it has to look like a
+# CURRENT one. This will rot again as the floor moves -- when the universe
+# stage starts 403ing, bump this before suspecting the network or a block.
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-      "(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36")
+      "(KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36")
 
 # NSE's edge rejects requests that carry only a User-Agent with a bare 403.
 # Sending the rest of what a browser sends -- Accept, Accept-Language, and a
