@@ -71,10 +71,16 @@ Run the daily NSE hourly pattern screen.
      folder `NSE Screener` (create it if missing). Because several runs can
      land on one date, put the run time in the filename, not just the date:
      name them `YYYY-MM-DD-HHMM-nse-screen.md` and
-     `YYYY-MM-DD-HHMM-nse-screen.csv`, where `YYYY-MM-DD-HHMM` is the IST
-     `run_ts_ist` from `run_meta.json` (the same date+HHMM the archive slot
-     uses), so an intraday re-run never overwrites an earlier one. Both are
-     text and go through the Google Drive connector without issue.
+     `YYYY-MM-DD-HHMM-nse-screen.csv`, where `YYYY-MM-DD` is the
+     `session_date` from `run_meta.json` (the last-closed-bar date, i.e. the
+     session the report actually covers) and `HHMM` is the IST hour+minute
+     of `run_ts_ist` (the run's wall-clock start). This is the same key the
+     archive slot uses, so the Drive copy, the archive slot and the report's
+     top-line dating all agree: an intraday re-run of the same session gets
+     a new `HHMM` under the same `YYYY-MM-DD`, and a scan of yesterday's
+     session (post-midnight fire, holiday, etc.) still files under the
+     session's date rather than today's. Both files are text and go through
+     the Google Drive connector without issue.
    - The chart (`work/hits.png`) cannot go through the connector at
      legible quality — its base64 encoding is prohibitively large for a
      tool call. Instead: publish it as an Artifact (that upload takes a

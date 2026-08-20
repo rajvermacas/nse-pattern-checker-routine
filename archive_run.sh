@@ -30,14 +30,31 @@ command -v python >/dev/null || { echo "archive: python required" >&2; exit 1; }
 # Slot key comes from run_meta.json so it matches what the report says, not
 # from `date` (which would drift by seconds and, on a retry, disagree with
 # what the run actually thinks it is).
-read -r DATE HHMM UNIVERSE < <(python - <<'PY'
+#
+# Date is `session_date` (the last-closed-bar date), not the run's calendar
+# date. Otherwise an intraday screen at 01:24 IST -- which reports on the
+# previous session -- would archive under tomorrow's folder, splitting the
+# same session's runs across two date directories and misleading anyone
+# scanning `ls runs/`. Every file the slot holds describes that session.
+# HHMM stays run-start-time, so multiple intraday screens of one session
+# still get distinct slots underneath it.
+read -r DATE HHMM UNIVERSE < <(python - <<PY
 import json, re, sys
-m = json.load(open("work/run_meta.json"))
-ts = m["run_ts_ist"]  # e.g. 2026-08-20T23:25:45.594610+05:30
-mo = re.match(r"(\d{4}-\d{2}-\d{2})T(\d{2}):(\d{2})", ts)
+m = json.load(open("$WORK/run_meta.json"))
+date = m.get("session_date")
+if not date:
+    # Legacy runs before session_date existed used the run_ts_ist date;
+    # keep parsing it as a fallback so old work/ dirs still archive.
+    ts = m["run_ts_ist"]  # e.g. 2026-08-20T23:25:45.594610+05:30
+    mo = re.match(r"(\d{4}-\d{2}-\d{2})", ts)
+    if not mo:
+        sys.exit(f"archive: cannot parse run_ts_ist {ts!r}")
+    date = mo.group(1)
+ts = m["run_ts_ist"]
+mo = re.match(r"\d{4}-\d{2}-\d{2}T(\d{2}):(\d{2})", ts)
 if not mo:
-    sys.exit(f"archive: cannot parse run_ts_ist {ts!r}")
-date, hh, mm = mo.group(1), mo.group(2), mo.group(3)
+    sys.exit(f"archive: cannot parse run_ts_ist {ts!r} for HHMM")
+hh, mm = mo.group(1), mo.group(2)
 uni = re.sub(r"[^A-Za-z0-9._-]+", "-", str(m.get("universe", "unknown")))
 print(date, f"{hh}{mm}", uni)
 PY
