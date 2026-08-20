@@ -82,13 +82,32 @@ for pass in $(seq 1 "$MAX_FETCH_PASSES"); do
     --interval "$INTERVAL" --out-dir parts --batch "$BATCH" \
     --workers "$WORKERS"
   rc=$?
-  HAVE=$(ls parts/*.parquet 2>/dev/null | wc -l)
+  # Count SYMBOLS on disk, not part FILES. A batch that returned 25 of 40
+  # symbols still writes its p*.parquet, so a file count hits 58/58 and breaks
+  # this loop while ~300 symbols are missing -- which is exactly how 107
+  # rate-limited names were silently written off on the 2026-08-20 EQ run.
+  HAVE_FILES=$(ls parts/*.parquet 2>/dev/null | wc -l)
+  HAVE=$(python -c "
+import glob, sys
+try:
+    import pandas as pd
+    got=set()
+    for f in glob.glob('parts/*.parquet'):
+        got |= set(pd.read_parquet(f, columns=['symbol'])['symbol'].unique())
+    print(len(got))
+except Exception:
+    print(0)
+" 2>/dev/null || echo 0)
   if [ "$rc" -ne 0 ]; then
-    echo "   pass $pass: fetch_data exited $rc (parts on disk: $HAVE/$EXPECTED_PARTS)"
+    echo "   pass $pass: fetch_data exited $rc ($HAVE/$N_SYMBOLS symbols, $HAVE_FILES/$EXPECTED_PARTS parts)"
   else
-    echo "   pass $pass: $HAVE/$EXPECTED_PARTS parts"
+    echo "   pass $pass: $HAVE/$N_SYMBOLS symbols ($HAVE_FILES/$EXPECTED_PARTS parts)"
   fi
-  [ "$HAVE" -ge "$EXPECTED_PARTS" ] && break
+  # Yahoo genuinely lacks 60d of hourly history for a tail of recent listings,
+  # so requiring 100% would loop forever. Stop once we clear the coverage floor
+  # the run would accept anyway.
+  NEED=$(( N_SYMBOLS * MIN_COVERAGE / 100 ))
+  [ "$HAVE" -ge "$NEED" ] && { echo "   symbol coverage above floor (${MIN_COVERAGE}%), stopping"; break; }
   # Pass 1 producing zero parts is a terminal transport failure -- retrying
   # walks over every batch again for another guaranteed failure. Stop now and
   # let the zero-batch guard below give the right diagnostic.
