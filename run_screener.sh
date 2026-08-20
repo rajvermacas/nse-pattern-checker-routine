@@ -149,7 +149,12 @@ fi
 # unconditionally because it assumes an intraday run. Post-close the 15:15 stub
 # is a genuine close, and dropping it silently ages every "distance from lip"
 # by an hour.
-python - <<'PY' || exit 40
+# No `|| exit 40` here: it fires on ANY non-zero status, so the stale-data
+# exit 20 below was being rewritten to 40 and the `rc` dispatch that follows
+# was dead code. A quiet/rolled-over date then reported as "a stage failed",
+# which sends the diagnosis down the wrong path entirely. Let the heredoc's
+# status through and let the explicit dispatch classify it.
+python - <<'PY'
 import json, sys
 from datetime import datetime, time
 from zoneinfo import ZoneInfo
