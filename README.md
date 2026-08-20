@@ -87,9 +87,12 @@ The skill drops `max(ts)` unconditionally because it assumes you're running
 intraday. `run_screener.sh` drops it only when the market is actually open, so
 a 16:15 run keeps the 15:15 close instead of silently reporting 14:15 prices.
 
-**The holiday guard is exit code 20, not a failure.** Cron fires on NSE
-holidays and yfinance returns the previous session without complaint. The run
-checks that the newest bar is dated today and stops if it isn't.
+**There is no holiday/staleness guard — the run screens the latest available
+session, whatever its date.** Cron fires on NSE holidays too, and a run can
+fire after IST midnight, so the newest bar is often not dated "today". The run
+does not stop for this; it records `session_date` and `session_age_days` in
+`run_meta.json` so the report labels the scan by the session it actually
+covers instead of implying it is today's.
 
 **Charts are matplotlib renderings of yfinance data.** EMA seeding and session
 handling differ from TradingView and Kite. Treat them as shape verification and

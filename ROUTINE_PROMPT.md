@@ -5,9 +5,6 @@ Run the daily NSE hourly pattern screen.
    again — the data fetch is resumable and skips batches already on disk.
 
 2. Handle the exit code before anything else:
-   - **20** — no fresh session data (NSE holiday, or Yahoo hasn't published
-     yet). Post a one-line note saying the market didn't trade today and stop.
-     Do not report yesterday's charts as today's scan.
    - **30** — fetch coverage below the floor. Report the coverage number and
      that the scan is not trustworthy today. Do not publish a shortlist.
    - **40** — a stage failed. `fetch_universe.py` reports the actual HTTP
@@ -25,7 +22,12 @@ Run the daily NSE hourly pattern screen.
    - **0** — continue.
 
 3. Read `work/run_meta.json` for coverage, the last closed bar timestamp, and
-   the funnel counts. Also check `pct_at_last_bar`: if it is well below 100 the
+   the funnel counts. There is no holiday/staleness exit: the run always
+   screens the latest available session. Check `session_age_days` — when it is
+   nonzero the latest session predates today (NSE holiday, feed not yet
+   published, or the run fired after IST midnight). That is not an error;
+   screen it anyway, but label everything as the `session_date` session, never
+   as today's. Also check `pct_at_last_bar`: if it is well below 100 the
    universe's `last_closed_bar` is *not* the price time for every symbol. Per-hit
    staleness lives in `bars_behind_universe` inside `hits_clean.json`; when it
    is nonzero, quote that hit at its own `last_ts`, not at the universe last

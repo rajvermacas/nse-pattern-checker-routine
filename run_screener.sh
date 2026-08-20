@@ -10,9 +10,14 @@
 #
 # Exit codes:
 #   0   pipeline completed (hits may be zero; check run_meta.json)
-#   20  no fresh session data (NSE holiday, or data not published yet) - not an error
 #   30  fetch coverage too low to trust the scan
 #   40  a pipeline stage failed
+#   41  fetch reached zero batches (transport failure, not a quiet market)
+#
+# There is deliberately no "stale data" exit any more. The run screens the
+# latest available session whatever its date; `session_date` and
+# `session_age_days` in run_meta.json carry the dating that the report must
+# quote.
 set -uo pipefail
 
 SKILL="${SKILL:-.claude/skills/nse-pattern-screener}"
@@ -149,13 +154,12 @@ fi
 # unconditionally because it assumes an intraday run. Post-close the 15:15 stub
 # is a genuine close, and dropping it silently ages every "distance from lip"
 # by an hour.
-# No `|| exit 40` here: it fires on ANY non-zero status, so the stale-data
-# exit 20 below was being rewritten to 40 and the `rc` dispatch that follows
-# was dead code. A quiet/rolled-over date then reported as "a stage failed",
-# which sends the diagnosis down the wrong path entirely. Let the heredoc's
-# status through and let the explicit dispatch classify it.
+# No `|| exit 40` here: it fires on ANY non-zero status. The dispatch below
+# treats a clean heredoc as success and anything else as a genuine stage
+# failure (40); collapsing them with `||` would mask a real crash in the
+# dating step behind the same code either way. Let the status through.
 python - <<'PY'
-import json, sys
+import json
 from datetime import datetime, time
 from zoneinfo import ZoneInfo
 import polars as pl
@@ -192,13 +196,24 @@ consensus = (per_sym_last.group_by("last").len()
 consensus_ts = str(consensus["last"][0])
 consensus_n = int(consensus["len"][0])
 
-# Holiday / stale-data guard: cron fires on NSE holidays too, and yfinance will
-# happily hand back the previous session. Reporting that as today's scan is the
-# failure mode worth spending an exit code on.
-stale = last.date() != now.date()
+# Session dating. This used to be a hard guard that exited 20 whenever the
+# newest bar was not dated today; it now only records what it sees. The run
+# screens whatever the latest available session is -- an NSE holiday, a
+# not-yet-published feed and a post-midnight-IST firing all just mean "the
+# latest session is older than the wall clock", which is a fact to report,
+# not a reason to refuse.
+#
+# The dating still has to survive into the report: a scan of a three-day-old
+# session is a legitimate scan of that session and an illegitimate scan of
+# today. `session_date` and `session_age_days` are what downstream prose must
+# quote so the two can never be confused.
+session_age = (now.date() - last.date()).days
+stale = session_age != 0
 json.dump({
     "run_ts_ist": now.isoformat(),
     "last_closed_bar": str(last),
+    "session_date": str(last.date()),
+    "session_age_days": session_age,
     "symbols_at_last_bar": at_last,
     "pct_at_last_bar": pct_at_last,
     "consensus_last_bar": consensus_ts,
@@ -209,12 +224,11 @@ json.dump({
 print(f"symbols carrying {last}: {at_last}/{n_total} ({pct_at_last}%); "
       f"universe consensus last bar: {consensus_ts} ({consensus_n} symbols)")
 if stale:
-    print(f"STALE: newest bar is {last.date()}, today is {now.date()} "
-          "(NSE holiday, or data not published yet)")
-    sys.exit(20)
+    print(f"NOTE: latest available session is {last.date()}, {session_age} day(s) "
+          f"before today ({now.date()}). Screening it anyway, as configured. "
+          f"Report it as the {last.date()} session, NOT as today's.")
 PY
 rc=$?
-[ "$rc" -eq 20 ] && exit 20
 [ "$rc" -ne 0 ] && exit 40
 
 # ------------------------------------------------------------------ 4. detect
