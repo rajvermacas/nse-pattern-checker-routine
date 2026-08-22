@@ -49,5 +49,21 @@ RSI descending.
 - `scripts/plot.py` — 4-panel daily charts (year / RSI / 110-bar zoom / volume)
 - `scripts/context.py` — descriptive stats used to sanity-check the visual verdicts
 - `scripts/sheet.py` — 15-chart contact sheet
+- `scripts/annot.py` — annotated charts for the selected candidates (rally / base / rim / trigger / invalidation)
 - `results/ranking.json` — all 107 ranked
 - `results/visual_verdicts.txt` — the visual read of the top 15
+
+## Selected candidates (annotated)
+
+| | APLAPOLLO | BLISSGVS |
+|---|---|---|
+| rally | +45.8%, 114 bars | +212%, 104 bars |
+| rim | 2301.40 (12 Feb) | 553.00 (30 Jun) |
+| base low | 1736.00 (2 Jun), -24.6% | 447.20 (22 Jul), -19.1% |
+| base length | 73 bars down / 58 up | 16 down / 22 up |
+| position | right side, 7.1% below rim | broken out, 4.7% above rim |
+| trigger | above 2175 (rim confirm 2301) | above 602.45 |
+| invalidation | 1980 (dead below 1800) | 447 |
+
+BLISSGVS's rim is 553, not the 602.45 printed on the unannotated chart — that dashed
+line is the 110-bar high, which here is the 20 Aug spike, not the base's left rim.
