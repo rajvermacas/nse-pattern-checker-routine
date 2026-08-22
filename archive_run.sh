@@ -7,7 +7,15 @@
 # Reads from $WORK (default: work) and expects the deliverables run_screener.sh
 # produced there. Writes a clean, self-contained directory:
 #
-#     report.md hits.png hits_clean.csv run_meta.json hits_clean.json
+#     report.md run_meta.json
+#     hits.png hits_clean.csv hits_clean.json            (rally_cup)
+#     dip_hits.png dip_hits_clean.csv dip_hits_clean.json (momentum_dip)
+#     shape_rejects.json                                  (rally_cup, if any)
+#
+# Which of those are REQUIRED depends on which screens ran: the file set is
+# derived from `patterns_run` in run_meta.json rather than hardcoded, so
+# archiving a single-pattern run does not fail on the other pattern's missing
+# files, and a two-pattern run cannot quietly archive half of itself.
 #
 # The subdirectory keys on the run's actual start time and its universe, so
 # multiple runs on the same date coexist instead of silently overwriting each
@@ -38,7 +46,7 @@ command -v python >/dev/null || { echo "archive: python required" >&2; exit 1; }
 # scanning `ls runs/`. Every file the slot holds describes that session.
 # HHMM stays run-start-time, so multiple intraday screens of one session
 # still get distinct slots underneath it.
-read -r DATE HHMM UNIVERSE < <(python - <<PY
+read -r DATE HHMM UNIVERSE PATTERNS < <(python - <<PY
 import json, re, sys
 m = json.load(open("$WORK/run_meta.json"))
 date = m.get("session_date")
@@ -56,7 +64,10 @@ if not mo:
     sys.exit(f"archive: cannot parse run_ts_ist {ts!r} for HHMM")
 hh, mm = mo.group(1), mo.group(2)
 uni = re.sub(r"[^A-Za-z0-9._-]+", "-", str(m.get("universe", "unknown")))
-print(date, f"{hh}{mm}", uni)
+# Older run_meta files predate multi-pattern runs; they are rally_cup only.
+pats = m.get("patterns_run") or ["rally_cup"]
+pats = [p for p in pats if p in ("rally_cup", "momentum_dip")]
+print(date, f"{hh}{mm}", uni, ",".join(pats) or "rally_cup")
 PY
 )
 
@@ -69,9 +80,36 @@ echo "archive: -> $DEST"
 rm -rf "$DEST"
 mkdir -p "$DEST"
 
-REQUIRED=(report.md hits.png hits_clean.csv run_meta.json hits_clean.json)
-missing=()
+# Required and optional file sets, per pattern that actually ran. A pattern's
+# clean json+csv are hard requirements (their absence means the stage did not
+# finish); its PNG is optional, because a zero-hit pattern legitimately has no
+# chart to draw.
+REQUIRED=(report.md run_meta.json)
+OPTIONAL=()
+case ",$PATTERNS," in
+  *,rally_cup,*)
+    REQUIRED+=(hits_clean.csv hits_clean.json)
+    OPTIONAL+=(hits.png hits.json shape_rejects.json diagnose.txt)
+    ;;
+esac
+case ",$PATTERNS," in
+  *,momentum_dip,*)
+    REQUIRED+=(dip_hits_clean.csv dip_hits_clean.json)
+    OPTIONAL+=(dip_hits.png dip_hits.json dip_diagnose.txt)
+    ;;
+esac
+echo "archive: patterns $PATTERNS"
+
+hard_missing=()
 for f in "${REQUIRED[@]}"; do
+  if [ -f "$WORK/$f" ]; then
+    cp "$WORK/$f" "$DEST/$f"
+  else
+    hard_missing+=("$f")
+  fi
+done
+missing=()
+for f in "${OPTIONAL[@]}"; do
   if [ -f "$WORK/$f" ]; then
     cp "$WORK/$f" "$DEST/$f"
   else
@@ -79,21 +117,12 @@ for f in "${REQUIRED[@]}"; do
   fi
 done
 
-# hits.png and hits.json are conditional -- a zero-hits run legitimately
-# has no PNG. Everything else is required for a run to be archivable at
-# all. Distinguishing these two cases keeps zero-hit runs archivable while
-# still flagging genuine gaps.
-required_hard=(report.md run_meta.json hits_clean.csv hits_clean.json)
-hard_missing=()
-for f in "${REQUIRED[@]}"; do
-  case " ${required_hard[*]} " in *" $f "*) [ -f "$WORK/$f" ] || hard_missing+=("$f");; esac
-done
 if [ "${#hard_missing[@]}" -gt 0 ]; then
   echo "archive: missing required files ${hard_missing[*]}" >&2
   exit 1
 fi
 if [ "${#missing[@]}" -gt 0 ]; then
-  echo "archive: note -- optional files missing (zero-hits run?): ${missing[*]}"
+  echo "archive: note -- optional files absent (zero-hit pattern?): ${missing[*]}"
 fi
 
 echo "archive: wrote $(ls "$DEST" | wc -l) files to $DEST"

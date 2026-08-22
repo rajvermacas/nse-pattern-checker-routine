@@ -10,6 +10,18 @@ setup.sh                               dependency install (paste into the enviro
 ROUTINE_PROMPT.md                      the instructions the routine reads each run
 ```
 
+Each run screens for **two patterns** over the same bars:
+
+| | `rally_cup` | `momentum_dip` |
+|---|---|---|
+| the setup | rally into a rounded base near the highs | shallow, orderly pullback inside an advance |
+| you buy | the breakout above the lip of a finished base | inside a move that has not finished |
+| the stop | base low, typically 4–8% away | dip low, typically 1–3% away |
+| outputs | `hits.png` `hits_clean.csv` `hits_clean.json` | `dip_hits.png` `dip_hits_clean.csv` `dip_hits_clean.json` |
+
+They are different trades and the report keeps them in separate tables. Set
+`PATTERNS` on the routine (default `rally_cup momentum_dip`) to run only one.
+
 ## Setup
 
 **1. Push this to a private GitHub repo.** Routines clone a repo from its
@@ -89,7 +101,8 @@ run does a full serial fetch of the universe (10–20 min, no cross-run cache),
 so cost scales with how many times a day you fire it. A handful of intraday
 runs is fine; a run every hour on the full EQ universe will eat usage and can
 bump the daily cap. If you want frequent intraday scans, point `UNIVERSE` at a
-narrower slice (`nifty500`, `nifty200`, …) to keep each run cheap.
+narrower slice (`nifty500`, `nifty200`, …) to keep each run cheap, or set
+`PATTERNS` to a single screen.
 
 **The partial-bar logic is inverted from the skill's snippet, deliberately.**
 The skill drops `max(ts)` unconditionally because it assumes you're running
@@ -102,6 +115,32 @@ fire after IST midnight, so the newest bar is often not dated "today". The run
 does not stop for this; it records `session_date` and `session_age_days` in
 `run_meta.json` so the report labels the scan by the session it actually
 covers instead of implying it is today's.
+
+**The cup screen is much stricter than it used to be, on purpose.** Curvature
+and R² cannot tell a rounded base from a V-bounce — the V usually fits the
+parabola *better*. Two shape metrics now do: `vee_gain` (does a two-segment
+straight-line V fit the base better than the curve?) and `bottom_frac` (does
+price loiter at the base's low, or pass straight through it?). On a measured
+live nifty500 session they cut 5 of 6 raw hits, and the charts confirmed four
+were plainly V-bounces or one-gap "rallies". Expect single-digit raw hits on the
+full EQ universe where the old thresholds gave 30–50, and expect genuine
+zero-hit days. Everything the shape test cuts is written to
+`work/shape_rejects.json`, so a too-tight threshold shows up as a long reject
+list rather than as a silently quiet market.
+
+**The dip screen buys into an unfinished move**, which is a better price and a
+worse confirmation. Its failure mode is a falling knife, so it requires the last
+bar to close up and off its low, the pullback to retrace no more than half the
+advance, no single candle to account for most of the fall, and the entry bar to
+close back above a rising EMA50. Its RRR numbers look far better than the cup's
+(5–15 vs 2–5) purely because its stop is tighter — which also means likelier to
+be hit. The two rankings are not on one scale and the report must not merge them.
+
+**Verify detector changes without waiting for a market.** `python
+.claude/skills/nse-pattern-screener/scripts/selftest_patterns.py` builds
+synthetic bars with known shapes — a rounded base, a V-bounce, an orderly dip, a
+falling knife, a one-candle gap-down — runs the real detectors over them and
+asserts on the result. Deterministic, no network, a few seconds.
 
 **Charts are matplotlib renderings of yfinance data.** EMA seeding and session
 handling differ from TradingView and Kite. Treat them as shape verification and

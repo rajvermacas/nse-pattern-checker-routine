@@ -3,10 +3,22 @@
 # drop-partial-bar -> detect -> context filter -> plot.
 #
 # Produces, in $WORK:
-#   run_meta.json    coverage, last closed bar, universe, funnel counts
-#   hits.json        raw detector hits
-#   hits_clean.json  after context filters, ranked by structural RRR
-#   hits.png         chart grid  <- a human or a model still has to LOOK at this
+#   run_meta.json    coverage, last closed bar, universe, per-pattern funnels
+#
+#   rally_cup (the breakout screen -- buy the lip of a finished base):
+#     hits.json / hits_clean.json / hits_clean.csv / hits.png
+#     shape_rejects.json  cleared every legacy gate, failed the saucer-vs-V test
+#
+#   momentum_dip (the pullback screen -- buy inside an unfinished dip):
+#     dip_hits.json / dip_hits_clean.json / dip_hits_clean.csv / dip_hits.png
+#
+# Both charts still have to be LOOKED at. Neither detector's numbers are the
+# deliverable; the shortlist that survives the visual pass is.
+#
+# PATTERNS selects which screens run (default: both). The two are complements,
+# not variants: one buys a completed base breaking out, the other buys a live
+# pullback. They will rarely name the same stock, and their RRRs are not
+# directly comparable -- the dip's stop is tighter AND likelier to be hit.
 #
 # Exit codes:
 #   0   pipeline completed (hits may be zero; check run_meta.json)
@@ -31,6 +43,7 @@ MAX_FETCH_PASSES="${MAX_FETCH_PASSES:-6}"
 MIN_COVERAGE="${MIN_COVERAGE:-80}"   # percent of universe with usable data
 MIN_TURNOVER="${MIN_TURNOVER:-5}"    # rupees crore/day
 TARGET_PCT="${TARGET_PCT:-15}"
+PATTERNS="${PATTERNS:-rally_cup momentum_dip}"
 
 # True start-of-run wall clock, captured before the 10-30 minute fetch. The
 # dating step used to stamp run_ts_ist with its own `now`, which is post-fetch
@@ -43,9 +56,19 @@ export RUN_STARTED_IST
 
 die() { echo "FAIL: $*" >&2; exit 40; }
 
+# Resolve the scripts directory BEFORE cd-ing into $WORK. It used to be
+# "../$SKILL/scripts", which silently assumed $WORK was exactly one level below
+# the repo root -- so any absolute or nested WORK (a scratch dir, a test run)
+# failed at step 1 with "universe fetch", pointing the diagnosis at the network.
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+case "$SKILL" in
+  /*) S="$SKILL/scripts" ;;
+  *)  S="$REPO_ROOT/$SKILL/scripts" ;;
+esac
+[ -d "$S" ] || die "skill scripts not found at $S (set SKILL= to the skill dir)"
+
 mkdir -p "$WORK"
 cd "$WORK" || die "cannot enter work dir $WORK"
-S="../$SKILL/scripts"
 
 # ------------------------------------------------------------ 0. dependencies
 # The environment's setup-script cache is not always warm (a rebuilt container,
@@ -246,34 +269,85 @@ PY
 rc=$?
 [ "$rc" -ne 0 ] && exit 40
 
-# ------------------------------------------------------------------ 4. detect
-echo "== detect"
-python "$S/screener.py" --parquet all_closed.parquet --json hits.json || die "screener"
-RAW=$(python -c "import json;print(len(json.load(open('hits.json'))))") || die "raw hit count"
-[ -n "$RAW" ] || die "raw hit count came back empty"
-echo "   raw hits: $RAW"
+# ------------------------------------------- 4-6. detect, filter, plot
+# One block per pattern. Each writes its own hits/clean/csv/png so the two
+# screens can never be read as one list -- they are different trades with
+# different entries, different stops and different failure modes.
+RAW=0; CLEAN=0; DIP_RAW=0; DIP_CLEAN=0; SHAPE_REJ=0
 
-if [ "$RAW" -eq 0 ]; then
-  echo "== zero raw hits - running diagnostics before anyone says 'quiet market'"
-  python "$S/screener.py" --parquet all_closed.parquet --diagnose | tee diagnose.txt
-fi
+count_json() {  # count_json FILE -- 0 for a missing file, hard fail on bad JSON
+  [ -f "$1" ] || { echo 0; return 0; }
+  python -c "import json,sys;print(len(json.load(open(sys.argv[1]))))" "$1"
+}
 
-# ---------------------------------------------------------- 5. context filters
-echo "== context filters"
-python "$S/postfilter.py" --hits hits.json --parquet all_closed.parquet \
-  --out hits_clean.json --csv hits_clean.csv \
-  --min-turnover "$MIN_TURNOVER" \
-  --target-pct "$TARGET_PCT" || die "postfilter"
-CLEAN=$(python -c "import json;print(len(json.load(open('hits_clean.json'))))") || die "clean hit count"
-[ -n "$CLEAN" ] || die "clean hit count came back empty"
-echo "   clean hits: $CLEAN"
+# Stale outputs from an earlier run in the same work/ dir must not survive into
+# this one: a pattern that finds nothing today would otherwise ship yesterday's
+# chart and CSV under today's run_meta.
+rm -f hits.json hits_clean.json hits_clean.csv hits.png shape_rejects.json \
+      dip_hits.json dip_hits_clean.json dip_hits_clean.csv dip_hits.png \
+      diagnose.txt dip_diagnose.txt
 
-# -------------------------------------------------------------------- 6. plot
-if [ "$CLEAN" -gt 0 ]; then
-  echo "== plot"
-  python "$S/plot_hits.py" --hits hits_clean.json --parquet all_closed.parquet \
-    --out hits.png || die "plot"
-fi
+for pat in $PATTERNS; do
+  case "$pat" in
+    rally_cup)
+      echo "== detect: rally_cup (rally into a rounded base)"
+      python "$S/screener.py" --parquet all_closed.parquet --json hits.json \
+        --shape-rejects shape_rejects.json || die "screener"
+      RAW=$(count_json hits.json) || die "raw hit count"
+      SHAPE_REJ=$(count_json shape_rejects.json) || die "shape reject count"
+      echo "   raw hits: $RAW   (shape-rejected: $SHAPE_REJ)"
+
+      if [ "$RAW" -eq 0 ]; then
+        echo "== zero raw hits - running diagnostics before anyone says 'quiet market'"
+        python "$S/screener.py" --parquet all_closed.parquet --diagnose | tee diagnose.txt
+      fi
+
+      echo "== context filters: rally_cup"
+      python "$S/postfilter.py" --hits hits.json --parquet all_closed.parquet \
+        --out hits_clean.json --csv hits_clean.csv \
+        --min-turnover "$MIN_TURNOVER" \
+        --target-pct "$TARGET_PCT" || die "postfilter"
+      CLEAN=$(count_json hits_clean.json) || die "clean hit count"
+      echo "   clean hits: $CLEAN"
+
+      if [ "$CLEAN" -gt 0 ]; then
+        echo "== plot: rally_cup"
+        python "$S/plot_hits.py" --hits hits_clean.json \
+          --parquet all_closed.parquet --out hits.png || die "plot"
+      fi
+      ;;
+    momentum_dip)
+      echo "== detect: momentum_dip (pullback in a strong name)"
+      python "$S/momentum_dip.py" --parquet all_closed.parquet \
+        --json dip_hits.json --target-pct "$TARGET_PCT" || die "momentum_dip"
+      DIP_RAW=$(count_json dip_hits.json) || die "dip raw count"
+      echo "   raw dip hits: $DIP_RAW"
+
+      if [ "$DIP_RAW" -eq 0 ]; then
+        echo "== zero dip hits - diagnosing before calling it a quiet market"
+        python "$S/momentum_dip.py" --parquet all_closed.parquet --diagnose \
+          | tee dip_diagnose.txt
+      fi
+
+      echo "== context filters: momentum_dip"
+      python "$S/postfilter.py" --hits dip_hits.json --parquet all_closed.parquet \
+        --out dip_hits_clean.json --csv dip_hits_clean.csv \
+        --min-turnover "$MIN_TURNOVER" \
+        --target-pct "$TARGET_PCT" || die "postfilter (dip)"
+      DIP_CLEAN=$(count_json dip_hits_clean.json) || die "dip clean count"
+      echo "   clean dip hits: $DIP_CLEAN"
+
+      if [ "$DIP_CLEAN" -gt 0 ]; then
+        echo "== plot: momentum_dip"
+        python "$S/plot_hits.py" --hits dip_hits_clean.json \
+          --parquet all_closed.parquet --out dip_hits.png || die "plot (dip)"
+      fi
+      ;;
+    *)
+      die "unknown pattern '$pat' in PATTERNS (expected rally_cup, momentum_dip)"
+      ;;
+  esac
+done
 
 # `work/` persists across runs (the fetch is resumable), so an unguarded
 # failure here is the one path that ships a silently wrong report: the script
@@ -293,9 +367,20 @@ meta.update({
     "symbols_with_data": $COVERED,
     "coverage_pct": $COV_PCT,
     "interval": "$INTERVAL",
+    "patterns_run": "$PATTERNS".split(),
+    # raw_hits/clean_hits stay the rally_cup funnel: they predate the second
+    # pattern and downstream prose keys off them. Per-pattern counts below.
     "raw_hits": $RAW,
     "clean_hits": $CLEAN,
+    "shape_rejects": $SHAPE_REJ,
     "chart": "hits.png" if $CLEAN > 0 else None,
+    "dip_raw_hits": $DIP_RAW,
+    "dip_clean_hits": $DIP_CLEAN,
+    "dip_chart": "dip_hits.png" if $DIP_CLEAN > 0 else None,
+    "funnel": {
+        "rally_cup": {"raw": $RAW, "clean": $CLEAN, "shape_rejects": $SHAPE_REJ},
+        "momentum_dip": {"raw": $DIP_RAW, "clean": $DIP_CLEAN},
+    },
 })
 json.dump(meta, open("run_meta.json", "w"), indent=2)
 print(json.dumps(meta, indent=2))
@@ -312,6 +397,16 @@ if meta["pct_at_last_bar"] < 95:
           f"({meta['consensus_last_bar_symbols']} symbols). "
           f"Individual hits may be priced earlier -- check bars_behind_universe "
           f"in hits_clean.json before quoting levels.")
+
+# A long shape-reject list next to zero survivors is the signature of a
+# mis-calibrated saucer-vs-V threshold, which is indistinguishable from a
+# quiet market in the hit count alone. Name it here so nobody has to guess.
+if $SHAPE_REJ > 0 and $RAW == 0:
+    print(f"WARN: every rally_cup candidate ($SHAPE_REJ of them) cleared the "
+          f"legacy gates and died on the shape test. Read shape_rejects.json "
+          f"before reporting a quiet market -- this is what a too-tight "
+          f"max_vee_gain / min_bottom_frac looks like.")
 PY
 
 echo "== done. NOTHING here has been visually verified yet."
+echo "   view hits.png (rally_cup) and dip_hits.png (momentum_dip) before reporting."
