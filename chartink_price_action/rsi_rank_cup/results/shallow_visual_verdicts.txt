@@ -1,0 +1,22 @@
+360ONE     B  orderly saucer, vol dry, but rally into it is choppy and rim-retake bar lacks volume
+AETHER     A  TIGHT SHELF 1572-1645, vol dried to smallest of the leg, coiled top of range. Trigger >1650, inval <1572
+AJANTPHARM C  V-shaped pullback not a base; breakout a month old, rolling over
+ALIVUS     D  span WRONG - sits on top of a parabolic thrust + reversal, no shelf exists; price at base low
+ASAHIINDIA C  loose saucer; "rally" was 4mo of chop; +3.9% extended
+AUBANK     B  rounded saucer on rim, vol contracted, but swing is wide for its depth and rim-retest has NO volume
+BAJAJ-AUTO A  TIGHT SHELF 2.7% deep, 15 bars, vol dried up, coiled under rim. Trigger >11860, inval <11530
+ENDURANCE  C  one-bar flush + instant V recovery, no supply absorption; price exactly on rim
+ETERNAL    A  TIGHT compression 306-320, contracting range, resolving up. Trigger >330 (or pullback to 320), inval <306
+HCG        C  V-SPIKE: base low is one violent outside bar, not a shelf. detector span starts ON the rim bar
+HEROMOTOCO D  not a base - an unfinished stair-step decline off a climax bar; nothing has stabilised
+LUMAXTECH  D  rim is ONE 8x-volume gap bar; "base" is post-spike volatility; price at base low
+MOTILALOFS D  base is 45 bars stale; broke out then COLLAPSED on the chart's biggest red bar 07-21
+NAM-INDIA  D  span STALE (40 bars old); real structure is a 5-week 1130-1210 range, broke out today on 3.2M bar
+PNBHOUSING A  TIGHT SHELF 1140-1167, EMA20 flush underneath, dry inside/wet on exit. Trigger >1196, inval <1119.50
+PRUDENT    C  V-spike: one 10x-volume RED bar made the low; range EXPANDS inside the base = distribution
+RBLBANK    D  span WRONG - the June base was broken at 348 on 07-21; bars are whipsaw not shelf
+SHRIRAMFIN A  TIGHT SHELF 1120-1150 on rising EMA20, vol at chart lows. Trigger >1155, inval <1115
+SOLARINDS  B  real rally + best vol confirmation, BUT labelled base is only the tail of a 10-week range; +4.0% extended
+TMB        B  base+breakout were textbook but spent; +7% extended, 4 weeks of chop on top
+UJJIVANSFB A  TIGHT SHELF under rim, 20 bars, vol dried up after a huge thrust bar. -1.7% vs rim. Trigger >73.50, inval <68.50
+UNITDSPR   B  orderly saucer + 4M breakout bar, but that was a month ago; +8% extended
