@@ -1,0 +1,1212 @@
+[
+ {
+  "symbol": "360ONE",
+  "viewed_chart": true,
+  "verdict": "REFUTED",
+  "claims_checked": [
+   {
+    "claim": "Breakout bar 20-Aug 09:15 traded 938,520 shares = 7.0x the 20-bar average of 134,843",
+    "true_or_false": "FALSE",
+    "actual": "The share count and the arithmetic are right but the denominator is corrupted. In this feed the 09:15 bar prints volume 0 on 18 of the last 20 sessions and the 15:15 auction bar prints 3k-27k, so ~20.3% of each day's real volume is missing from the hourly series and the 20-bar mean (134,843) is artificially depressed. Measured properly, 20-Aug DAILY volume was 1,748,431 vs a 20-day average of 961,560 = 1.82x, not 7x. This is an ordinary breakout-day expansion, not 'the clearest accumulation in the batch'."
+   },
+   {
+    "claim": "From 13-Aug to 19-Aug price built a 5-session shelf with pivot highs 1192.1 / 1189.7 / 1189.1 / 1185.0",
+    "true_or_false": "FALSE",
+    "actual": "1192.1 is the 07-Aug high and 1189.7 the 10-Aug high - both OUTSIDE the stated 13-19 Aug window. Inside the window the highs are 1189.1 (14-Aug), 1185.0 (18-Aug), 1185.0 (19-Aug), 1183.5. The sequence is a run of lower highs, i.e. a descending wedge into the gap, not a flat base."
+   },
+   {
+    "claim": "Higher lows 1140.5 (13-Aug) -> 1151.0 -> 1155.0 -> 1158.1",
+    "true_or_false": "FALSE",
+    "actual": "1140.5 was made 12-Aug 09:15, not 13-Aug, and it was itself a LOWER low than the 11-Aug 1162.2 pivot - so the 'clean stair-step off the 24-Jul low' is broken at 12-Aug. The 1151.0/1155.0/1158.1 higher lows (17/18/19-Aug) are correct."
+   },
+   {
+    "claim": "Has since spent two full sessions holding 1190.1-1222 without giving the level back",
+    "true_or_false": "FALSE",
+    "actual": "The 1190.1 low was printed on the LAST available bar (21-Aug 14:15), not defended over two sessions. Post-breakout highs are a monotonic fade: 1222.0 -> 1216.1 -> 1213.2 -> 1207.7 -> 1214.0 -> 1213.6 -> 1210.1 -> 1207.5 -> 1206.5 -> 1201.4, with closes 1221.1 -> 1199.0. Eight consecutive lower highs into the close of the week is distribution, not a held retest."
+   },
+   {
+    "claim": "Pullback bars 21-Aug 11:15 and 12:15 traded 29,432 and 38,502 (0.22x / 0.29x)",
+    "true_or_false": "TRUE",
+    "actual": "Confirmed exactly, but the whole 21-Aug session traded only 365,015 shares in the hourly series vs 1,748,384 on 20-Aug - the follow-through session had 21% of breakout-day volume, which is as consistent with buyers walking away as with a dry pullback."
+   },
+   {
+    "claim": "52-week high near 1236 as the first real resistance, so T1 1245 is anchored to two independent methods",
+    "true_or_false": "FALSE",
+    "actual": "52w high is 1236.20 (16-Jan-2026), correct - but T1 of 1245 sits ABOVE it. The target is set beyond the resistance level cited to justify it. 11 daily sessions and 15.9m shares of prior trade sit in the 1200-1245 band."
+   },
+   {
+    "claim": "Close 1199.0 on rising EMA20 1196.14, 1.24% over EMA50 1184.27",
+    "true_or_false": "TRUE",
+    "actual": "EMA20 1196.14, EMA50 1184.27, 1199/1184.27 = +1.24%. Verified."
+   },
+   {
+    "claim": "Liquidity ~135k shares/hour (~Rs 16 cr/hour)",
+    "true_or_false": "FALSE",
+    "actual": "135k is the zero-inflated 20-bar mean. Real avg hourly turnover over the last 100 bars is Rs 13.5 cr, median Rs 9.4 cr. Tradable, but ~40% thinner than quoted at the median."
+   },
+   {
+    "claim": "ret_20d 8.77%, only 2.85% above D-EMA20",
+    "true_or_false": "FALSE",
+    "actual": "Daily close 1203 (20-Aug, the last daily bar available) is +11.06% over 20 sessions and +3.51% above D-EMA20 (1162.22). Direction of the argument survives - this is genuinely the least extended of the four - but both figures are understated."
+   }
+  ],
+  "stop_vs_atr": "Hourly ATR14 = 10.53 (0.88%). Stop 1183 from entry-zone midpoint 1201.5 = 18.5 pts = 1.76x ATR (adequate); from the low end of the zone (1195) it is only 12 pts = 1.14x ATR, inside noise. More damning: Friday's final bar already traded to 1190.1, i.e. price was 0.67x ATR from the stop when the data ends, and the final hour of the session is missing. The stop is under real structure (hourly EMA50 1184.27 and the broken 1185-1192 shelf) but price is already sitting on it.",
+  "recomputed_risk_reward": 2.35,
+  "avg_hourly_turnover_cr": 13.5,
+  "overhead_supply": "The 52-week high 1236.20 (16-Jan-2026) sits between entry (~1201) and T1 (1245) - target1 is set 9 points ABOVE the resistance used to justify it. Nearer in, the 20-Aug spike high 1222.0 has now rejected price three times (1216.1, 1214.0, 1213.6). 11 daily sessions / 15.9m shares of prior trade in the 1200-1245 band.",
+  "daily_extension_note": "Genuinely the least extended of the four: +3.51% over D-EMA20, +5.94% over D-EMA50, +11.06% in 20 sessions, +8.17% in 60. Not late. This is the one part of the thesis that holds up.",
+  "data_integrity": "Two problems. (1) The daily series ENDS 20-Aug - Friday 21-Aug is missing entirely - and the hourly series ends at 14:15, so the last hour of the week is unseen; every 'Friday close' statement is really a 14:15 print. (2) 09:15 bars carry volume 0 on 18 of the last 20 sessions and 15:15 bars are tiny auction prints, so ~20% of daily volume never reaches the hourly series - this invalidates every 'Nx the 20-bar average' statistic in the thesis. Historically, hourly last-bar close differs from the daily close on 38 of 121 shared sessions (worst 1.06%), though the last 15 sessions reconcile exactly.",
+  "strongest_bear_case": "The single piece of evidence carrying this thesis - a 7x volume breakout bar - is a measurement artifact: on daily volume the 20-Aug move was 1.82x average, entirely ordinary. Strip that away and what is left is one gap-and-run hour followed by eight consecutive lower highs and a fade from 1221 to 1199, with the range low made on the very last bar available and the closing hour missing. The 'completed retest that has already held for two sessions' is in fact a two-session bleed that is still in progress, and target1 is placed above the 52-week high it cites as resistance.",
+  "survives_as": "WATCH",
+  "corrected_entry": 1196.0,
+  "corrected_stop": 1181.0,
+  "corrected_target1": 1236.0
+ },
+ {
+  "symbol": "ETERNAL",
+  "viewed_chart": true,
+  "verdict": "WEAKENED",
+  "claims_checked": [
+   {
+    "claim": "Risk/reward 2.84 (target1 342, stop 323.9)",
+    "true_or_false": "FALSE",
+    "actual": "From the stated trigger 331.6: (342-331.6)/(331.6-323.9) = 1.35. From the entry-zone midpoint 331.25: 10.75/7.35 = 1.46. The 2.84 figure only appears if you use target2 (355) against the bottom of the entry zone. R:R to target1 is roughly HALF what is claimed."
+   },
+   {
+    "claim": "Unbroken staircase of higher lows 306.3, 312.7, 316.55, 315.55, 315.9, 324.25",
+    "true_or_false": "FALSE",
+    "actual": "316.55 (17-Aug 09:15) -> 315.55 (18-Aug 11:15) is a LOWER low. The list the analyst wrote to prove an unbroken higher-low chain contains a broken link. The trend is still up, but 'no broken swing' is not true."
+   },
+   {
+    "claim": "Has not closed below the hourly EMA50 since 27-Jul",
+    "true_or_false": "FALSE",
+    "actual": "Last hourly close below EMA50 was 18-Aug 15:15 (315.90 vs EMA50) - three weeks later than claimed, only 21 bars ago."
+   },
+   {
+    "claim": "Closed at 328.00 near the session high - absorption, not rejection",
+    "true_or_false": "FALSE",
+    "actual": "The 21-Aug session high was 331.60. Close 328.00 is 1.09% BELOW it. The daily bar is open 330.00 / high 331.70 / low 324.10 / close 328.00 - a red daily candle with a long upper wick, i.e. a rejection at the new high, not a close near the high. The 09:15 bar that made 331.60 opened 329.10 and closed 326.75, a 4.85-point reversal within the hour."
+   },
+   {
+    "claim": "20-bar average 3.23m is 1.41x the 100-bar average 2.29m - volume expanding into new highs",
+    "true_or_false": "TRUE",
+    "actual": "3,227,666 / 2,289,399 = 1.41. Reproduced. But on daily volume 21-Aug was 31.65m vs a 20-day average of 29.14m = 1.09x, and the two largest hourly bars of 21-Aug (5.06m at 10:15, 6.38m at 14:15) were both DOWN bars. The coil at the high formed on merely average volume."
+   },
+   {
+    "claim": "Turnover roughly Rs 106 cr per hour",
+    "true_or_false": "FALSE",
+    "actual": "Rs 106 cr uses the last-20-bar volume mean. Over the last 100 bars average hourly turnover is Rs 72.8 cr, median Rs 62.1 cr. Overstated ~45%, but liquidity is a non-issue either way."
+   },
+   {
+    "claim": "11% below its 52-week high of ~368, so it is not fighting a ceiling - there is room above 331.6",
+    "true_or_false": "FALSE",
+    "actual": "52w high is 368.45 (16-Oct-2025), correct. But the space above the trigger is not empty: the 331.6-342 band saw 24 daily sessions and 686 million shares change hands in Sep-Oct 2025, with 13 daily closes inside it. That is dense left-hand supply sitting directly between the trigger and target1."
+   },
+   {
+    "claim": "Close 328.0 is 0.83% above EMA20 325.3 and 1.09% below the 331.6 high; ATR 0.62-0.66%",
+    "true_or_false": "TRUE",
+    "actual": "EMA20 325.29, ATR14 2.15 = 0.66% of price. Verified."
+   },
+   {
+    "claim": "up/down volume 0.80 over 40 bars",
+    "true_or_false": "TRUE",
+    "actual": "0.81. Reproduced - and it is the honest tell: more volume on down bars than up bars over the last 40 hours, while the analyst dismisses it."
+   }
+  ],
+  "stop_vs_atr": "Hourly ATR14 = 2.15 (0.66%). Stop 323.9 from the 331.6 trigger = 7.7 pts = 3.58x ATR; from entry-zone midpoint 331.25 = 3.42x ATR. This is the ONE genuinely well-built stop in the group: comfortably outside noise, below the 324.25 pivot low, below the 21-Aug daily low 324.10 and below the EMA20. The problem is not the stop, it is that a 3.4x-ATR stop paired with a 342 target only pays 1.35-1.46R.",
+  "recomputed_risk_reward": 1.46,
+  "avg_hourly_turnover_cr": 72.8,
+  "overhead_supply": "Heavy. 331.6-342 contains 24 daily sessions and ~686m shares from the Sep-Oct 2025 distribution, including 13 daily closes. Target1 at 342 is placed at the far edge of that shelf. The 331.60 line itself has already rejected price once, on the 21-Aug opening hour, with a 4.85-point intra-hour reversal.",
+  "daily_extension_note": "Warming: +4.93% over D-EMA20, +11.22% over D-EMA50, +17.14% in 20 sessions, +30.90% in 60. Not yet late, but the analyst's 'daily is beginning to get warm' understates a 31% two-month run.",
+  "data_integrity": "09:15 bars print volume 0 on all 20 of the last 20 sessions, so ~28.4% of each day's volume is absent from the hourly series - every hourly volume multiple in the thesis is computed on a depressed base. Notably the 21-Aug 09:15 bar that made the 331.60 high has NO volume record, so 'absorption' at the high cannot be tested from this data at all. Historically hourly and daily closes disagree on 71 of 122 shared sessions (worst 2.70%, 28-Apr); the last 15 sessions reconcile exactly.",
+  "strongest_bear_case": "The trend is real, but the trade is not priced the way it is sold: the honest R:R to target1 is 1.35-1.46, not 2.84, because a correctly-placed 3.4x-ATR stop is being paired with a 3% target that runs straight into 686m shares of 2025 supply between 332 and 342. Friday was not a coil closing near its high - it was a red daily candle that spiked to a new high on the opening hour, reversed 4.85 points inside that hour, and finished 1.1% off the high on merely average volume, with the two biggest hourly bars of the day both red.",
+  "survives_as": "WATCH",
+  "corrected_entry": 327.0,
+  "corrected_stop": 322.5,
+  "corrected_target1": 340.0
+ },
+ {
+  "symbol": "PAYTM",
+  "viewed_chart": true,
+  "verdict": "REFUTED",
+  "claims_checked": [
+   {
+    "claim": "The final bar of 21-Aug closed at 1,638.00, the exact high of the day, on 1,038,458 shares - the single largest bar of the session",
+    "true_or_false": "FALSE",
+    "actual": "The final bar of 21-Aug is the 15:15 bar: open/high/low/close all 1632.00 on 22,685 shares. The session CLOSED at 1632.00, 6.4 points below the day's high of 1638.40, on a 22.7k-share auction print (0.04x average). The 1,038,458-share bar the analyst calls 'final' is the 14:15 bar. The headline claim of this thesis - 'closing on the high of the week on the largest volume of the day' - is simply not what the data shows."
+   },
+   {
+    "claim": "Risk/reward 2.61",
+    "true_or_false": "FALSE",
+    "actual": "Target1 is 1656.5 and the stated trigger is 1640 with a 1594 stop: (1656.5-1640)/(1640-1594) = 0.36. From the entry-zone midpoint 1649 it is 0.14. The quoted 2.61 is the R:R to TARGET2 (1760-1640)/46 = 2.61. The trade as written risks 46 points to make 16.5 - a losing proposition before costs."
+   },
+   {
+    "claim": "Entry zone 1638-1660",
+    "true_or_false": "FALSE",
+    "actual": "The top of the entry zone (1660) is ABOVE target1 (1656.5). The plan permits buying at a price higher than its own first objective."
+   },
+   {
+    "claim": "Stop below the 1,598.3 pivot low of 19-20 Aug and below the 1,597.7 intraday lows of both 20-Aug and 21-Aug",
+    "true_or_false": "FALSE",
+    "actual": "20-Aug's low was 1589.7 hourly / 1587.1 on the daily bar, not 1597.7. 1597.7 is merely the low of the 20-Aug 10:15 bar. The 1594 stop therefore sits ABOVE Thursday's session low - inside the two-day range, not below it. A routine retest of Thursday's low takes the stop out without breaking any structure."
+   },
+   {
+    "claim": "6-month high of 1,656.5 on 13-Aug",
+    "true_or_false": "FALSE",
+    "actual": "1656.5 was made on 14-Aug 09:15 (daily high 1657.60, also 14-Aug). 13-Aug's high was 1649.5. Date is wrong; the level is right."
+   },
+   {
+    "claim": "The big volume cluster (4.5m, 3.4m, 3.4m bars) came on the 08-11 Aug up-thrust",
+    "true_or_false": "TRUE",
+    "actual": "Confirmed on the chart and in the bars - 10-Aug traded 20.0m shares on the daily. That thrust is real accumulation. It is also 8 sessions old and 6.6% of it has already been given back once."
+   },
+   {
+    "claim": "Close 1632.0 back above EMA20 (1612.6) and EMA50 (1589.0), 1.48% under 1656.5; ATR 0.87%",
+    "true_or_false": "TRUE",
+    "actual": "EMA20 1612.57, EMA50 1589.03, ATR14 14.48 = 0.89%. Verified."
+   },
+   {
+    "claim": "Rs 93 cr per hour of turnover",
+    "true_or_false": "TRUE",
+    "actual": "Rs 96.7 cr average over the last 100 bars (median Rs 67.6 cr). Liquidity is genuinely fine."
+   },
+   {
+    "claim": "Daily is extended: +45.9% in 60 sessions, +27.2% in 20, 8.4% above the daily EMA20",
+    "true_or_false": "TRUE",
+    "actual": "+45.87% / 60d, +27.18% / 20d, +8.42% over D-EMA20, +18.89% over D-EMA50. All confirmed - and this is the most extended name of the four by a wide margin, which the analyst correctly flags then buys anyway."
+   }
+  ],
+  "stop_vs_atr": "Hourly ATR14 = 14.48 (0.89%). Stop 1594 from the 1640 trigger = 46 pts = 3.18x ATR - far enough from noise in distance terms, but placed in the WRONG PLACE: it sits above the 20-Aug session low (1587.1 daily / 1589.7 hourly), so it is inside the very range it is supposed to sit below. A stop that respects structure has to go under 1587, which is 53 pts / 3.7x ATR / 3.2% from the trigger and makes the arithmetic worse still.",
+  "recomputed_risk_reward": 0.36,
+  "avg_hourly_turnover_cr": 96.7,
+  "overhead_supply": "Target1 IS the overhead supply. 1656.5/1657.6 is the 14-Aug high from which price fell 6.6% to 1546.3 over the next two sessions - the only place this stock has failed. Buying at 1640 to sell at 1656.5 is buying 1% of room into the exact level that rejected price eight sessions ago, with the entry zone extending past it to 1660.",
+  "daily_extension_note": "The most extended of the four: +45.9% in 60 sessions, +27.2% in 20, +8.4% over D-EMA20, +18.9% over D-EMA50, one session off an all-data high. A 46% two-month run being bought 1% below the high that already broke it is a late entry by any definition.",
+  "data_integrity": "09:15 bars print volume 0 on 18 of the last 20 sessions and 15:15 bars are 20-50k auction prints, so ~25.1% of daily volume is missing from the hourly series - the exact defect that produced the false 'closed at the day's high on the day's largest volume' claim. Historically hourly and daily closes disagree on 51 of 122 shared sessions (worst 1.51%, 15-Jul); the last 15 sessions reconcile.",
+  "strongest_bear_case": "The trade risks 46 points to make 16.5 - a 0.36 R:R that the thesis reports as 2.61 by quoting the second target, and it permits entry at 1660, above its own first target. The evidence for the entry is a claim that Friday closed at the high of the day on the biggest volume of the session, and Friday actually closed at 1632 on a 22,685-share auction print, 6.4 points off the high. The stop at 1594 sits above Thursday's 1587 low, so it is inside the range rather than below it, in a stock that is +46% in 60 sessions and buying 1% below the level that already produced a 6.6% break.",
+  "survives_as": "AVOID",
+  "corrected_entry": 1659.0,
+  "corrected_stop": 1586.0,
+  "corrected_target1": 1760.0
+ },
+ {
+  "symbol": "NAM-INDIA",
+  "viewed_chart": true,
+  "verdict": "WEAKENED",
+  "claims_checked": [
+   {
+    "claim": "Three weeks of range between 1155.2 and 1217 with a flat floor (lows 1163.1, 1161.4, 1159.6, 1155.2, 1161.3)",
+    "true_or_false": "TRUE",
+    "actual": "Verified: 1163.1 (07-Aug daily low), 1161.4 (11-Aug 09:15), 1159.6 (14-Aug 09:15), 1155.2 (17-Aug 09:15), 1161.3 (18-Aug 09:15). This is a genuinely flat base, not a series of lower highs - the strongest structural claim in the whole group."
+   },
+   {
+    "claim": "20-Aug 09:15 opened 1224 vs the prior 1217 close and ran to 1266.0 by 11:15",
+    "true_or_false": "TRUE",
+    "actual": "09:15 open 1224.0, high 1255.0; 11:15 high 1266.0. Verified."
+   },
+   {
+    "claim": "Breakout bars carried 344k and 493k shares against a 220k average; vol_ratio_20_100 = 1.67",
+    "true_or_false": "TRUE",
+    "actual": "344,147 (10:15) and 493,257 (11:15); 20-bar mean 219,792, 100-bar mean 131,357, ratio 1.67. And unlike the others this one survives the daily cross-check: 20-Aug DAILY volume was 3,152,919 vs a 20-day average of 1,034,815 = 3.05x. This is the only genuinely volume-confirmed breakout of the four."
+   },
+   {
+    "claim": "Friday recovered to 1262.3 and closed 1251.0 with the final bar green at the day's high",
+    "true_or_false": "FALSE",
+    "actual": "The day's high was 1262.30 (11:15). The final 15:15 bar closed at 1251.0 - 11.3 points BELOW the day's high - on 23,293 shares (0.11x average), a closing auction print. The session shape is a fade from 1262.3 at 11:15 to 1246.5 by 13:15, not a strong close. 1262.3 is also a lower high versus Thursday's 1266.0."
+   },
+   {
+    "claim": "Stop 1223 is below the 1226.9 retest low AND below the top of the broken 1155-1218 shelf",
+    "true_or_false": "FALSE",
+    "actual": "Half true. 1223 is below 1226.9. But the shelf top is 1217-1218, so 1223 is ABOVE it, not below it - the stop is in the gap between the shelf top and the retest low, i.e. in unfilled air. The analyst's own invalidation section contradicts the stop rationale: 'below 1218 the stock is back inside the old shelf'."
+   },
+   {
+    "claim": "Risk/reward 2.6",
+    "true_or_false": "FALSE",
+    "actual": "From entry-zone midpoint 1249 with stop 1223 and target1 1300: 51/26 = 1.96. The analyst does disclose the method (blending 1.9R to T1 with 3.5R to T2) so this is a presentation flaw rather than a fabrication, but the headline 2.6 is 33% above the real T1 number."
+   },
+   {
+    "claim": "Only 1.2% off the 52-week high, at all-time-high area with no left-hand supply",
+    "true_or_false": "TRUE",
+    "actual": "52-week/all-data high 1266.20 made 20-Aug; 1251/1266.2 = -1.2%. Only 1 daily session in the entire year overlaps the 1250-1300 band and zero daily closes sit inside it. The 'no overhead supply' claim is fully verified."
+   },
+   {
+    "claim": "Only 5.05% above the daily EMA20",
+    "true_or_false": "FALSE",
+    "actual": "The last available daily close (1232.5, 20-Aug) is +4.04% over D-EMA20 (1184.59) and +6.30% over D-EMA50. Using the hourly close of 1251 gives +5.6%. Close enough in spirit - it is genuinely not extended - but the exact figure is not reproducible."
+   },
+   {
+    "claim": "up_vol/down_vol only 1.05 over 40 bars",
+    "true_or_false": "TRUE",
+    "actual": "1.06. Reproduced. Honest red flag, correctly disclosed."
+   }
+  ],
+  "stop_vs_atr": "Hourly ATR14 = 14.26 (1.14%) - the widest of the four in percentage terms. Stop 1223 from entry-zone midpoint 1249 = 26 pts = 1.82x ATR (acceptable); from the bottom of the entry zone 1240 = 17 pts = 1.19x ATR, right on the noise threshold. It sits below the only defended level (1226.9, one session old) but ABOVE the true structural level, the 1217-1218 shelf top, which would demand a 1.5-2.3x wider stop.",
+  "recomputed_risk_reward": 1.96,
+  "avg_hourly_turnover_cr": 15.8,
+  "overhead_supply": "None, and this is verified rather than asserted: only 1 daily session in 12 months overlaps 1250-1300 and no daily close sits inside it. The only resistance between entry and target1 is the two-day 1266.0/1262.3 double top, which is 1.2% above the close and has already produced one lower high.",
+  "daily_extension_note": "Modest: +4.04% over D-EMA20, +6.30% over D-EMA50, +11.46% in 20 sessions, +13.19% in 60. Along with 360ONE this is not a late entry. Note the daily series is missing Friday, so all daily figures are as of 20-Aug.",
+  "data_integrity": "The daily series ENDS 20-Aug - Friday 21-Aug is missing - so every daily statistic in the thesis is one session stale. 09:15 bars print volume 0 on all 20 of the last 20 sessions and 15:15 bars are 3-23k auction prints, so ~21.3% of daily volume is missing from the hourly series; notably the 20-Aug 09:15 gap-and-run bar that constitutes the breakout has NO volume record at all. Historically hourly and daily closes disagree on 56 of 121 shared sessions (worst 1.05%); the last 18 sessions reconcile exactly.",
+  "strongest_bear_case": "This is the best-evidenced of the four - a real flat base, a real 3.05x-daily-volume break, real clear air overhead - but it is being sold on numbers that are 33% flattering: the honest R:R to 1300 is 1.96, not 2.6, and the stop is not where the rationale says it is, sitting above the 1217-1218 shelf top in unfilled air rather than below it. The 'strong Friday close at the day's high' is a 23k-share auction print 11 points under a high that was itself a lower high versus Thursday, and the entry zone's lower half puts the stop only 1.19x ATR away in the widest-ATR name of the group.",
+  "survives_as": "WATCH",
+  "corrected_entry": 1245.0,
+  "corrected_stop": 1222.0,
+  "corrected_target1": 1290.0
+ },
+ {
+  "symbol": "UNITDSPR",
+  "viewed_chart": true,
+  "verdict": "WEAKENED",
+  "claims_checked": [
+   {
+    "claim": "Base floor is 1511.7, the 02-Aug low",
+    "true_or_false": "FALSE",
+    "actual": "02-Aug-2026 is a Sunday - no session. 1511.7 occurs once, as the 14-Aug 09:15 hourly low. The real August base low is 1503.00 (10-Aug daily low; 1506.4 hourly). Base is 1503-1550 = 3.13% deep, and the measured move should be 1563.4+47 = ~1610, not 1615 off a 1511.7 floor."
+   },
+   {
+    "claim": "Higher lows 1511.7 -> 1514.1 (20-Aug) -> 1527.0 (21-Aug 09:15)",
+    "true_or_false": "FALSE",
+    "actual": "1514.10 is the 19-Aug 14:15 low, not 20-Aug. 20-Aug's session low was 1517.2 daily / 1522.0 hourly. The chain exists but the dates are wrong, and 10-Aug's 1503 low sits under all of it."
+   },
+   {
+    "claim": "1563.4 is the 60-bar and 6-month high and is 0.47% off the 52-week high",
+    "true_or_false": "FALSE",
+    "actual": "The 52-week high in the daily series (250 bars, 21-Aug-2025 to 20-Aug-2026) is 1550.00, set on 18-Aug-2026. 1563.4 is 0.87% ABOVE the 52w high, i.e. a new high, not 0.47% below one. The claimed ~1570.8 52w high does not exist in the data."
+   },
+   {
+    "claim": "Breakout bars fired at 1.77x, 2.12x and 2.80x the 20-bar average",
+    "true_or_false": "TRUE",
+    "actual": "Arithmetically correct (vol_avg20 = 87,085). But 4 of the last 20 hourly bars are 09:15 bars with volume recorded as 0 (116 zero-volume bars in an 842-bar series). Excluding them the true 20-bar average is 102,453 and the multiples fall to 1.50x, 1.80x and 2.38x."
+   },
+   {
+    "claim": "No wide-range whipsaw bars anywhere in the base",
+    "true_or_false": "FALSE",
+    "actual": "18-Aug opened at 1550.00 (the 52w high) and closed 1520.90 - a -1.9% outside-day rejection. 20-Aug's 09:15 bar spiked to 1546.90 and was back at 1531 one hour later. Both whipsaws occurred at the exact breakout zone the thesis relies on."
+   },
+   {
+    "claim": "Close 1556.0 at the top of the range on Friday",
+    "true_or_false": "FALSE",
+    "actual": "The hourly series ends at the 21-Aug 14:15 bar. There is no 15:15 bar and the daily series stops at 20-Aug. 1556.0 is a mid-session print with the final hour plus the closing auction missing - Friday's actual close is unknown."
+   },
+   {
+    "claim": "Roughly Rs 13.5 cr traded per hour",
+    "true_or_false": "FALSE",
+    "actual": "Avg hourly turnover is Rs 9.0 cr over the last 100 bars, Rs 11.1 cr over the last 40. Still comfortably tradable, but overstated by ~25-50%."
+   },
+   {
+    "claim": "Only 2.92% above the daily EMA20, not extended",
+    "true_or_false": "TRUE",
+    "actual": "3.24% above dEMA20 (1507.16), 7.63% above dEMA50, +8.89% in 20 sessions. Genuinely not extended - this is the strongest surviving part of the thesis."
+   }
+  ],
+  "stop_vs_atr": "Hourly ATR14 = 11.98 (0.77%), not the 0.67% claimed. Stop 1536 is 20 pts = 1.67x ATR from 1556 (analyst claimed 2.1x), and only 1.19x ATR from the 1563.4 add-on trigger. Worse than the multiple: 1536 sits ABOVE Friday's own low of 1527.00 and above the 19-Aug low 1514.10 and base low 1503 - it is inside the last 48 hours' trading range, not below structure. Price closed at 1535.10 at 21-Aug 10:15, four bars before the 'breakout'. A defensible stop is 1526 (under Friday's low), i.e. 2.5x ATR.",
+  "recomputed_risk_reward": 1.8,
+  "avg_hourly_turnover_cr": 9.0,
+  "overhead_supply": "Very little - 1550.00 (18-Aug open/high) and 1548.70 (11-Aug close) are the only prior rejections between 1556 and 1615, and both were cleared by the 1563.4 print. Above 1563 the stock is at a 52-week high with no traded supply in the 250-day window. This is the one part of the setup that is genuinely clean.",
+  "daily_extension_note": "Not extended: 3.24% above dEMA20, 7.63% above dEMA50, +1.91% in 5 sessions and +8.89% in 20. Daily EMA stack is correctly ordered (1507/1446/1374) and rising. Daily ATR 1.65%. No late-stage risk here.",
+  "data_integrity": "Hourly series ends 21-Aug 14:15 - the final hour and closing auction of the session under review are missing, and the daily series ends 20-Aug, so Friday's close cannot be cross-checked at all. 116 of 842 hourly bars (every 09:15 bar) carry volume 0, so hourly volume understates the session by ~20-25% (20-Aug: 755,774 hourly-sum vs 965,600 daily) and inflates every 'x avg' volume multiple. Two shared dates show ~0.9-1.0% close mismatch (04-Mar, 08-Jul).",
+  "strongest_bear_case": "The entire buy case rests on three bars that are the last three bars of a truncated file - the session's final hour and close are missing, so nobody knows whether 1556 held or whether the stock closed back inside the base at 1535, exactly where it traded four bars earlier. The stop at 1536 is not below structure; it is in the middle of the range the stock occupied all of Thursday and Friday morning, so even a correct thesis has an above-even chance of being stopped for noise. And the 1550 level being 'broken' is the same level that produced a -1.9% outside-day rejection on 18-Aug, three sessions ago.",
+  "survives_as": "WATCH",
+  "corrected_entry": 1556.0,
+  "corrected_stop": 1526.0,
+  "corrected_target1": 1610.0
+ },
+ {
+  "symbol": "MOTILALOFS",
+  "viewed_chart": true,
+  "verdict": "WEAKENED",
+  "claims_checked": [
+   {
+    "claim": "Risk:reward 2.3 with target1 1060 and stop 967",
+    "true_or_false": "FALSE",
+    "actual": "At the stated primary trigger of 1004.5: (1060-1004.5)/(1004.5-967) = 55.5/37.5 = 1.48, not 2.3. The 2.3 figure implies an entry near 997, which is below both the trigger and the top of the stated entry zone. Only the pullback entry (~990) produces 3.0."
+   },
+   {
+    "claim": "No traded supply between 1004 and the 52-week high at 1097 in the past seven months",
+    "true_or_false": "TRUE",
+    "actual": "Literally true - the last daily high above 1004 was 14-Nov-2025, nine months ago. But it is misleading: there are 20 sessions in Oct-Nov 2025 with highs above 1004 and 11 daily closes inside 1004-1060, a genuine distribution shelf that formed as the stock rolled over from its 1097.10 all-time high on 28-Oct-2025. Target1 = 1060 sits at the top of that shelf."
+   },
+   {
+    "claim": "Higher lows 835.1 -> 875.0 -> 890.0 -> 930.15 -> 968.55",
+    "true_or_false": "TRUE",
+    "actual": "Sequence verified, but two of the five pivots (930.15 on 19-Aug 09:15 and 968.55 on 21-Aug 09:15 - the one the stop is anchored to) come from bars with volume recorded as 0. The stop's structural reference is a bar with no attributed trade."
+   },
+   {
+    "claim": "No lower high anywhere in the sequence",
+    "true_or_false": "FALSE",
+    "actual": "Daily highs 17-Aug 964.00 -> 18-Aug 961.35 -> 19-Aug 948.45 are three consecutive lower highs. The claim only holds if you pre-select the pivots."
+   },
+   {
+    "claim": "21-Aug held the whole gain in a 990-1004 band all day rather than giving any of it back",
+    "true_or_false": "FALSE",
+    "actual": "The 21-Aug 09:15 bar traded down to 968.55 - below the 20-Aug close of 973.40 - before reversing. The full 20-Aug gain was given back at the open. The 990-1004 band describes only bars 10:15 onward."
+   },
+   {
+    "claim": "Two breakout bars on 20-Aug at 692k and 658k, roughly 3.5x average",
+    "true_or_false": "TRUE",
+    "actual": "691,677 (3.59x) and 658,077 (3.41x). Correcting the 20-bar average for the 4 zero-volume bars in the window (226,787 vs 192,769) gives 3.05x and 2.90x - still genuine expansion."
+   },
+   {
+    "claim": "Price only 1.53% above its EMA20, so it is not extended",
+    "true_or_false": "FALSE",
+    "actual": "1.53% is against the HOURLY EMA20 (975.09). Against the daily EMA20 (913.44) price is 8.38% extended, and the stock is +8.46% in 5 sessions. The same analyst penalised EPL for being 9.15% above its daily EMA20 - the metric was switched to make this one look cheap."
+   },
+   {
+    "claim": "Liquidity roughly Rs 19 cr per hour, the best of the twelve",
+    "true_or_false": "TRUE",
+    "actual": "Rs 14.5 cr/hr over 100 bars, Rs 25.3 cr/hr over the last 40. Liquidity is genuinely good and the stop is executable."
+   }
+  ],
+  "stop_vs_atr": "Hourly ATR14 = 11.67 (1.18%). Stop 967 is 23 pts = 1.97x ATR from the 990 close, but 37.5 pts = 3.2x ATR from the 1004.5 trigger. The ATR test passes. The problem is the daily: daily ATR14 is 26.20 (2.69%), so the stop sits only 0.88 of ONE daily range below the close, on a financial that gapped -8.6% on results a month ago (24-Jul, 14.3m shares). It is also just 1.55 pts under Friday's low of 968.55, which came from a zero-volume bar - a stop that tight under an obvious swing low is exactly where resting stops cluster.",
+  "recomputed_risk_reward": 2.4,
+  "avg_hourly_turnover_cr": 14.5,
+  "overhead_supply": "1004-1033 is the Oct-Nov 2025 distribution shelf: 20 sessions with highs above 1004, 11 closes inside 1004-1060, and the all-time high 1097.10 on 28-Oct-2025 from which the stock fell ~44% into April. Between the 1004.5 trigger and target1 1060 the stock must eat that entire shelf. Nearer term, 1002-1004 rejected price three times in the last four hours of Friday (09:15 high 1002, 11:15 and 12:15 highs both exactly 1004.00), and the last two hourly bars closed at 991.50 and 990.00.",
+  "daily_extension_note": "+8.38% above dEMA20 and +9.44% above dEMA50 after +8.46% in 5 sessions - moderately extended, and materially more so than the 1.53% the thesis quotes (that is the hourly EMA20). 20-day change is only +3.53% because of the 24-Jul results gap, so this is a sharp 5-day snapback rather than a mature trend, and it is still 9.76% below the 52w high of 1097.10.",
+  "data_integrity": "118 zero-volume hourly bars, including two mid-session bars (19-Aug 14:15 and 22-Jul 15:15) that are not opening prints. Daily series ends 20-Aug while hourly runs to 21-Aug 15:15, so Friday cannot be cross-checked. The final bar is a 9,815-share auction stub. Four shared dates disagree by 0.6-0.85% on close.",
+  "strongest_bear_case": "The stated buy trigger of 1004.5 has a real reward-to-risk of 1.48, not 2.3, and target1 of 1060 is not clear air - it is the top of the shelf the stock distributed from in Oct-Nov 2025 before halving. The price action into the weekend is the wrong shape: 1004.00 was tapped precisely twice and rejected, and the last four hourly bars closed 993, 995, 991.50, 990 - fading, not coiling. The stop sits 1.55 points under a swing low that was printed by a bar with no recorded volume, on a stock whose daily ATR is 26 points and which gapped 8.6% on its last earnings.",
+  "survives_as": "WATCH",
+  "corrected_entry": 985.0,
+  "corrected_stop": 965.0,
+  "corrected_target1": 1033.0
+ },
+ {
+  "symbol": "EPL",
+  "viewed_chart": true,
+  "verdict": "REFUTED",
+  "claims_checked": [
+   {
+    "claim": "Risk:reward 2.77 (entry zone 262-268.5, stop 257.5, target1 274.0)",
+    "true_or_false": "FALSE",
+    "actual": "Fatally incoherent. The stated entry TRIGGER is 'buy above 274.00' and target1 is 274.00 - the target is the entry. At the entry-zone midpoint 265.25 R:R = (274-265.25)/(265.25-257.5) = 1.13. At the quoted last close 265.61 it is 1.03. At the top of the entry zone 268.5 it is 0.50. The 2.77 figure requires an entry of 261.8, below the entry zone and 3.8 pts under the last print."
+   },
+   {
+    "claim": "Last close 265.61",
+    "true_or_false": "FALSE",
+    "actual": "The final hourly bar (21-Aug 15:30) is O=H=L=C=265.61 with volume 0 - a synthetic/placeholder print. The last bar with actual trade is 21-Aug 15:15: O265.43 H265.50 L262.40 C263.00 on 282,902 shares. The entire thesis quotes a phantom price."
+   },
+   {
+    "claim": "Friday is not a reversal - a narrow-bodied hold that gave back only a quarter of Thursday's range",
+    "true_or_false": "FALSE",
+    "actual": "Friday made a NEW high at 273.96 (12:15) and then sold off for the rest of the session to close 263.00, 4 ticks off the day's low of 262.40. Friday's range 262.40-273.96 = 11.56 pts is 53% of Thursday's 22.0-pt daily range, not a quarter, and the close gave back 96% of the day's range. The 14:15 bar (O268.18 C265.44, 964,010 shares, 1.66x) was the session's second-heaviest bar and it was a DOWN bar. That is a failed-breakout / distribution day."
+   },
+   {
+    "claim": "Pivot lows step up 242.05 (12-Aug) -> 244.50 -> 249.50 -> 263.68",
+    "true_or_false": "FALSE",
+    "actual": "242.05 is the 17-Aug 15:15 low, not 12-Aug (12-Aug's low was 236.29). More importantly the final pivot low is 262.40 (21-Aug 15:15), not 263.68 - Friday broke below its own morning low in the last traded hour, which is the opposite of the claimed unbroken HH/HL chain."
+   },
+   {
+    "claim": "Stop 257.5 is below the pre-breakout structure - it takes a full re-entry into the shelf to trigger it",
+    "true_or_false": "FALSE",
+    "actual": "The thesis defines the pre-breakout shelf as 244-256. The stop at 257.5 is ABOVE the top of that shelf. 257.56 is the 20-Aug 11:15 low, i.e. a low made INSIDE the impulse leg, not below the base. The stop is inside the pole."
+   },
+   {
+    "claim": "vol_avg20 581,701 vs vol_avg100 349,831 = 1.66, volume expanding",
+    "true_or_false": "TRUE",
+    "actual": "581,702 / 349,832 = 1.66 confirmed, and the 20-Aug up-bars (1.56M, 0.94M, 1.22M, 1.24M) are real. But the expansion IS the two-day pole - it is not independent evidence of accumulation into a base, and the 12-Aug daily bar of 15,355,500 shares against a ~350k hourly baseline is a 44x one-day event print."
+   },
+   {
+    "claim": "Fresh 6-month high 4 bars ago",
+    "true_or_false": "TRUE",
+    "actual": "Understated - 273.00 (20-Aug daily) is the 52-week high in the 249-bar series, and the 21-Aug 273.96 hourly print exceeds it. But price then closed 3.9% below that high, which is the point."
+   }
+  ],
+  "stop_vs_atr": "Hourly ATR14 = 4.80 (1.81%). Stop 257.5 is 8.11 pts = 1.69x ATR from the phantom 265.61, and 5.5 pts = 1.15x ATR from the real close of 263.00 - i.e. BELOW the 1.2x noise threshold on the true price. Against daily ATR14 of 9.30 (3.44%) the stop is only 0.59 of a single daily range away. And Friday's own low was 262.40, so the stop is 4.9 pts (0.53 daily ATR) below a level the stock touched in its final trading hour. This stop is noise, not structure.",
+  "recomputed_risk_reward": 1.0,
+  "avg_hourly_turnover_cr": 8.85,
+  "overhead_supply": "Target1 274.00 sits 0.04 pts above 273.96 - the exact high at which Friday's rally failed - and above 273.00, the 52-week high made Thursday. The 'target' is literally the level where price has already been rejected once, and reaching it produces zero profit because it is also the stated entry trigger. Real overhead beyond that is unknown (no traded history above 273 in 249 days), but the immediate 273-274 shelf is now a confirmed failure point.",
+  "daily_extension_note": "Hot. +10.22% above dEMA20 (241.0), +13.22% above dEMA50, +9.25% in 5 sessions and +15.90% in 20. Daily ATR 3.44%. The move originates from a 12-Aug bar of 15.4m shares (44x normal) that gapped the stock 231->259 intraday, so this is an event-driven repricing, not an accumulated trend - and price is already 2.71% back off the high it made two sessions ago.",
+  "data_integrity": "Serious. The last hourly bar (21-Aug 15:30) has zero volume and identical OHLC - a placeholder, yet it is the price the whole thesis quotes. 117 zero-volume bars overall. Daily series ends 20-Aug while hourly runs to 21-Aug. Nine shared dates disagree by more than 0.6% on close, worst -1.45% (16-Mar) and -1.35% (10-Jun); 12-Aug shows -0.88% (hourly 241.50 vs daily 243.64) on the key 15.4m-share event bar.",
+  "strongest_bear_case": "Target1 (274.00) is the same number as the entry trigger (274.00), so the published 2.77 R:R is arithmetically impossible - the true figure at any price inside the stated entry zone is between 0.50 and 1.13. Friday was not a 'tight inside-style hold': the stock printed a new 52-week high at 273.96 and then sold off for three straight hours to close at 263.00, four ticks off the day's low, with the second-largest bar of the day being a red one. The quoted 265.61 close does not exist as a trade. Buying an extended (+10% over daily EMA20, +9% in 5 days) event-driven move on the day after a reversal at the high, with a stop 1.15 hourly ATRs away, is the definition of a low-quality entry.",
+  "survives_as": "AVOID",
+  "corrected_entry": 274.5,
+  "corrected_stop": 261.0,
+  "corrected_target1": 288.0
+ },
+ {
+  "symbol": "HFCL",
+  "viewed_chart": true,
+  "verdict": "REFUTED",
+  "claims_checked": [
+   {
+    "claim": "Risk:reward 2.4 (entry above 230.6, stop 222.4, target1 234.1)",
+    "true_or_false": "FALSE",
+    "actual": "(234.1-230.6)/(230.6-222.4) = 3.5/8.2 = 0.43. Even from the bottom of the entry zone (228.01) it is 6.09/5.61 = 1.09. The claimed 2.4 requires an entry at 225.8, below the entry zone entirely. You are risking 8.2 points to make 3.5."
+   },
+   {
+    "claim": "Converging ASCENDING consolidation with a flat 230 ceiling",
+    "true_or_false": "FALSE",
+    "actual": "The thesis's own quoted highs are a descending series: 230.90 (13-Aug) -> 230.64 (14-Aug) -> 230.35 (18-Aug) -> 229.80 (20-Aug) -> 228.80 (21-Aug). That is five consecutive lower highs, not a flat ceiling. The lows are not ascending either over the recent window: 217.85 (17-Aug) -> 218.01 (18-Aug) -> 224.00 (19-Aug) -> 222.51 (20-Aug) -> 223.03 (21-Aug) - 20-Aug made a LOWER low than 19-Aug and the last three are flat. Lower highs against flat lows is a descending triangle, which resolves down more often than up."
+   },
+   {
+    "claim": "Single failed poke to 234.1 on 18-Aug",
+    "true_or_false": "FALSE",
+    "actual": "The 234.10 poke was on 19-Aug (09:15 bar; daily high 234.40), not 18-Aug. And it was not a minor poke: the stock opened 19-Aug at 233.00 after closing 18-Aug at 230.47 on 35.7m shares, then reversed to close 226.53 (-1.5%) on 15.0m shares. That is a distribution day immediately after the heaviest volume day of the month - the opposite of accumulation."
+   },
+   {
+    "claim": "Consolidation volume dried up to 0.53x the 100-bar average",
+    "true_or_false": "TRUE",
+    "actual": "vol_avg20 1,115,207 vs vol_avg100 2,111,573 = 0.53 confirmed, and daily volume did fall from 19-28m to 6-12m. But the dry-up follows the 18-Aug 35.7m-share blow-off and 19-Aug's 15.0m-share reversal - it reads as post-climax exhaustion after a failed breakout at least as easily as pre-breakout coiling."
+   },
+   {
+    "claim": "The 21-Aug 12:15 bar was 2,252,656 shares - the largest bar of the day - and the stock finished on its highs",
+    "true_or_false": "TRUE",
+    "actual": "Verified. But 2.25m is only 1.07x the 100-bar hourly average of 2.11m - it is the biggest bar of an unusually quiet day, not a large bar in absolute terms. The whole 21-Aug session (12.6m shares) was below the 15-30m daily volumes of the preceding week. The close of 228.01 is 0.79 below the day's high of 228.80."
+   },
+   {
+    "claim": "Liquidity roughly Rs 25 cr per hour",
+    "true_or_false": "TRUE",
+    "actual": "Understated if anything - Rs 45.7 cr/hr over 100 bars, Rs 35.9 cr/hr over the last 40. Liquidity is not the problem here."
+   },
+   {
+    "claim": "Stop 222.4 is below the EMA50 at 223.7",
+    "true_or_false": "TRUE",
+    "actual": "Hourly EMA50 = 223.72, EMA20 = 226.06. Confirmed. But 222.51 (20-Aug low) is only 0.11 above the stop, and 223.03/223.12 were traded on Friday - the stop is a fraction under a level the stock visited yesterday."
+   },
+   {
+    "claim": "Off the 28-29 Jul low of 181.1",
+    "true_or_false": "TRUE",
+    "actual": "180-bar hourly low is 181.05, close enough. Confirms the magnitude of the preceding run rather than refuting it."
+   }
+  ],
+  "stop_vs_atr": "Hourly ATR14 = 2.45 (1.07%). Stop 222.4 is 5.61 pts = 2.29x hourly ATR from the 228.01 close and 8.2 pts = 3.35x ATR from the 230.6 trigger - the hourly test passes. The daily test does not: daily ATR14 is 9.00 (3.95%), so the stop is only 0.62 of a SINGLE daily range from the close on a stock that has moved 4% a day on average, and 0.11 points under the 20-Aug swing low. This is a stop that a normal red session takes out without the thesis being wrong - which is precisely why risking 8.2 pts to make 3.5 is unacceptable.",
+  "recomputed_risk_reward": 1.58,
+  "avg_hourly_turnover_cr": 45.66,
+  "overhead_supply": "Everything. Between the 230.6 trigger and target1 234.1 sits the entire 229-231 rejection cluster (230.90, 230.64, 230.47, 230.35, 229.80) AND the 19-Aug failure at 234.10/234.40 - the thesis lists that spike as 'unfilled overhead supply' in its own red flags and then makes it the price target. Target1 is the level of the most recent failure, 1.5% above the entry.",
+  "daily_extension_note": "Very late-stage. Price is 5.33% above dEMA20, 12.26% above dEMA50, and 60.5% above dEMA200 (142.02). 52-week range 59.82-234.40 - the stock is up ~281% from its low and +15.83% in the last 20 sessions, and it is currently 2.73% BELOW the 52w high after failing there on 19-Aug. Daily ATR 3.95%. This is a parabolic advance rolling over at the highs, not an early-stage base.",
+  "data_integrity": "113 zero-volume 09:15 bars; hourly volume for 21-Aug sums to 8.87m against a daily 12.60m, so the opening hour (~30% of turnover) is missing from every 'x avg' calculation. Twelve shared dates disagree by more than 0.6% on close, the worst being 07-Jul at -2.45% (hourly 220.50 vs daily 226.04) - a material mismatch. HFCL is the only name in this group whose daily series actually reaches 21-Aug, and hourly/daily agree on that close (228.01).",
+  "strongest_bear_case": "The published trade risks 8.2 points to make 3.5 - a reward-to-risk of 0.43, not 2.4 - and the target is the exact price at which the stock failed on 19-Aug, a level the thesis itself calls unfilled supply. The pattern is misdescribed: the quoted pivot highs 230.90 / 230.64 / 230.35 / 229.80 / 228.80 are five consecutive LOWER highs, and 20-Aug undercut 19-Aug's low, so this is a descending triangle under a broken breakout, not an ascending base. It formed immediately after a 35.7m-share climax on 18-Aug and a 15.0m-share reversal day on 19-Aug, in a stock up ~281% from its 52-week low and 60% above its 200-day EMA.",
+  "survives_as": "AVOID",
+  "corrected_entry": 230.6,
+  "corrected_stop": 221.5,
+  "corrected_target1": 245.0
+ },
+ {
+  "symbol": "AUBANK",
+  "viewed_chart": true,
+  "verdict": "WEAKENED",
+  "claims_checked": [
+   {
+    "claim": "Friday's 14:15 bar closed at 1108.2, the exact high of the day and of the 52-week range",
+    "true_or_false": "FALSE",
+    "actual": "1108.20 is the max of all 251 daily highs, so the 52w-high part is TRUE. But 'closed the day' is unverifiable: the 21-Aug session is TRUNCATED at 14:15 in BOTH series. There is no 15:15 hourly bar, and the daily bar for 21-Aug reports C=1108.20=H=the 14:15 hourly close. TITAN and RBLBANK daily closes for 21-Aug match their 15:15 bars, so AUBANK alone is missing the last 45 minutes. The 'full-bodied green bar closing on its high with no upper wick' is an artifact of the data ending mid-candle."
+   },
+   {
+    "claim": "Higher lows at 1027 (30-Jul), 1040 (03-Aug), 1049 (11-Aug), 1063.7 (18-Aug), 1084 (21-Aug)",
+    "true_or_false": "FALSE",
+    "actual": "Levels misquoted: 30-Jul session low = 1023.00 (not 1027); 03-Aug low = 1038.40 (not 1040); 1063.70 is the 19-Aug low, not 18-Aug (18-Aug low = 1064.50). 11-Aug 1049.00 and 21-Aug 1084.00 are correct. The higher-low SEQUENCE itself is intact (1023 -> 1038.4 -> 1049 -> 1063.7 -> 1084), so the misquotes are cosmetic, not structural."
+   },
+   {
+    "claim": "Friday's two biggest bars were up-closes at 2.47x (11:15) and 2.18x (14:15); 20-Aug 12:15 printed 4.08x; up/down vol 2.46; vol20/vol100 1.42",
+    "true_or_false": "TRUE",
+    "actual": "11:15 708,549/286,959 = 2.47x (up); 14:15 626,261 = 2.18x (up); 20-Aug 12:15 1,172,076 = 4.08x; up/down over 40 bars = 2.51 (claimed 2.46); vol_avg20/100 = 1.42. All verified."
+   },
+   {
+    "claim": "Stop 1088 sits below Friday's 10:15 swing low (1089.9) and below the 1092.5 shelf",
+    "true_or_false": "FALSE",
+    "actual": "1089.90 is genuinely the 10:15 low, but 1088 sits ABOVE Friday's real session low of 1084.00 and above 20-Aug's low of 1080.70. The stop is therefore INSIDE the last two sessions' range and fires before the thesis's own stated invalidation ('an hourly close below 1084 kills the breakout'). Internally inconsistent."
+   },
+   {
+    "claim": "R:R 2.1 to target1 1150",
+    "true_or_false": "TRUE",
+    "actual": "At the exact trigger 1108.2: (1150-1108.2)/(1108.2-1088) = 2.07. But the stated entry zone runs to 1118, where R:R collapses to (1150-1118)/30 = 1.07. The 2.1 is only available on a perfect fill at the trigger tick."
+   },
+   {
+    "claim": "Only 3.60% above the daily EMA20, daily RSI 63.9, hourly RSI 70.7",
+    "true_or_false": "TRUE",
+    "actual": "dEMA20 1069.70 -> +3.60%; dEMA50 +5.85%; daily RSI14 63.9; hourly RSI14 70.7. All three reproduce exactly."
+   },
+   {
+    "claim": "The 1049-1099 consolidation projects to ~1149 on a measured move",
+    "true_or_false": "TRUE",
+    "actual": "1099 + (1099-1049) = 1149. Arithmetic correct, and 1150 is genuine blue sky - no daily high above 1108.20 exists in 251 sessions."
+   }
+  ],
+  "stop_vs_atr": "Hourly ATR14 = 8.64 (0.78%). Stop 1088 from the 1108.2 trigger = 20.2 pts = 2.34x ATR, which passes the noise test on distance alone. The failure is placement, not width: the stop sits 4.0 pts (0.46 ATR) ABOVE Friday's own low of 1084 and 7.3 pts above Thursday's 1080.70, so an ordinary retest of the breakout day's low takes it out. A defensible stop is 1082 (under 1084 and under the hourly EMA50 at 1082.11) = 3.07x ATR, which drops R:R to 1.53.",
+  "recomputed_risk_reward": 2.07,
+  "avg_hourly_turnover_cr": 21.8,
+  "overhead_supply": "None on record. 1108.20 is the highest daily high in 251 sessions, so the entire 1108-1150 path is blue sky within the available data. The only intraday supply is the 1107.70 wick from Friday 11:15. Caveat: the dataset is 12 months deep, so pre-Aug-2025 supply cannot be ruled out.",
+  "daily_extension_note": "Not extended - the least stretched of the four on the daily. +3.60% over dEMA20, +5.85% over dEMA50, +10.4% in 20 sessions, +12.5% in 60. Daily RSI 63.9. This is a controlled advance, not a blow-off, and there is no exhaustion to fade.",
+  "data_integrity": "PROBLEM: 21-Aug is truncated at 14:15 in both the hourly and the daily series (daily C = daily H = 1108.20 = the 14:15 hourly close, while TITAN/RBLBANK daily closes match their 15:15 bars). The final 45 minutes of the session - including the close the whole thesis rests on - are missing. Secondary: 5 of 122 shared sessions (23-Mar, 15-May, 21-May, 25-May, 24-Jul) show >0.5% hourly-vs-daily close divergence, up to 1.8%.",
+  "strongest_bear_case": "The thesis's single load-bearing fact - a full-bodied green bar closing on the high of the day at a 52-week high - cannot be confirmed, because the data stops at 14:15 and the last 45 minutes of Friday are simply absent from both series. On top of that the stop is placed above the breakout day's own low: 1088 is 4 points above Friday's 1084 print, so a routine retest of the breakout bar triggers the exit before the analyst's own invalidation level of 1084 is even reached. Finally, the highest-volume session in the sequence was 20-Aug (3.68m shares, 3.6x normal), and that day closed mid-range at 1088 after failing at 1092.50 - the churn came before the break, not on it, and Friday's daily volume was only 1.21x average.",
+  "survives_as": "BUY",
+  "corrected_entry": 1108.5,
+  "corrected_stop": 1082.0,
+  "corrected_target1": 1149.0
+ },
+ {
+  "symbol": "TI",
+  "viewed_chart": true,
+  "verdict": "REFUTED",
+  "claims_checked": [
+   {
+    "claim": "Since 14-Aug the highs have flattened (590.00, 582.90, 586.05) while the lows keep rising - an ascending-triangle coil",
+    "true_or_false": "FALSE",
+    "actual": "The last four session HIGHS are 590.00 (18-Aug), 584.65 (19-Aug), 586.05 (20-Aug), 582.75 (21-Aug) - lower highs, not flat. The 582.90 quoted is the 20-Aug 10:15 BAR high, cherry-picked over that session's actual high of 586.05. The last four session LOWS are 580.05, 567.00, 575.50, 573.05 - Friday's low is BELOW Thursday's. Lower highs plus a lower low is a short downward drift, not an ascending triangle. There is no coil."
+   },
+   {
+    "claim": "Rising pivot lows 567.00 / 568.95 / 573.05",
+    "true_or_false": "FALSE",
+    "actual": "567.00 and 568.95 are both bars on the SAME day (19-Aug); the sequence is not three successive higher lows across sessions. In session terms the run is 566.70 (17-Aug) -> 580.05 (18-Aug) -> 567.00 (19-Aug) -> 575.50 (20-Aug) -> 573.05 (21-Aug): non-monotonic and ending lower."
+   },
+   {
+    "claim": "The 14-Aug 14:15 bar (299k, ~5x, red, 570.80 -> 568.10) was the single heaviest bar in 40 hours, and supply failed to break the structure",
+    "true_or_false": "FALSE",
+    "actual": "The heaviest bar in that window by a factor of 5 is 14-Aug 10:15 with 1,570,732 shares - a red bar that opened 577.00, spiked to 583.25 and collapsed to a 560.20 low, closing 566.15. That is a 23-point one-hour rejection on 1.57m shares. The analyst quoted a bar 5x smaller and concluded supply had failed; the actual tape shows the largest supply event of the advance sitting right under the target."
+   },
+   {
+    "claim": "The daily is at fresh 52-week-high territory so there is no overhead supply above 590",
+    "true_or_false": "FALSE",
+    "actual": "The 52-week high is 593.00 (18-Aug daily), not 590. Target1 = 590.00 is exactly where price was rejected on 18-Aug, and 586.05/586.30 rejected it again on 20-Aug. Target1 sits directly on proven, twice-tested supply."
+   },
+   {
+    "claim": "R:R 3.1 to target1 590",
+    "true_or_false": "FALSE",
+    "actual": "At the entry-zone midpoint 575.75: (590-575.75)/(575.75-566) = 1.46. At the very bottom of the zone (572.5) it is 2.69, and only by shrinking risk to 6.5 pts (1.46 ATR - inside noise). 3.1R is unreachable to target1 anywhere in the zone; the analyst's own body text concedes '14 to T1 (1.4R)', so the headline number is inconsistent with the thesis it summarises."
+   },
+   {
+    "claim": "Daily RSI 77.2 and +9.2% above the daily EMA20",
+    "true_or_false": "FALSE",
+    "actual": "Daily RSI14 = 81.7 and the close is +11.53% above dEMA20 (+20.16% above dEMA50). Both understate how hot the swing timeframe is."
+   },
+   {
+    "claim": "Liquidity ~61.7k shares/hour, ~Rs 3.5 cr/hour",
+    "true_or_false": "TRUE",
+    "actual": "vol_avg20 = 61,732 shares; avg hourly turnover over the last 20 bars = Rs 3.56 cr (Rs 8.07 cr over 100 bars). Verified - and it is the thinnest name in the group."
+   },
+   {
+    "claim": "last_close 575.65",
+    "true_or_false": "FALSE",
+    "actual": "575.65 comes from a phantom 15:30 bar with O=H=L=C=575.65 and volume 0 - an auction/stub print. The last real traded close is 575.00 (15:15, 25,633 shares). Friday was a down session: 582.45 -> 575.0, -1.3%."
+   }
+  ],
+  "stop_vs_atr": "Hourly ATR14 = 4.44 (0.77%). Stop 566 from a 576 entry = 10 pts = 2.25x ATR, which looks fine on the hourly - but that is the wrong yardstick for a stock whose daily true range has been 14-29 points for the last week (18-Aug 13.8, 19-Aug 17.9, 13-Aug 29.5). One normal session covers the entire stop. More damning: price traded to 567.00 on 19-Aug, one point above the stop, only two sessions ago. This stop has already nearly been hit inside the 'coil'.",
+  "recomputed_risk_reward": 1.46,
+  "overhead_supply": "Dense and proven. 583.25 is where the 1.57m-share rejection bar broke on 14-Aug; 586.05/586.30 capped 20-Aug; 590.00 capped 18-Aug on the hourly and 593.00 on the daily. Target1 of 590 sits under/at three separate failures within the last five sessions, so there is essentially zero clean air between a 576 entry and the target.",
+  "avg_hourly_turnover_cr": 3.56,
+  "daily_extension_note": "Late-stage and stretched. +33.0% in 20 sessions and +30.5% in 60, +11.5% above dEMA20, +20.2% above dEMA50, daily RSI14 81.7. The daily chart is a near-vertical move from 450 to 593 in three weeks with the EMA20 far below. This is the tail of a move, not a continuation base.",
+  "data_integrity": "PROBLEM: the daily series ENDS 20-Aug - the 21-Aug session is missing from the daily array entirely, while the hourly has it. Every daily statistic in the thesis (RSI, EMA distance) is therefore one session stale. Second problem: the hourly series understates highs - 18-Aug hourly high 590.00 vs daily 593.00 (3.0 pts), 07-Aug 494.00 vs 497.80 (3.8 pts) - which is precisely how the analyst came to believe 590 was the ceiling. Third: a zero-volume 15:30 stub bar is being used as the last close. Plus 4/121 older sessions with >0.5% close divergence.",
+  "strongest_bear_case": "The pattern the thesis names does not exist in the data: the last four sessions are lower highs (590.00, 584.65, 586.05, 582.75) with Friday's low undercutting Thursday's, which is a drift down, not an ascending triangle. The target of 590 is not clean air above a 52-week high - the actual 52-week high is 593.00 and price has been rejected at 590/586 twice in four sessions, right where the single heaviest bar of the entire advance (14-Aug 10:15, 1.57m shares) collapsed 23 points from 583.25. So the trade is buying a down day at Rs 3.5 cr/hour liquidity, into supply, for a real 1.46R rather than the claimed 3.1R, on a stock up 33% in 20 sessions with daily RSI 81.7. The stop at 566 was nearly touched two sessions ago at 567.00.",
+  "survives_as": "AVOID",
+  "corrected_entry": 593.5,
+  "corrected_stop": 575.0,
+  "corrected_target1": 613.0
+ },
+ {
+  "symbol": "TITAN",
+  "viewed_chart": true,
+  "verdict": "WEAKENED",
+  "claims_checked": [
+   {
+    "claim": "The 21-Aug 09:15 bar gapped down to 5011.2 - a direct test of the base floor",
+    "true_or_false": "FALSE",
+    "actual": "There was no gap down. The 09:15 bar OPENED at 5077.30 against a prior close of 5068.00 - a gap UP of +9.3 - printed a 5088.10 high, then sold off intraday to 5011.20 and closed 5020.70. So Friday opened strong and was sold 77 points, which is a materially less bullish read than 'gapped down and recovered'. That bar also carries volume 0 in this dataset, so the 'test of the floor' is on a bar with no recorded volume at all."
+   },
+   {
+    "claim": "The stock then climbed every single hour, closing at 5086.1, with the 14:15 bar printing 85,121 shares (1.46x) on a green candle",
+    "true_or_false": "TRUE",
+    "actual": "10:15 5030.00 -> 11:15 5037.40 -> 12:15 5056.70 -> 13:15 5067.00 -> 14:15 5079.30 -> 15:15 5086.10, each close higher. 85,121/58,158 = 1.46x, green. Verified. Note the 15:15 close bar is only 8,107 shares."
+   },
+   {
+    "claim": "vol_avg20 58,158 vs vol_avg100 109,945 (0.53x) - a clean halving of activity inside the base",
+    "true_or_false": "TRUE",
+    "actual": "Reproduces exactly: 58,158 / 109,945 = 0.53."
+   },
+   {
+    "claim": "Up/down vol 0.81 and 20-Aug's two heaviest bars (2.24x, 2.81x) were red",
+    "true_or_false": "TRUE",
+    "actual": "Up/down over 40 bars = 0.81. 20-Aug 14:15 = 163,582 (2.81x, red 5076.20->5068.00) and 13:15 = 130,064 (2.24x, red 5080.80->5076.20). Both verified - and this is a bearish fact the thesis correctly discloses."
+   },
+   {
+    "claim": "Nine-session 4992-5111 band; pivot highs 5153.2 -> 5111.0 -> 5110.0 form a flat ceiling; pivot lows cluster on the same floor",
+    "true_or_false": "TRUE",
+    "actual": "4992.00 is the 12-Aug low, 5111.00 the 17-Aug high, 5110.00 the 20-Aug high, 5153.20 the 11-Aug 14:15 bar high - all real, 8 sessions 12-Aug to 21-Aug. But the characterisation is generous: the highs are a LOWER-high sequence (5168 -> 5153.2 -> 5125.1 -> 5111 -> 5110 -> 5090.4) and Friday's 5011.20 is the second-LOWEST low of the base, so the rectangle is tilting down, not neutral."
+   },
+   {
+    "claim": "Stop 5000 sits below 5011.2 and just above/at the 4992.0 base floor; risk ~80 pts from a 5080 fill, about 3.6x the 22.37 hourly ATR",
+    "true_or_false": "FALSE",
+    "actual": "ATR14 = 23.33, so 80 pts = 3.43x (not 3.6x) - trivial. The real problem is that 5000 is ABOVE the 4992.00 base floor the thesis names as the invalidation ('an hourly close below 4992.0 voids the setup'). An 8-point wick to the floor stops you out before the setup is invalidated. Buffer beneath Friday's 5011.20 low is only 11.2 pts = 0.48 ATR."
+   },
+   {
+    "claim": "R:R 2.75 to target1 5300",
+    "true_or_false": "TRUE",
+    "actual": "(5300-5080)/(5080-5000) = 2.75 exactly at the stated 5080 fill. But the published entry zone runs to 5115, where it falls to 1.61. Honest arithmetic, fill-sensitive."
+   },
+   {
+    "claim": "Only 2.37% above the daily EMA20 and 1.58% from the 52-week high; very liquid at ~29 cr/hour",
+    "true_or_false": "TRUE",
+    "actual": "dEMA20 4968.51 -> +2.37%; 52w high 5168.00 -> 1.61% away (claimed 1.58%, immaterial); avg hourly turnover Rs 29.5 cr over the last 20 bars, Rs 55.3 cr over 100. All verified."
+   }
+  ],
+  "stop_vs_atr": "Hourly ATR14 = 23.33 (0.46%). Stop 5000 from a 5080 fill = 80 pts = 3.43x ATR - comfortably outside noise on distance. The defect is that it sits INSIDE the structure it claims to protect: 8 pts above the 4992 base floor and only 0.48 ATR below Friday's 5011.20 low. Any wick that tags the floor - which is the natural thing for a base to do before resolving - takes the trade out first. A stop at 4985 (below 4992, 4.07x ATR) is the honest placement and still leaves 2.32R to 5300.",
+  "recomputed_risk_reward": 2.75,
+  "overhead_supply": "A wall. Between a 5080 entry and 5300 sit six documented failures in nine sessions: 5090.40 (21-Aug), 5093.50 (18-Aug), 5110.00 (20-Aug), 5111.00 (17-Aug), 5125.10 (12-Aug) and 5168.00 (11-Aug, the 52-week high). The trade cannot pay unless price clears the entire 5090-5168 band - which it has failed to do four times in the last seven sessions. The thesis concedes 5168 is only 1.6% away and that anyone taking profit there gets ~1:1.",
+  "avg_hourly_turnover_cr": 29.5,
+  "daily_extension_note": "Genuinely the least extended of the four: +2.37% over dEMA20, +7.14% over dEMA50, 1.61% below the 52-week high, +8.7% in 20 sessions (+24.8% in 60), daily RSI14 68.9. No exhaustion argument available against this one - the case against it is structural, not extension.",
+  "data_integrity": "OK. 21-Aug daily close 5086.10 matches the 15:15 hourly close, daily high 5090.40 vs hourly 5088.10 (2.3 pts, normal feed rounding). Only 3/122 shared sessions show >0.5% close divergence (09-Apr, 29-May, 29-Jun). The 09:15 and some 15:15 bars carry volume 0, which is a known quirk of this dataset rather than corruption.",
+  "strongest_bear_case": "This is not a breakout, it is a purchase in the middle of an eight-session range whose highs are stepping down (5168, 5153, 5125, 5111, 5110, 5090) and whose up-volume is running below down-volume (0.81) with the two heaviest bars of 20-Aug both red. The single piece of evidence offered for upward resolution - Friday's 'gap-down test and full-session recovery' - is misdescribed (the bar gapped UP to 5077.30 and was sold to 5011.20) and the recovery happened on 352,381 shares, just 0.37x the 20-day daily average, the thinnest session of the month. And the stop at 5000 is inside the base floor at 4992, so the routine wick that usually precedes resolution stops you out before the analyst's own invalidation triggers.",
+  "survives_as": "WATCH",
+  "corrected_entry": 5080.0,
+  "corrected_stop": 4985.0,
+  "corrected_target1": 5300.0
+ },
+ {
+  "symbol": "RBLBANK",
+  "viewed_chart": true,
+  "verdict": "WEAKENED",
+  "claims_checked": [
+   {
+    "claim": "393.9 printed on 20-Aug is a new 60-bar, 6-month and 52-week high",
+    "true_or_false": "TRUE",
+    "actual": "393.90 is the maximum of all 251 daily highs in the file. Verified."
+   },
+   {
+    "claim": "Price closed at 392.5, only 0.36% below it, with a fresh higher low at 387.7",
+    "true_or_false": "TRUE",
+    "actual": "21-Aug 15:15 close 392.50; 392.50/393.90 = -0.36%; Friday's session low 387.70 vs Thursday's 382.05. Friday is an inside day. Verified."
+   },
+   {
+    "claim": "A fortnight of lower highs 389.8, 388.5, 386.9, 385.9, 384.9 bottoming at 376.45 on 18-Aug",
+    "true_or_false": "TRUE",
+    "actual": "Directionally correct though the numbers are hourly-bar highs, not session highs. Session highs 13-19 Aug: 389.00, 388.25, 385.90, 384.90, 384.00 - a clean descending sequence. 376.45 is the 18-Aug hourly low. Verified."
+   },
+   {
+    "claim": "Up/down volume over 40 bars is 1.76 - the strongest in the batch; vol20/vol100 = 0.88",
+    "true_or_false": "TRUE",
+    "actual": "I compute 1.96 on a close-vs-open basis (up 5.66m vs down 2.89m); vol_avg20 236,180 / vol_avg100 269,865 = 0.88. Either convention supports the accumulation read. Verified."
+   },
+   {
+    "claim": "R:R 2.1 to target1 405",
+    "true_or_false": "FALSE",
+    "actual": "The stated entry trigger is an hourly close above 394.0. (405-394)/(394-386.4) = 1.45, not 2.1. Even at the bottom of the published entry zone (393.0) it is only 1.82. The 2.1 figure is only obtainable from the current UNTRIGGERED price of 392.50 (2.05) - i.e. the R:R was computed at a price the analyst's own rules forbid entering at. Overstated by ~45%."
+   },
+   {
+    "claim": "Stop 386.4 sits below the 387.7 pivot low and below both the EMA20 (388.7) and EMA50 (386.5)",
+    "true_or_false": "TRUE",
+    "actual": "hEMA20 388.70 and hEMA50 386.52 reproduce exactly, and 386.4 is below both and below 387.70. But an EMA is not defended structure, and the buffer below Friday's low is 1.30 pts = 0.50 ATR. The nearest level price has actually defended is the 383-385 shelf (17-19 Aug highs, 382.05 low of 20-Aug)."
+   },
+   {
+    "claim": "Turnover of ~Rs 9.3 cr per hour",
+    "true_or_false": "TRUE",
+    "actual": "Rs 9.19 cr over the last 20 bars, Rs 10.44 cr over 100. Verified - adequate, not thin."
+   },
+   {
+    "claim": "Measured move 376.45-393.9 projected off the break gives 411-412",
+    "true_or_false": "TRUE",
+    "actual": "393.90 + 17.45 = 411.35, consistent with target2 = 412. Note this makes target1 = 405 an arbitrary waypoint rather than a structural level."
+   }
+  ],
+  "stop_vs_atr": "Hourly ATR14 = 2.60 (0.66%). Stop 386.4 from the 394.0 trigger = 7.6 pts = 2.92x ATR, adequate on distance. Placement is the weak point: it is only 1.30 pts (0.50 ATR) under Friday's low and effectively parked on the hourly EMA50 (386.52), which is a moving line, not a defended level. Price traded 383-386 on three of the last five sessions, so a normal breakout retest reaches the stop. The defensible level is 385 (under the 385.90 shelf) or 382 (under the 20-Aug low), which cuts R:R to target1 further.",
+  "recomputed_risk_reward": 1.45,
+  "overhead_supply": "None on record between 394 and 405 - 393.90 is the highest daily high in 251 sessions, so the path is blue sky within the data (12-month window only). The supply is AT the trigger, not above it: 392.65 rejected price on 05-Aug and 393.90 rejected it on 20-Aug, so 394 is the second failed attempt at the same ceiling.",
+  "avg_hourly_turnover_cr": 9.19,
+  "daily_extension_note": "Not extended: +2.54% over dEMA20, +5.45% over dEMA50, 0.36% below the 52-week high, +11.2% in 20 sessions and +13.8% in 60, daily RSI14 62.7. Extension is not an argument against this one.",
+  "data_integrity": "OK. 21-Aug daily close 392.50 matches the 15:15 hourly close; daily high 392.75 vs hourly 392.50 (0.25 pts). Only 3/122 shared sessions exceed 0.5% close divergence (07-May, 29-May, 24-Jun). Zero-volume 09:15 opening bars are the usual dataset quirk.",
+  "strongest_bear_case": "The 393.90 high was printed by the single largest bar of the fortnight - 20-Aug 11:15, 949,470 shares - and that bar closed 2.35 points off its high at 391.55, which is supply hitting the level, not absorption of it. Friday then failed to trade up to it at all (high 392.50) on 27% lower daily volume, so what the thesis calls a resolved breakout is two rejections at the same 392.6-393.9 ceiling three weeks apart, i.e. a potential double top. And the headline 2.1:1 does not exist: at the analyst's own 394 trigger the trade is 1.45R, and with a stop under real structure at 385 rather than on top of the EMA50 it is 1.22R to a 405 target.",
+  "survives_as": "WATCH",
+  "corrected_entry": 394.0,
+  "corrected_stop": 385.0,
+  "corrected_target1": 411.0
+ },
+ {
+  "symbol": "HEG",
+  "viewed_chart": true,
+  "verdict": "WEAKENED",
+  "claims_checked": [
+   {
+    "claim": "Unbroken higher-low sequence 671.1 -> 684.1 -> 688.45 -> 700.8 -> 696.1 -> 705.0",
+    "true_or_false": "FALSE",
+    "actual": "The pivot values are correct but 700.80 (19-Aug 12:15) -> 696.10 (20-Aug 10:15) is a LOWER low. The thesis lists the break in its own sequence and still calls the chain 'unbroken'."
+   },
+   {
+    "claim": "No pullback ever losing the EMA50",
+    "true_or_false": "FALSE",
+    "actual": "Hourly closes below the hourly EMA50 on 12-Aug (674.75/675.50/674.35 vs EMA50 ~676.3) and, critically, on 20-Aug 10:15 close 698.25 vs EMA50 701.04 - the exact pullback cited as holding it."
+   },
+   {
+    "claim": "Friday high 721.90 in the first hour, then held 705-714 all day, closing 710.75 on EMA20 710.2 with EMA50 704.8 beneath",
+    "true_or_false": "TRUE",
+    "actual": "21-Aug 09:15 H721.90; remaining bars 705.00-713.95; hourly EMA20 710.16, EMA50 704.76, close 710.75. Note the 721.90 bar carries volume 0 in this dataset (first-hour artifact) and 15:30 is a 0-volume auction print."
+   },
+   {
+    "claim": "Friday's bars ran 0.4x-1.1x versus 19-Aug advance bars at 1.7x-2.2x",
+    "true_or_false": "FALSE",
+    "actual": "Friday's traded bars ran 0.14x-0.79x of the trailing 20-bar average (68.8k, 53.6k, 85.9k, 60.3k, 148.4k, 70.5k). Friday total 927k vs 1.40M Thu and 2.90M Wed - participation is falling faster than claimed."
+   },
+   {
+    "claim": "vol_avg20 133,972 vs vol_avg100 198,608 = 0.67",
+    "true_or_false": "TRUE",
+    "actual": "133,973 / 198,609 = 0.674. Exact."
+   },
+   {
+    "claim": "133,972 shares an hour at Rs 711 is roughly Rs 9.5 crore of hourly turnover",
+    "true_or_false": "FALSE",
+    "actual": "Understated in the stock's favour: full 180-bar average is 252,547 shares = Rs 15.1 cr/hour, median Rs 7.0 cr. Liquidity is better than claimed."
+   },
+   {
+    "claim": "Daily breakout above the 615 April high",
+    "true_or_false": "FALSE",
+    "actual": "April-2026 daily high was 690.00 (Dec-2025 672). The breakout is real - 710.75 is above 690 - but the quoted level is 75 points wrong."
+   },
+   {
+    "claim": "Stop is roughly 2.2 hourly ATR (7.28)",
+    "true_or_false": "FALSE",
+    "actual": "Hourly ATR14 is 6.54, not 7.28. Risk of 16 pts from 710 is 2.45 ATR."
+   },
+   {
+    "claim": "Only +4.72% above the daily EMA20",
+    "true_or_false": "TRUE",
+    "actual": "D-EMA20 678.69, price 710.75 = +4.72%. Also +12.30% over D-EMA50, +23.3% over D-EMA200, +10.5% in 20 sessions, 5.1% under the 52w high of 749."
+   }
+  ],
+  "stop_vs_atr": "16 pts from a 710 fill = 2.45x hourly ATR (6.54) - adequate on the hourly frame. But it is only 0.67x the DAILY ATR of 23.93, and the buffer beneath the 696.10 pivot is 2.10 pts = 0.32 ATR. 696.10 has been touched exactly once (20-Aug 10:15) and was not defended on a closing basis - that bar closed below the hourly EMA50. A 694 stop is a round number pressed right against a single-touch low in a stock that moves 24 points a day.",
+  "recomputed_risk_reward": 1.78,
+  "avg_hourly_turnover_cr": 15.06,
+  "overhead_supply": "Only four sessions in the last 12 months have traded above 714 - 18/19/20/21-Aug - but the 18-Aug session is the problem: it printed the 749.00 high on 5,430,733 shares, by far the largest volume day in the window, and closed 739.25, then 19-Aug fell straight to 700.00. Target1 = 749 is exactly that failed spike high sitting on the year's biggest distribution bar. There is no prior structure between 714 and 749 to slow price, but the sellers who marked the high are all still there.",
+  "daily_extension_note": "The least extended name of the four and the claim holds: +4.72% over D-EMA20, +12.3% over D-EMA50, +23.3% over D-EMA200, +10.5% in 20 sessions, 5.1% below the 52w high. Not late-stage. This part of the thesis survives intact.",
+  "data_integrity": "Minor: the last hourly close disagrees with the daily close on 4 of the last 30 sessions - 18-Aug hourly 745.00 vs daily 739.25 (0.78%), plus 16-Jul, 04-Aug, 07-Aug. Every 09:15 bar carries volume 0 (115 bars in the file) and 21-Aug has an extra 15:30 bar with O=H=L=C=710.75 and volume 0, so all volume-multiple work on first-hour and closing bars is unreliable.",
+  "strongest_bear_case": "The 'unbroken higher-low staircase' is not unbroken: 696.10 undercut 700.80 and that pullback closed below the hourly EMA50, so the two structural claims the A-grade rests on are both false. Target1 is planted on the 749 spike high made on 5.4M shares - the heaviest distribution bar of the year - which is overhead supply, not a target. The stop at 694 is a round number two points under a low that has been touched once, less than a third of an hourly ATR of buffer and two-thirds of a daily ATR from entry, so an ordinary down day takes it out before the thesis is actually wrong.",
+  "survives_as": "BUY",
+  "corrected_entry": 710.0,
+  "corrected_stop": 692.0,
+  "corrected_target1": 742.0
+ },
+ {
+  "symbol": "HINDCOPPER",
+  "viewed_chart": true,
+  "verdict": "WEAKENED",
+  "claims_checked": [
+   {
+    "claim": "Clean staircase of higher lows 515.15 (14-Aug) -> 555.55 (18-Aug) -> 553.00 (20-Aug 11:15)",
+    "true_or_false": "FALSE",
+    "actual": "553.00 is LOWER than 555.55, so the last step is a lower low, not a higher low. It is also mis-dated: 553.00 is the 19-Aug 15:15 low; the 20-Aug 11:15 low is 553.65."
+   },
+   {
+    "claim": "Higher highs 569.85 -> 576.50 -> 580.80",
+    "true_or_false": "TRUE",
+    "actual": "12-Aug 10:15 H569.85, 18-Aug 12:15 H576.50, 21-Aug 09:15 H580.80. Correct (daily highs 569.90/576.70/581.50)."
+   },
+   {
+    "claim": "Friday gapped to 580.80 in the first hour and the lowest print all day was 571.00",
+    "true_or_false": "TRUE",
+    "actual": "21-Aug 09:15 H580.80, day low 571.00 at 14:15. Correct. Note that 09:15 bar carries volume 0 in this dataset, so the 'gap on volume' cannot be verified."
+   },
+   {
+    "claim": "13:15 traded 2.18M (2.70x) and 14:15 1.45M (1.79x), both closed red after tagging 581.00",
+    "true_or_false": "TRUE",
+    "actual": "13:15 2,179,012 shares at 3.19x the prior-20 average, H581.00 C574.45; 14:15 1,446,540 at 1.98x, C573.30. The multiples are understated if anything - the rejection is heavier than described."
+   },
+   {
+    "claim": "Hourly avg 807k shares (~Rs 46 cr/hour), most liquid name in the batch",
+    "true_or_false": "TRUE",
+    "actual": "vol_avg20 807,774 exactly. Full 180-bar average 765,186 shares = Rs 40.6 cr/hour, median Rs 27.7 cr. No hourly bar under Rs 1 cr. Liquidity is genuinely excellent."
+   },
+   {
+    "claim": "Still 24.6% below the 52w high",
+    "true_or_false": "TRUE",
+    "actual": "52w high 760.05 (Jan-2026); 572.70 is 24.65% below. Correct."
+   },
+   {
+    "claim": "risk_reward 2.9",
+    "true_or_false": "FALSE",
+    "actual": "That is the TARGET2 number. Target1-based R:R from the 581.5 trigger is (600-581.5)/(581.5-565.5) = 18.5/16 = 1.16. The headline field overstates the trade by 2.5x."
+   },
+   {
+    "claim": "vol_ratio_20_100 at 0.52",
+    "true_or_false": "TRUE",
+    "actual": "807,774 / 1,551,986 = 0.520. Exact - and it is a genuine negative: participation into the flag is half normal."
+   },
+   {
+    "claim": "Four-month 470-560 base Jun-Aug broken decisively on 12-Aug",
+    "true_or_false": "TRUE",
+    "actual": "Jun 485-552, Jul 469-512, Aug low 490; 12-Aug high 569.90 on 36.9M shares clears it. Directionally right, though it is three months not four and May reached 618."
+   }
+  ],
+  "stop_vs_atr": "16 pts from the 581.5 trigger = 2.35x hourly ATR (6.80) - looks fine on the hourly frame and is the number the thesis quotes. It is misleading. The stop sits only 5.50 pts below Friday's low of 571.00 = 0.81 hourly ATR of buffer, and the whole 16-pt risk is just 0.60x the DAILY ATR of 26.53 (4.63% of price). In a stock that routinely swings 4-5% in a session, a 2.75% stop is inside one day's normal noise: 14-Aug alone ranged 515.00-546.70. It is also above the real structural low of 553.00, which the thesis itself names as the level that breaks the flag.",
+  "recomputed_risk_reward": 1.16,
+  "avg_hourly_turnover_cr": 40.58,
+  "overhead_supply": "26 daily sessions in the last 12 months traded inside 581-630 - a Jan/Feb-2026 block on the way down from 760 and a May-2026 block. The May failures are the direct problem: 15-May high 598.00 close 570.25, 18-May high 591.90 close 581.15, 19-May high 587.00 close 569.50. Target1 at 600 sits on top of a shelf where price failed three times three months ago, so the first 18.5 points out of the trigger run straight into it. Nearer in, the 581 lid itself was rejected twice on Friday's two heaviest bars.",
+  "daily_extension_note": "Not extended in absolute terms - 24.65% below the 52w high of 760.05 and only +6.98% over D-EMA20, +18.5% over D-EMA200 - but it is up 18.5% in 20 sessions, which is a fast move, and the whole advance came off a 12-Aug gap. The 'unusual overhead room' framing is true of the distance to 760 but false of the next 50 points, which are congested.",
+  "data_integrity": "OK. One mismatch in 30 sessions (06-Aug hourly last close 542.60 vs daily 545.95, 0.6%). No 15:30 auction bar. All 115 09:15 bars carry volume 0, so first-hour volume claims cannot be checked.",
+  "strongest_bear_case": "The headline 2.9 R:R is the target-2 number; the real target-1 R:R from the stated 581.5 trigger is 1.16, and target 1 at 600 is parked under a May shelf where price failed three separate times. The stop is the deeper problem: 16 points is 0.6 of a daily ATR in a stock with a 4.6% daily range, so a routine retest of the breakout stops the trade out before the setup has failed - and the honest structural stop under the 553.00 swing low is 29.5 points, which drops target-1 R:R to 0.63. Friday's two heaviest bars, 2.18M and 1.45M shares, both tagged 581 and closed red: that is distribution at the lid, not accumulation.",
+  "survives_as": "WATCH",
+  "corrected_entry": 581.5,
+  "corrected_stop": 552.0,
+  "corrected_target1": 628.0
+ },
+ {
+  "symbol": "RRKABEL",
+  "viewed_chart": true,
+  "verdict": "WEAKENED",
+  "claims_checked": [
+   {
+    "claim": "Pivot low 2709.0 on 14-Aug",
+    "true_or_false": "FALSE",
+    "actual": "The 2709.00 hourly low is 17-Aug 13:15 (daily 17-Aug low 2708.30). The 14-Aug pivot low is 2766.20. The date is wrong by a session."
+   },
+   {
+    "claim": "Pivot high 2721 on 27-Jul",
+    "true_or_false": "FALSE",
+    "actual": "27-Jul intraday high was 2581.90. The 2725.10 high is 28-Jul. Wrong level and wrong date."
+   },
+   {
+    "claim": "Friday's 12:15/13:15/14:15 bars marched to a new high of 2931.4 on 1.05x and 1.49x volume",
+    "true_or_false": "FALSE",
+    "actual": "Actual multiples vs the trailing 20-bar average: 12:15 0.52x (25,098), 13:15 0.86x (40,435), 14:15 1.38x (57,423). Every bar of the advance except the last was BELOW average. Worse, the 14:15 bar that printed 2931.40 closed at 2917.40 - it gave back 14 of the 16 points inside the same hour, so the 'new all-time high' is a rejected wick, not a close."
+   },
+   {
+    "claim": "Friday 09:15 gapped down to 2852.4 and was bought back to close 2893.4",
+    "true_or_false": "TRUE",
+    "actual": "21-Aug 09:15 O2883.00 L2852.40 C2893.40. Correct, though the daily bar shows a lower low of 2850.00 - the hourly series misses 2.4 points of that dip."
+   },
+   {
+    "claim": "vol_avg20 38,437 vs vol_avg100 40,490 (0.95x)",
+    "true_or_false": "TRUE",
+    "actual": "38,438 / 40,491 = 0.949. Exact."
+   },
+   {
+    "claim": "Turnover ~11 cr/hour is adequate",
+    "true_or_false": "FALSE",
+    "actual": "The mean is Rs 13.3 cr but the MEDIAN hourly bar is Rs 8.5 cr and 19 non-zero bars traded under Rs 1 cr. Recent bars include 12,563 / 13,073 / 16,938 shares (Rs 3.6-4.9 cr). The mean flatters a thin tape."
+   },
+   {
+    "claim": "Stop risk ~60 pts from a 2900 fill, about 2.6x the 23.14 hourly ATR",
+    "true_or_false": "FALSE",
+    "actual": "Hourly ATR14 is 18.69, not 23.14. 60 pts is 3.2 ATR from 2900, and 95 pts is 5.1 ATR from the stated 2935 trigger. The ATR is overstated by 24%, so the position size implied by the thesis is wrong."
+   },
+   {
+    "claim": "Taking the entry at 2935 rather than the 2870 dip drops R:R to about 1.6",
+    "true_or_false": "FALSE",
+    "actual": "(3040-2935)/(2935-2840) = 105/95 = 1.11, not 1.6. At the top of the stated entry zone (2940) it is 1.05. The headline 2.3 only exists for a 2900 fill, which is 35 points BELOW the primary trigger."
+   },
+   {
+    "claim": "+41.97% in 60 days and 51.52% above the daily EMA200",
+    "true_or_false": "TRUE",
+    "actual": "60-session change +41.97%, D-EMA200 1926.6 so +51.5%. Both exact - and both are reasons not to buy."
+   },
+   {
+    "claim": "New all-time high with no overhead supply anywhere",
+    "true_or_false": "TRUE",
+    "actual": "Only one session in the 12-month file overlaps 2931-3060 (Friday itself), so the path to 3040 is clear within the data available. 'All-time' cannot be verified beyond 12 months from this file."
+   }
+  ],
+  "stop_vs_atr": "95 pts from the 2935 trigger = 5.1x hourly ATR (18.69, not the claimed 23.14) and 79 pts from Friday's 2919.30 close = 4.2 ATR - it sounds generously wide, which is exactly what hides the problem. Measured against structure it is thin: 2840 is only 10.00 pts below the 21-Aug DAILY low of 2850.00 (0.53 hourly ATR of buffer) and the entire 95-pt risk is 0.11x the daily ATR of 89.46. One ordinary down day from 2919 lands at 2830 - straight through the stop - without breaking a single pivot on the chart.",
+  "recomputed_risk_reward": 1.11,
+  "avg_hourly_turnover_cr": 13.32,
+  "overhead_supply": "Genuinely none within the 12-month file: exactly one session (Friday) overlaps 2931-3060, so nothing structural sits between the trigger and target 1. This is the one part of the thesis that fully survives. The nearer obstacle is Friday's own 2931.40, which was rejected inside the hour it printed (closed 2917.40) on 1.38x volume - not a level cleared, a level touched.",
+  "daily_extension_note": "The disqualifying frame. +41.97% in 60 sessions, +17.07% in 20, +51.5% above the D-EMA200, +16.5% above the D-EMA50, sitting exactly at the 52w high. Monthly highs run 1648 (Apr) -> 2117 (May) -> 2549 (Jun) -> 2775 (Jul) -> 2931 (Aug): the stock has doubled in four and a half months. The thesis grades this B rather than A for the extension and then buys it anyway; on the daily frame this is a late add, not an entry.",
+  "data_integrity": "Minor but present: 4 of the last 30 sessions have a last-hourly-close that disagrees with the daily close by more than 0.5% (14-Jul 2331.00 vs 2345.30, 15-Jul 2309.00 vs 2291.30, 22-Jul 2460.00 vs 2432.40, 11-Aug 2829.90 vs 2812.80). The 21-Aug hourly low (2852.40) also misses the daily low (2850.00), which matters because the stop is set 12 pts under the hourly figure. 111 zero-volume 09:15 bars plus a 0-volume 15:30 auction print.",
+  "strongest_bear_case": "The R:R is arithmetically wrong at the entry the thesis actually recommends: at the 2935 trigger it is 1.11, not the 1.6 the thesis concedes or the 2.3 it headlines, and at the top of the stated entry zone it is 1.05. Friday's 'new all-time high' was a wick - the 14:15 bar printed 2931.40 and closed 2917.40, on volume multiples of 0.52x/0.86x/1.38x rather than the 1.05x/1.49x claimed - so there is no close above the old range yet. And the stock is +42% in 60 sessions and 51.5% above its daily EMA200, so a 95-point stop that is only 0.11 of a daily ATR from entry will be hit by the first normal pullback in a move that is overdue for one.",
+  "survives_as": "WATCH",
+  "corrected_entry": 2890.0,
+  "corrected_stop": 2820.0,
+  "corrected_target1": 3040.0
+ },
+ {
+  "symbol": "ASAHIINDIA",
+  "viewed_chart": true,
+  "verdict": "REFUTED",
+  "claims_checked": [
+   {
+    "claim": "Clean higher-low sequence 927.0 (18-Aug) -> 936.45 (21-Aug 09:15) -> 948/950.85",
+    "true_or_false": "FALSE",
+    "actual": "The lows have been reordered to manufacture an ascending sequence. Chronologically: 927.20/927.00 (17-Aug) -> 948.10 (19-Aug) -> 950.85 (20-Aug) -> 936.45 (21-Aug 09:15). The MOST RECENT pivot low is the lowest of the last three. The higher-low chain was broken on Friday morning - a fact the thesis states as its own invalidation ('below 936.45 the higher-low sequence is broken') while simultaneously listing 936.45 as a higher low. Also 927.00 is 17-Aug, not 18-Aug."
+   },
+   {
+    "claim": "Friday's 14:15 bar exploded from 952.15 to a 968.00 high, closing 967.5",
+    "true_or_false": "TRUE",
+    "actual": "21-Aug 14:15 O952.15 H968.00 C967.50 on 103,646 shares. But the thesis stops the tape there: the NEXT bar (15:15) opened 966.05, failed at 967.75 and closed 963.50 on 31,715 shares. The thrust was not held. The quoted 'last close 965.75' is the 15:30 auction print with volume 0, not a traded close."
+   },
+   {
+    "claim": "103,646 shares vs a 20-bar average of 18,095 = 5.7x, by far the largest bar of the last three weeks",
+    "true_or_false": "TRUE",
+    "actual": "5.73x against the trailing 20 including the bar itself, 7.19x against the prior 20. The volume expansion is real. It is one bar, and it faded in the next one."
+   },
+   {
+    "claim": "Price coiled 0.5% under the 970.85 range high",
+    "true_or_false": "FALSE",
+    "actual": "The real level overhead is 974.00 - the daily 19-Aug open/high - not 970.85. The 971 trigger does not clear the range."
+   },
+   {
+    "claim": "Stop 949 sits below the 21-Aug thrust bar low (951.8) and below the 950.0-950.85 shelf floor",
+    "true_or_false": "FALSE",
+    "actual": "Technically below those, but 949 is 12.55 points ABOVE Friday's actual session low of 936.45. The stop sits inside Friday's own range. A repeat of Friday's opening dip - which happened three hours before the thrust - liquidates the position without invalidating anything."
+   },
+   {
+    "claim": "Absolute liquidity ~18k shares, ~Rs 1.7 cr/hr, only moderate",
+    "true_or_false": "FALSE",
+    "actual": "Worse than admitted. The MEDIAN hourly bar is Rs 0.65 cr and 431 of 732 non-zero hourly bars trade under Rs 1 cr. The Rs 2.79 cr mean is an artifact of a handful of block prints (one 06-May bar alone is ~700k shares). Consolidation bars ran 4,576-17,248 shares."
+   },
+   {
+    "claim": "Price 4.88% above the daily EMA20 and 10% BELOW the 52-week high at ~1074",
+    "true_or_false": "FALSE",
+    "actual": "52w high is 1074.00 (Nov/Dec-2025), so 965.75 is 11.40% below, not 10%. And the daily series in this file ENDS 20-Aug - 21-Aug is missing entirely - so the D-EMA20 of 916.08 is stale; against 965.75 the real distance is +5.42%, not 4.88%."
+   },
+   {
+    "claim": "Five-month 830-910 base from Apr to early Aug, price only now clearing the top on the widest daily candles of the whole range",
+    "true_or_false": "FALSE",
+    "actual": "Monthly ranges: Apr 791-887, May 794-950, Jun 830-921, Jul 851-940. The base top is ~950, not 910, so 965.75 has cleared it by 1.6%, not by a decisive margin. And 14-Aug (53.9 pts) and 06-Aug (46.6 pts) are the widest candles, both BEFORE the claimed breakout."
+   },
+   {
+    "claim": "up_vol/down_vol over 40 bars = 2.18 with vol_ratio_20_100 = 0.48",
+    "true_or_false": "TRUE",
+    "actual": "vol_avg20 18,095 / vol_avg100 37,917 = 0.477. The ratio is right and it is a warning, not a virtue: the 'dry consolidation' is a stock nobody is trading."
+   }
+  ],
+  "stop_vs_atr": "22 pts from the 971 trigger = 3.74x hourly ATR (5.87), which reads as comfortable and is the reason the thesis is confident. It is not comfortable. The stop is 0.81x the DAILY ATR of 27.00 (2.84% of price), and - decisively - it sits 12.55 points ABOVE the low of the very session being traded (936.45 on 21-Aug 09:15). A stop above a level price traded through three hours earlier is not below structure by any definition; it is a number chosen to make the R:R work. The honest stop is 934, under 936.45, which is 37 pts / 6.3 ATR / 1.4 daily ATR from a 971 entry.",
+  "recomputed_risk_reward": 1.55,
+  "overhead_supply": "Heavy and directly in the path. 50 daily sessions between Nov-2025 and Feb-2026 traded inside 966-1010, plus 974.00 on 19-Aug 2026. Target 1 at 1005 sits in the middle of a four-month distribution zone built while the stock rolled over from 1074 to 775. The thesis reads the 108-point gap to the 52w high as 'overhead room rather than overhead extension' - it is the exact opposite: the room is full of trapped longs from the Nov-Feb top, which is why the stock has failed at 950-975 four times since May.",
+  "daily_extension_note": "Not extended - +5.4% over the D-EMA20, +6.0% over D-EMA50, +6.6% over D-EMA200, +9.1% in 20 sessions, 11.4% below the 52w high - but that is because it has gone nowhere for a year. The daily chart is a twelve-month distribution from 1074 (Nov-25) to 775 (Mar-26) and back, and price is now at the underside of that supply, not breaking out of a base. Note the D-EMA20 figure quoted in the thesis is computed off a daily series that is missing 21-Aug.",
+  "data_integrity": "PROBLEM. (1) The daily series ends 2026-08-20 while the hourly series runs to 2026-08-21 - the entire breakout session is absent from the daily data, so every daily-derived number in the thesis (D-EMA20 distance, daily ATR, base position) is one session stale. (2) The two series disagree on 19-Aug: daily shows O974.00 H974.00, hourly shows a session maximum of 968.70 - a 5.3-point conflict on the exact level that defines the resistance being traded. (3) 116 zero-volume 09:15 bars and a 0-volume 15:30 auction print that the thesis uses as the last close.",
+  "avg_hourly_turnover_cr": 2.79,
+  "strongest_bear_case": "The higher-low sequence the setup is built on does not exist - the lows were listed out of chronological order, and the genuine last pivot low (936.45, Friday 09:15) is below both prior lows, meaning the chain broke the same morning as the 'breakout'. The stop at 949 is 12.5 points above that low, i.e. inside the session's own range, so it is not protecting anything. The whole case is one 14:15 bar which the very next hour faded from 967.50 to 963.50, and target 1 at 1005 is planted inside a zone where 50 sessions of Nov-Feb supply was distributed on the way down from 1074. At a median Rs 0.65 cr of hourly turnover, with 431 of 732 bars under Rs 1 cr, none of this is executable at size anyway.",
+  "survives_as": "AVOID",
+  "corrected_entry": 975.0,
+  "corrected_stop": 934.0,
+  "corrected_target1": 1000.0
+ },
+ {
+  "symbol": "SHRIPISTON",
+  "viewed_chart": true,
+  "verdict": "REFUTED",
+  "claims_checked": [
+   {
+    "claim": "Three-week rectangle 6-Aug to 20-Aug between 4401.9 and 4524.8 - a 2.7% band, extraordinarily tight",
+    "true_or_false": "FALSE",
+    "actual": "Over 6-Aug to 20-Aug the hourly range is 4302.8 (07-Aug 09:15 low) to 4586.0 (12-Aug 09:15 high) = 6.58% wide; the close-to-close range is 5.93% (4325.4 to 4581.7). Daily agrees: low 4296.1, high 4589.0. The band is 2.4x wider than claimed and only the 12-20 Aug portion is tight."
+   },
+   {
+    "claim": "On 21-Aug price broke the ceiling / 4644 is a fresh 52-week high",
+    "true_or_false": "FALSE",
+    "actual": "The real ceiling was 4586.0/4589.0 (12-Aug and 18-Aug), not 4524.8. 4644.0 is a genuine new high for the 249-session daily window, but the CLOSE of 4600.1 is only +0.19% above the 18-Aug daily high of 4589.0. This is a marginal poke, not a break of a 2.7% band."
+   },
+   {
+    "claim": "Stop 4505 sits below the old range ceiling at 4520-4525, now support",
+    "true_or_false": "FALSE",
+    "actual": "4505 is inside the base, not below it. 70 of the 77 hourly bars from 6-20 Aug closed BELOW 4505; price closed under 4505 as recently as 19-Aug (4454.0). It also sits above the hourly EMA50 (4503.0) rather than below it. The genuine structural floor is 4401.9-4450.1."
+   },
+   {
+    "claim": "Risk:reward 3.16",
+    "true_or_false": "FALSE",
+    "actual": "3.16 is the TARGET2 ratio from the last close: (4900-4600.1)/(4600.1-4505)=3.15. Target1 R:R at the stated 4644 trigger is (4750-4644)/(4644-4505)=0.76; at the last close it is 1.58. The headline number is target2 relabelled as risk_reward."
+   },
+   {
+    "claim": "Breakout bars 21,142 / 17,827 / 21,529 vs vol_avg20 8,548 = roughly 2.5x",
+    "true_or_false": "TRUE",
+    "actual": "Bar volumes verified exactly. Against traded (non-zero) bars the multiples are 2.62x / 2.21x / 2.67x - the 2.5x claim survives. Note 14% of hourly bars (119/848) carry volume 0, including every 09:15 bar, so the 09:15 opening hour's volume is missing from the whole series."
+   },
+   {
+    "claim": "Close 4600.1, 1.26% above EMA20 and 2.16% above EMA50",
+    "true_or_false": "FALSE",
+    "actual": "4600.1 is a zero-volume synthetic 15:30 bar (O=H=L=C=4600.1, v=0); the last traded hourly close was 4604.0 at 15:15. Recomputed hourly EMA20 4542.74 (+1.26%) and EMA50 4503.02 (+2.16%) - the EMA percentages are correct."
+   },
+   {
+    "claim": "Base low 4401.9 (17-Aug) and 20-Aug high 4524.8",
+    "true_or_false": "TRUE",
+    "actual": "17-Aug hourly low 4401.9 and 20-Aug hourly high 4524.8 both verified. They are simply not the boundaries of the base."
+   },
+   {
+    "claim": "Least stretched on the daily: 4.04% over d-EMA20, 9.48% over d-EMA50, d-RSI 64.3",
+    "true_or_false": "TRUE",
+    "actual": "Substantially right and the strongest part of the thesis: +4.49% over d-EMA20 (4402.64) and +9.90% over d-EMA50 (4185.69) using Friday's 4600.1; d-RSI 60.3; only +5.51% over 20 sessions. Genuinely not extended."
+   }
+  ],
+  "stop_vs_atr": "Hourly ATR14 = 41.24 (0.90% of price). From the stated 4644 breakout trigger the stop is 139 pts = 3.37x ATR; from the last close 4600.1 it is 95.1 pts = 2.31x ATR; but from the bottom of the published 4540-4650 entry zone it is only 35 pts = 0.85x ATR, i.e. inside routine noise. The entry zone (110 pts) is wider than the risk itself, so the stop is 0.85x-3.4x ATR depending on where you happen to fill - the setup is not falsifiable as written. Worse, the level itself is mid-range: 91% of the base's hourly bars closed below it.",
+  "recomputed_risk_reward": 0.76,
+  "avg_hourly_turnover_cr": 3.37,
+  "overhead_supply": "Above 4644 there is genuinely nothing in 249 sessions of daily data - target1 4750 (+3.3% from the close) sits in clean air. The supply problem is below, not above: 4586/4589 was rejected twice (12-Aug, 18-Aug) before Friday, and Friday's own 12:15 bar gave back 4609 to 4560. Target1 is realistic; the entry and stop are the broken parts.",
+  "daily_extension_note": "The one claim that holds. +5.51% over 20 sessions, +4.5% over d-EMA20, +9.9% over d-EMA50, d-RSI 60.3, daily ATR 3.87%. Not extended by any measure - this is the least stretched name reviewed. Caveat: the daily series ends 2026-08-20 and contains no 21-Aug bar, so every daily metric excludes Friday's breakout day.",
+  "data_integrity": "Two problems. (1) 04-Aug: hourly close 4139.9 vs daily close 4402.7 (-5.97%). This is a ONE-OFF, not a systemic adjustment - the other 120 shared dates agree to within 2.0% and 118 of them to within 1.0%, and both series independently record the spike (hourly low 4105.9, daily low 4090.0), so only the final hourly print is wrong: the 15:15 bar fell 4429->4105.9 on 3,682 shares and the daily says it recovered to 4402.7 in the closing auction. It does NOT contaminate any thesis level (all of which lie in 4400-4650, two-plus weeks later); it does drag the hourly EMA200/RSI slightly. (2) The daily series stops at 2026-08-20 - there is no 21-Aug daily bar, so the daily panel and all daily EMAs/returns are one session stale. (3) 14% of hourly bars have volume 0, including every 09:15 open and the synthetic 15:30 close bar.",
+  "strongest_bear_case": "The thesis rests on a 2.7%-wide three-week rectangle that does not exist - the actual 6-20 Aug range is 6.6% wide with the ceiling at 4586-4589, not 4524.8. Once the real ceiling is used, Friday's 4600.1 close is a 0.19% poke above a level already rejected twice, and the 4505 stop is not below the base at all but sits mid-range, a level under which 70 of the base's 77 hourly bars closed. The advertised 3.16 R:R is the target2 ratio; to target1 at the stated 4644 trigger it is 0.76. At Rs 4,600 a share with median hourly turnover of only Rs 2.2 cr, a stop this badly placed will be filled with slippage.",
+  "survives_as": "WATCH",
+  "corrected_entry": 4650.0,
+  "corrected_stop": 4450.0,
+  "corrected_target1": 4870.0
+ },
+ {
+  "symbol": "WELSPUNLIV",
+  "viewed_chart": true,
+  "verdict": "WEAKENED",
+  "claims_checked": [
+   {
+    "claim": "Two separate gap-and-go bars, 18-Aug 09:15 (168.38 -> 181.54) and 20-Aug 09:15 (181.70 -> 190.28), and neither gap has been filled",
+    "true_or_false": "FALSE",
+    "actual": "Neither is a gap. 17-Aug closed 168.24 and the 18-Aug 09:15 bar OPENED at 168.38 - a 0.08% difference - and traded 168.38 to 182.00 within that hour. 19-Aug closed 181.24 and the 20-Aug 09:15 bar opened 181.70 with a LOW of 179.87, i.e. it traded back through the prior close. Both 'gap' zones were fully traded inside the opening hour. The 'two unfilled gaps below at 185.5 and 181' do not exist - the 179.87-190.94 band was all traded on 20-Aug."
+   },
+   {
+    "claim": "20-Aug 09:15 traded 8.25M, 5.08x avg",
+    "true_or_false": "FALSE",
+    "actual": "8,253,153 shares is correct, but against the trailing 20-bar average it is 2.63x, not 5.08x. 5.08x implies dividing by an average that already includes the bar itself and the surrounding event cluster."
+   },
+   {
+    "claim": "Price 189.22 is 1.1% under the 191.35 six-month high",
+    "true_or_false": "FALSE",
+    "actual": "The high is 191.47 (20-Aug daily); 191.35 is only the hourly print. It is also a 52-WEEK high, not a six-month high - the daily file covers 251 sessions and 191.47 is the maximum. Trigger should be >191.5, not >191.4."
+   },
+   {
+    "claim": "Higher lows 159.12, 162.89, 165.07, 172.60, 185.78 and higher highs 167.31, 178.00, 182.90, 191.35",
+    "true_or_false": "TRUE",
+    "actual": "All eight levels verified in the hourly bars. The chain is real."
+   },
+   {
+    "claim": "Friday ground steadily higher all day on progressively lighter volume (0.14x to 0.70x)",
+    "true_or_false": "FALSE",
+    "actual": "The close sequence 188.90/188.62/188.52/189.45/189.60/189.22 is correct but it is +0.17% over six hours and not monotonic. Volume was NOT progressively lighter: 1.13M, 0.46M, 0.22M, 0.50M, 0.92M, 0.48M - it rose into the afternoon. Friday's high 190.35 is a LOWER high than Thursday's 191.47, and the close 189.22 is only +0.28% on the day."
+   },
+   {
+    "claim": "up_vol/down_vol 0.58 is misleading churn; the picture says accumulation",
+    "true_or_false": "FALSE",
+    "actual": "0.58 verified (39.5M up vs 68.0M down) and the bar structure supports it rather than excusing it. Three times running, a huge opening bar was sold into: 14-Aug opened 165.25, ran to 178.00 on 34.9M shares, then bled all day to close 164.06 (a 73.5M-share day - 12x the 50-day average - closing at the LOW of its range); 18-Aug ran to 182.90 then closed 177.30; 20-Aug ran to 190.94 then closed 188.75. That is a repeated fade pattern, not churn."
+   },
+   {
+    "claim": "Liquidity excellent at 1.62M shares/hour (~Rs 30 cr/hour)",
+    "true_or_false": "TRUE",
+    "actual": "True for the last 20 bars only (1,623,954 shares = Rs 30.3 cr/hr), which is event-inflated. The full 847-bar average is 430,139 shares = Rs 6.84 cr/hr and the median is 153,927 = Rs 2.4 cr/hr. Still comfortably tradable - genuinely the liquidity is not the problem here."
+   },
+   {
+    "claim": "Risk:reward 2.8",
+    "true_or_false": "FALSE",
+    "actual": "2.8 is the TARGET2 ratio, as the thesis text itself concedes ('T1 200 is only 1.3R'). Target1 R:R from the 191.5 trigger is (200-191.5)/(191.5-184.8) = 1.27."
+   },
+   {
+    "claim": "+15.3% in five sessions, +11.4% vs daily EMA20, daily RSI 72.2",
+    "true_or_false": "TRUE",
+    "actual": "Verified exactly: +15.34% in 5 sessions, +16.80% in 20, +11.40% over d-EMA20 (169.86), +16.55% over d-EMA50, d-RSI 72.2."
+   }
+  ],
+  "stop_vs_atr": "Hourly ATR14 = 2.892 (1.53% of price). Stop 184.8 is 6.7 pts = 2.32x hourly ATR from the 191.5 trigger, 4.42 pts = 1.53x from the last close, and only 2.7 pts = 0.93x from the bottom of the 187.5 entry zone. The hourly reading flatters it. The daily ATR14 is 8.41 points = 4.44% of price, so the stop is 0.80x one daily ATR from the trigger and 0.53x from the last close - a single ordinary session in this stock travels further than the entire risk. On 14-Aug the stock covered 15.2 points in one day.",
+  "recomputed_risk_reward": 1.27,
+  "avg_hourly_turnover_cr": 6.84,
+  "overhead_supply": "Nothing structural above 191.47 - it is the 52-week high in 251 sessions of daily data, so target1 200 is in clean air and is a fair objective. The supply that matters is AT 190-191.5: price has now been turned back there three times (20-Aug 191.47, 20-Aug 190.60, 21-Aug 190.35), each attempt making a lower high. The trade is entirely a bet on the fourth attempt.",
+  "daily_extension_note": "Materially extended and the thesis says so honestly. +15.34% in 5 sessions, +16.80% in 20, +11.4% over the daily EMA20, +16.55% over the EMA50, d-RSI 72.2, daily ATR 4.44%. The move is event-driven: 14-Aug traded 73.5M shares against a 50-day average of 6.1M (12x) and 18-Aug traded 53.7M (8.8x). Post-event repricings of this size mean-revert violently.",
+  "data_integrity": "OK - maximum hourly-vs-daily close disagreement across 124 shared dates is 0.92%, and the daily series includes the 21-Aug bar. 112 of 847 hourly bars carry volume 0 (all 09:15 opens plus two 15:15 closes), so the opening hour's volume is missing from every average.",
+  "strongest_bear_case": "The mechanism the thesis describes is not what happened: there are no gaps - both 'gap-and-go' bars opened flat and traded their whole range within the hour - and the 5.08x volume was really 2.63x. What the tape actually shows is three consecutive sessions where enormous volume hit the open and price faded all day (14-Aug: 73.5M shares, ran to 178.00, closed 164.06 at the low), which is exactly why up/down volume is 0.58. Friday made a lower high on the third rejection at 190-191.5 and closed +0.28%. With a 4.44% daily ATR and a stop 2.3% below the trigger, one ordinary session takes the stop out.",
+  "survives_as": "WATCH",
+  "corrected_entry": 187.0,
+  "corrected_stop": 179.5,
+  "corrected_target1": 200.0
+ },
+ {
+  "symbol": "MARKSANS",
+  "viewed_chart": true,
+  "verdict": "REFUTED",
+  "claims_checked": [
+   {
+    "claim": "The run extended to 345.05 on 14-Aug",
+    "true_or_false": "FALSE",
+    "actual": "345.05 was printed on 17-Aug (09:15 hourly bar), not 14-Aug, and the true high is 345.50 on the 17-Aug daily bar. 14-Aug's high was 336.60. The date of the pivot the whole flag is measured from is wrong."
+   },
+   {
+    "claim": "The 11-12 Aug expansion took price from 275 to 315",
+    "true_or_false": "FALSE",
+    "actual": "The expansion was a single session: 12-Aug opened 280.00 and closed 312.60 on 47.8M shares. 11-Aug was an ordinary 271.50-278.95 day on 1.44M. The red flag also misdates the 16M-share hourly bars to 11-Aug; they are 12-Aug."
+   },
+   {
+    "claim": "Pivot highs 345.05 -> 336.25 -> 335.15 -> 329.00 -> 326.40 and pivot lows 325.45 -> 324.00 -> 319.00 -> 314.00",
+    "true_or_false": "TRUE",
+    "actual": "All verified. But this is the bear case, not the bull case: it is an unbroken sequence of LOWER highs AND LOWER lows over six sessions. This is a downtrend by definition, not a flag, and the thesis concedes as much in its own red flags."
+   },
+   {
+    "claim": "Friday is the turn: made the flag low at 314.0 then built four higher lows, with the 14:15 bar +5.4 points on 525,172 shares, the biggest bar of the day",
+    "true_or_false": "FALSE",
+    "actual": "525,172 is correct and is the day's biggest bar, but the 14:15 bar moved 317.85 to 321.05 = +3.20 points, not +5.4. More important: Friday's second-biggest bar (471,128, 2.17x average) was the 10:15 DOWN bar that made the 314.20 low. The session opened 320.85 and closed 321.30 - a +0.14% doji, not a reversal - and its high of 326.40 was itself a lower high."
+   },
+   {
+    "claim": "vol_avg20 202,844 vs vol_avg100 876,935 = 0.23; the pullback is on a quarter of the volume that drove the advance",
+    "true_or_false": "TRUE",
+    "actual": "Ratio 0.231 verified. But it is an artifact of the denominator: the 100-bar window contains the 12-Aug event day (47.8M shares vs a 3.6M 50-day daily average, roughly 45x). Volume falling back to normal after a 45x news spike is not a dry-up signature, it is the spike ending. The 20-bar average also includes three zero-volume bars."
+   },
+   {
+    "claim": "up_vol/down_vol over 40 bars is 3.74 - the strongest volume evidence in the batch",
+    "true_or_false": "TRUE",
+    "actual": "3.74 verified - and it argues against the thesis. Over those same 40 bars price fell from 331.45 (17-Aug close) to 321.30, i.e. buyers spent 3.7x as much volume as sellers and still lost 3% of ground. Volume being absorbed on rallies that fail is distribution, not accumulation."
+   },
+   {
+    "claim": "Price 321.3 sitting exactly on the hourly EMA20 (321.23) with EMA50 316.56",
+    "true_or_false": "TRUE",
+    "actual": "EMA20 321.23 and EMA50 316.56 both verified. Note 321.3 is the zero-volume synthetic 15:30 bar; the last traded close was 322.00."
+   },
+   {
+    "claim": "Risk:reward 3.33 to target1 336",
+    "true_or_false": "FALSE",
+    "actual": "3.33 requires entering at 317.9. From the last close 321.30 it is (336-321.30)/(321.30-312.50) = 1.67; from the top of the 315-323 entry zone it is 1.24; only from the very bottom of the zone (315) does it exceed 3."
+   },
+   {
+    "claim": "+30.45% in 20 sessions, d-RSI 67.8, 8.18% above d-EMA20",
+    "true_or_false": "TRUE",
+    "actual": "+30.37% in 20 sessions, d-RSI 67.7, +8.97% over d-EMA20 (294.45), +18.20% over d-EMA50. Substantially accurate."
+   }
+  ],
+  "stop_vs_atr": "Hourly ATR14 = 3.375 (1.05% of price). Stop 312.5 is 8.8 pts = 2.61x ATR from the last close but only 1.5 pts = 0.44x ATR below Friday's 314.00 low, and just 2.5 pts = 0.74x ATR from the bottom of the published 315-323 entry zone. Anyone entering in the lower half of the stated zone is carrying a sub-1.2x-ATR stop that ordinary noise removes. On the daily the ATR is 14.59 points (4.55%), so the entire 8.8-point risk is 0.60x one average session - and the stock has ranged 20-42 points on five of the last eight days.",
+  "recomputed_risk_reward": 1.67,
+  "avg_hourly_turnover_cr": 7.86,
+  "overhead_supply": "Heavy, and target1 is sitting in the middle of it. Between the last close 321.30 and target1 336.00 lie the entire descending pivot stack: 326.40 (21-Aug), 328.45/328.55 (20-Aug), 329.00 and 335.15/335.30 (19-Aug). Target1 336.00 is itself pinned directly under three prior failures - the 18-Aug high 336.35, the 14-Aug high 336.60 and the 17-Aug open 337.30 - i.e. exactly the level where price has already been rejected. A 14.7-point target that must first clear four lower highs and then a triple-failure shelf is not a realistic first objective.",
+  "daily_extension_note": "Late-stage. +30.37% in 20 sessions, +8.97% over d-EMA20, +18.20% over d-EMA50, d-RSI 67.7. The move is one news event: 12-Aug traded 47.8M shares against a 3.57M 50-day average (13x, and roughly 45x the pre-event ~1M/day), followed by 20.2M and 13.0M. The hourly RSI is 50.5 - momentum has already fully decayed while the daily is still stretched, which is the classic profile of a post-event distribution, not a continuation flag. Note the daily series ends 20-Aug, so these figures exclude Friday.",
+  "data_integrity": "OK - maximum hourly-vs-daily close disagreement is 0.99% across all shared dates. 118 of 848 hourly bars have volume 0 (every 09:15 open plus the synthetic 15:30 close), so all 'x avg volume' multiples in the thesis are computed against an average diluted by ~14% empty bars.",
+  "strongest_bear_case": "This is a six-session sequence of lower highs AND lower lows - a downtrend the thesis relabels as a 'drift-flag' while conceding in its own red flags that no higher high exists. Buyers spent 3.7x the volume of sellers over those 40 bars and price still fell 3%, which reads as supply absorbing bids rather than accumulation. Friday was not a reversal: it closed +0.14% at 321.30 with a lower high at 326.40, and its second-heaviest bar was the down bar that made the low. Target1 336 sits directly on a shelf where price has already failed three times, behind four intervening lower highs, so the honest R:R is 1.67 at best - half the advertised 3.33.",
+  "survives_as": "AVOID",
+  "corrected_entry": 327.0,
+  "corrected_stop": 313.5,
+  "corrected_target1": 345.0
+ },
+ {
+  "symbol": "COFORGE",
+  "viewed_chart": true,
+  "verdict": "WEAKENED",
+  "claims_checked": [
+   {
+    "claim": "The daily panel confirms there is nothing between here and the prior high near 1990 - the path up is clean air",
+    "true_or_false": "FALSE",
+    "actual": "This is the load-bearing claim and it is wrong. The 1990 high is real (1989.7 on 08-Dec-2025) but the 1892-1990 band is not empty: the stock traded there for roughly two weeks (27-Nov to 08-Dec 2025, highs 1915.0/1932.4/1936.0/1927.2/1934.0/1986.0/1988.2/1989.7), 18 sessions closed between 1850 and 1990, 9 sessions printed highs above 1892, and about 28.4M shares changed hands in that zone. It then collapsed from 1989.7 to 1633.3 in three weeks and to 1080 by March. Every buyer from that top is now back at breakeven - that is trapped supply sitting across the whole path to target1, not clean air. The daily PANEL shows nothing only because it starts 02-Feb-2026 and the zone is outside it; the underlying daily file the analyst had covers it."
+   },
+   {
+    "claim": "1891.7 is the high of the day, the week and the entire 6-month window",
+    "true_or_false": "TRUE",
+    "actual": "Correct for the 180-bar hourly window. But it is NOT a 52-week high - 1989.7 (08-Dec-2025) is, and 9 daily sessions in the past year traded above 1892. This is a rally back into an old distribution zone, not a breakout to new highs."
+   },
+   {
+    "claim": "Two-week base between 1762.6 (18-Aug low) and 1836.1 (05-Aug high) with higher lows 1780.4 -> 1791.7 -> 1806.4 the whole way and only one shakeout to 1762.6",
+    "true_or_false": "FALSE",
+    "actual": "1836.1 was printed on 14-Aug 09:15, not 05-Aug - the 05-Aug high was 1788.0. The base low is not 1762.6 either: 05-Aug traded down to 1745.1 (hourly 1746.7). And the low sequence is not a rising chain - daily lows run 1745.1, 1757.9, 1765.5, 1783.1, 1809.8, then BACK to 1780.4 (12-Aug), 1788.0, 1804.2, 1799.6, then 1762.2 on 18-Aug, the session immediately before the breakout. The base ends on a lower low, not a higher low."
+   },
+   {
+    "claim": "Friday held 218k-340k on every bar and closed 1891.7 at the top with no upper wick",
+    "true_or_false": "FALSE",
+    "actual": "The close is exactly right but the volume claim is not: the 15:15 bar - the very bar that made the 1891.7 close on the high - traded only 91,645 shares, 0.31x the 20-bar average and the thinnest bar of the day. The wickless close at the high of the week was made on the lightest print of the session. Friday's 09:15 bar also fell from 1885.1 to 1851.8 (-1.8%) before recovering."
+   },
+   {
+    "claim": "Breakout-session bars 780,412 / 629,426 / 710,208 at 2.1-2.6x avg; vol_ratio_20_100 = 1.34 with a 299,310 20-bar average",
+    "true_or_false": "TRUE",
+    "actual": "All verified exactly: 780,412 / 629,426 / 710,208 on 20-Aug, 20-bar average 299,310, ratio to the 100-bar average 1.344. This is the strongest genuine part of the thesis."
+   },
+   {
+    "claim": "EMAs stacked 1857 / 1829 / 1713 with price only 1.85% over EMA20",
+    "true_or_false": "TRUE",
+    "actual": "Hourly EMA20 1857.33, EMA50 1829.33, EMA200 1713.24; 1891.7/1857.33 = +1.85%. Exact."
+   },
+   {
+    "claim": "Risk:reward 2.0",
+    "true_or_false": "TRUE",
+    "actual": "Understated if anything: (1985-1892)/(1892-1849) = 2.16 at the stated trigger. The only honestly-stated R:R in this group. It falls to 1.43 at the top of the 1892-1905 entry zone, and to about 1.0 once target1 is moved off the 1990 failure high to the first real supply band."
+   },
+   {
+    "claim": "An hourly close back below 1849 fills the 20-Aug gap",
+    "true_or_false": "FALSE",
+    "actual": "The 20-Aug gap runs 1813.1 (19-Aug close) to 1826.5 (20-Aug 09:15 low). It is not filled until 1813.1 - 1849 is 36 points above the gap. A break of 1849 is a failure of Friday's shelf only."
+   },
+   {
+    "claim": "Daily extended: RSI 72.6, +15.8% over d-EMA50, +27.4% in 20 sessions",
+    "true_or_false": "TRUE",
+    "actual": "Verified: d-RSI 72.6, +15.82% over d-EMA50 (1633.31), +7.37% over d-EMA20, +27.41% in 20 sessions. Honestly disclosed."
+   }
+  ],
+  "stop_vs_atr": "Hourly ATR14 = 17.96 (0.95% of price) - the tightest relative ATR in the group. Stop 1849 is 43 pts = 2.39x hourly ATR from the 1892 trigger and 56 pts = 3.12x from the top of the 1892-1905 entry zone, so it is comfortably outside noise on the hourly. On the daily, ATR14 is 42.56 points (2.25%), so the stop is 1.01x one average session - acceptable rather than generous. Structurally it does sit under a level that was actually defended: 1851.8 was the 21-Aug 09:15 low and held for the rest of the session. This is the best-constructed stop of the four.",
+  "recomputed_risk_reward": 2.16,
+  "avg_hourly_turnover_cr": 52.57,
+  "overhead_supply": "Substantial, and the thesis denies it exists. Between the 1892 entry and the 1985 target lies the entire 27-Nov to 08-Dec-2025 topping formation: repeated highs at 1915, 1927, 1932, 1934, 1936, 1986, 1988, 1989.7 across roughly two weeks and ~28.4M shares, from which the stock fell 18% in three weeks and 46% by March. The first real resistance shelf is 1910-1936, only 1-2% above the entry. Target1 1985 is parked 0.24% under the 52-week failure high of 1989.7 - the single most obvious place for supply on the chart.",
+  "daily_extension_note": "Extended but the least so on an ATR basis. +27.41% in 20 sessions, +7.37% over d-EMA20, +15.82% over d-EMA50, d-RSI 72.6, hourly RSI 69.7. Daily ATR of only 2.25% is the calmest in the group, so the extension is a slow grind rather than an event spike - materially healthier than MARKSANS or WELSPUNLIV. The 27-28 Jul gap from 1490 to 1670 is a genuine unfilled repricing 12% below.",
+  "data_integrity": "OK - maximum hourly-vs-daily close disagreement is 0.77% and the daily series includes the 21-Aug bar. 118 of 846 hourly bars carry volume 0 (every 09:15 open), so the opening hour is missing from every volume average - which matters here because both 'breakout' sessions (19-Aug and 20-Aug) gapped and did their initial work in that unmeasured 09:15 hour.",
+  "strongest_bear_case": "The sentence the whole R:R rests on - 'there is no hourly resistance between 1892 and 1990, so the path up is clean air' - is contradicted by the analyst's own daily file: 1892-1990 is a two-week Nov/Dec-2025 distribution top where 28M shares traded before an 18% three-week collapse, so target1 is not clean air but the deepest trapped-supply band on the chart, with the first shelf only 1-2% above entry. The base is also misdescribed (real low 1745.1 not 1762.6, ceiling from 14-Aug not 05-Aug, and it ends on a lower low at 1762.2). And the wickless close at 1891.7 that the chart read leans on was made on 91,645 shares, 0.31x average - the thinnest bar of the day.",
+  "survives_as": "WATCH",
+  "corrected_entry": 1892.0,
+  "corrected_stop": 1849.0,
+  "corrected_target1": 1935.0
+ }
+]
