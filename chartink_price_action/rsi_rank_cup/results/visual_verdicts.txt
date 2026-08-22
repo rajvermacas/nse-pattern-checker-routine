@@ -1,0 +1,16 @@
+#   SYMBOL      RSI    GRADE  POSITION            READING
+1   TFCILTD     85.3   C      extended past rim   flat choppy shelf, not a cup; ran 80->131 already
+2   SUNDRMFAST  82.9   C      extended past rim   rounded base real but out of a DOWNtrend, no left rally; +55% off low
+3   MOREPENLAB  78.3   D      extended past rim   rally then 15-bar V dip (handle-size), runaway breakout
+4   APLAPOLLO   77.0   B      right side          genuine rally + 24% multi-month base; climbing back to rim
+5   TI          76.8   C      extended past rim   jagged flat box after weak rally; +22% above box top
+6   MARINE      76.5   D      extended past rim   clean uninterrupted uptrend since April, no base
+7   LMW         76.3   C      extended past rim   sideways chop then V-bottom recovery; no left rally
+8   BLISSGVS    75.9   B      broken out          real rally + 30-35 bar shallow base (17%); flat-bottomed, weak bo vol
+9   SHILPAMED   75.0   D      no cup              unbroken staircase uptrend, 10-bar flag at highs
+10  HAPPYFORGE  74.4   D      no cup              relentless uptrend gone parabolic into the high
+11  BOSCHLTD    74.3   C      extended past rim   broad V-bottomed arc out of a downtrend; rim cleared in July
+12  EMIL        74.1   C      no cup              43% decline into ragged sideways bottom, then volume explosion
+13  BANARISUG   74.0   D      no cup              a year of flat illiquid drift + one spike bar
+14  DIVISLAB    73.4   C      extended past rim   saucer-ish but 110-120 bars and jagged; buy point gone
+15  RBA         72.8   C      extended past rim   July dip rounded but exit was a 2-bar gap; +28% above rim
