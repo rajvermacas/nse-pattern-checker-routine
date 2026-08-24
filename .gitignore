@@ -4,3 +4,9 @@
 # to tens of MB per run. Durable artifacts are committed under runs/<date>/
 # on the claude/screener-runs branch instead.
 work/
+
+# Python bytecode. The pipeline scripts run as CLIs; __pycache__ dirs get
+# materialised next to them on import. Nothing durable, and it churns per
+# Python version. (Mirrors the same rule on master.)
+__pycache__/
+*.pyc
