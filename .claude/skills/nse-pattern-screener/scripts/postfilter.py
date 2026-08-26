@@ -43,6 +43,7 @@ def enrich(hits: list[dict], parquet: str, bars_per_day: int,
         c = g["close"].to_numpy().astype(float)
         v = g["volume"].to_numpy().astype(float)
         hi = g["high"].to_numpy().astype(float)
+        lo = g["low"].to_numpy().astype(float)
         sym_last = g["ts"].max()
         h["bars_behind_universe"] = last_bar_pos - bar_index.get(sym_last, last_bar_pos)
 
@@ -59,6 +60,35 @@ def enrich(hits: list[dict], parquet: str, bars_per_day: int,
             h["max_bar_share"] = round(float(np.diff(seg).max() / tot), 2) if tot > 0 else 9.9
         else:
             h["max_bar_share"] = 9.9
+
+        # base_low is min(low) over the base window, so a SINGLE outlier wick
+        # sets both the quoted risk and the RRR rank. On the 2026-08-25 run
+        # MANIPALHOS's base_low was one bar's low at 699.35 with nothing else in
+        # the window below 710.60: risk read 9.0% against a ~7% structure, and
+        # it ranked last of nine on a price no other bar confirmed. Report the
+        # closing-basis floor alongside it and flag the outlier.
+        #
+        # This deliberately does NOT change base_low, risk_pct_to_base_low or
+        # rrr_structural. The wick is a real traded price and remains the
+        # conservative stop; the reader just needs to know when the two
+        # readings diverge and which one they are sizing off.
+        entry = h["base_high"]
+        base_lows, base_closes = lo[-k:], c[-k:]
+        h["base_low_close"] = round(float(base_closes.min()), 2)
+        h["risk_pct_to_base_low_close"] = round(
+            (entry - h["base_low_close"]) / entry * 100, 2)
+        # "Isolated" means the lowest low sits materially below the SECOND
+        # lowest -- one bar made the low and no other bar came near it. The 1%
+        # of entry cut is a reporting threshold, like the eps in edge_flags; it
+        # gates nothing and no hit passes or fails because of it.
+        if len(base_lows) > 1:
+            second_low = float(np.partition(base_lows, 1)[1])
+            gap_pct = (second_low - h["base_low"]) / entry * 100
+            h["base_low_wick_gap_pct"] = round(float(gap_pct), 2)
+            h["base_low_is_wick"] = bool(gap_pct >= 1.0)
+        else:
+            h["base_low_wick_gap_pct"] = 0.0
+            h["base_low_is_wick"] = False
 
         # Structural reward-to-risk: target measured off the lip, risk measured
         # to the base low -- the only stop the pattern's structure supports.
@@ -140,6 +170,19 @@ def main() -> None:
             print(f"\n{n_bad}/{len(clean)} have the fixed-% stop INSIDE the base.")
             print("Report risk_pct_to_base_low as the real structural risk.")
 
+        wicky = [h for h in clean if h.get("base_low_is_wick")]
+        if wicky:
+            print(f"\n{len(wicky)}/{len(clean)} have a base_low set by a SINGLE wick:")
+            for h in wicky:
+                print(f"  {h['symbol']:14s} base_low {h['base_low']} sits "
+                      f"{h['base_low_wick_gap_pct']}% of entry below the next "
+                      f"lowest bar; closing-basis floor {h['base_low_close']} "
+                      f"= {h['risk_pct_to_base_low_close']}% risk vs the "
+                      f"{h['risk_pct_to_base_low']}% quoted")
+            print("The wick is a real traded price, so base_low and the RRR rank")
+            print("keep using it -- but it also DEPRESSES that rank. Say in the")
+            print("report which of the two numbers the sizing assumes.")
+
         n_stale = sum(1 for h in clean if h.get("bars_behind_universe", 0) > 0)
         if n_stale:
             print(f"\n{n_stale}/{len(clean)} priced BEHIND the universe's last bar:")
@@ -169,6 +212,8 @@ def main() -> None:
                 "base_depth_pct", "curvature", "r2", "vertex_x", "dist_from_lip_pct",
                 "vol_ratio", "turnover_cr", "pct_of_60d_high", "max_bar_share",
                 "entry", "sl", "t1", "t2", "base_low", "risk_pct_to_base_low",
+                "base_low_close", "risk_pct_to_base_low_close",
+                "base_low_is_wick", "base_low_wick_gap_pct",
                 "stop_inside_base", "rrr_structural", "score", "last_ts",
                 "bars_behind_universe", "edge_flags"]
         with open(args.csv, "w", newline="") as f:

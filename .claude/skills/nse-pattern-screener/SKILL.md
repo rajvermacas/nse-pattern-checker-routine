@@ -238,6 +238,8 @@ python scripts/plot_hits.py --hits hits_clean.json --parquet all_closed.parquet 
 
 Then `view` the file. Read the panels before writing a word of the report.
 
+The grid defaults to **two columns**, which makes the image tall. Leave it there. At three-up each panel is ~620×440px — enough to see that a shape curves, not enough to see whether the fast EMA rolls over through the base or dips and turns back up, which is most of the judgement below. On the 2026-08-25 run two names were filed as marginal off a 3×3 grid and both moved to the top tier when re-rendered at two-up, with no data or threshold changed. If a batch still reads small, render the survivors again with `--cols 1`.
+
 **Why this step exists:** a V-shaped reversal fits a parabola *beautifully* — often better than a genuine rounded base. In one run the highest-R² name in the batch (0.85) was a stock that had rolled over into a real decline and snapped back. Curvature cannot distinguish "rounded" from "sharp reversal"; only vertex position hints at it, and the default window is loose enough to let it through. There is no numeric fix that reliably catches this. Looking does.
 
 What to check in each panel:
@@ -263,6 +265,8 @@ Structure the answer as:
 Always compute this and always surface it. A fixed-percentage stop (say 3% off the lip) lands *inside* any base deeper than 3% — and most qualifying bases are 4–8% deep. Such a stop sits mid-cup and gets taken out by ordinary chop without the pattern having failed at all.
 
 Report `risk_pct_to_base_low` alongside the fixed stop so the user can see the real structural risk. On a 6.6% base, honoring the structure means 6.6% risk, which roughly halves position size versus the 3% assumption and changes the whole reward/risk calculation. Never present a fixed-% stop as if it were compatible with the pattern when it isn't.
+
+**When `base_low_is_wick` is true, quote both stops.** `base_low` is the lowest low in the base window, so one outlier bar can set it — and because RRR is inverse base depth, that single wick both inflates the risk and pushes the name *down* the ranking. `postfilter.py` flags the case and reports `base_low_close` (the closing-basis floor) and `risk_pct_to_base_low_close` beside it. Neither `base_low` nor the ranking changes: the wick is a real traded price and remains the conservative stop. But a name whose two readings differ by 2% of entry is not the same proposition as one where they agree, and a bottom-of-table RRR computed off a wick is not evidence of a poor structure. Say which of the two the sizing assumes.
 
 ### Regime dependence
 

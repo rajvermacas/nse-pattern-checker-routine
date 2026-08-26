@@ -45,7 +45,15 @@ def main() -> None:
     ap.add_argument("--parquet", required=True)
     ap.add_argument("--out", default="hits.png")
     ap.add_argument("--bars", type=int, default=110)
-    ap.add_argument("--cols", type=int, default=3)
+    # Two columns, not three. A 3x3 grid puts each panel at roughly 620x440px,
+    # which is enough to see that a shape curves but NOT enough to see how the
+    # fast EMA behaves through the base -- whether it rolls over and keeps
+    # falling, or dips and turns back up. That distinction is most of the
+    # judgement this step exists to make, and at 3-up it is invisible: on the
+    # 2026-08-25 run MANIPALHOS and SGMART were both filed as marginal off the
+    # 3x3 grid and both moved to the top tier once re-rendered 2-up, unchanged.
+    # The taller image costs nothing; misreading the panels costs the whole step.
+    ap.add_argument("--cols", type=int, default=2)
     ap.add_argument("--ema-fast", type=int, default=20)
     ap.add_argument("--ema-slow", type=int, default=50)
     ap.add_argument("--title", default="NSE hourly — rally + rounded base near highs")
@@ -109,8 +117,15 @@ def main() -> None:
         suffix = f"newest closed bar: {newest}{note}"
     else:
         suffix = "no timestamps in hits"
-    plt.suptitle(f"{args.title}  ({suffix})", color="w")
-    plt.tight_layout()
+    # tight_layout() does not reserve space for a suptitle, and the taller the
+    # figure the tighter it packs the top row -- at 2 columns and 5 rows the
+    # header lands on top of the first row's panel titles. Reserve a fixed
+    # half-inch strip for it and place the title inside that strip, both scaled
+    # out of figure-fraction coordinates so this holds for 1 row or 8.
+    fig_h = 3.8 * rows
+    fig.suptitle(f"{args.title}  ({suffix})", color="w",
+                 y=1 - 0.18 / fig_h, va="top")
+    plt.tight_layout(rect=(0, 0, 1, 1 - 0.55 / fig_h))
     plt.savefig(args.out, dpi=115, facecolor=BG)
     print(f"wrote {args.out}")
     print("Now VIEW this file. Check each panel: is the rally sustained or one candle?")
