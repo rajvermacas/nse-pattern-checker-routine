@@ -72,25 +72,31 @@ Ranked by `rrr_structural` = 15% target ÷ base depth. This reduces to inverse b
 depth — it says what the trade pays if it works and is **silent on how often it
 works**. Do not read row 1 as most likely to succeed.
 
-| # | Symbol | RRR | Entry (lip) | Base low | Depth % | Risk to base low % | Dist from lip % | Base bars | Rally % | R² | Vol ratio | Turnover ₹cr |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | BRIGADE | 4.18 | 671.00 | 646.90 | 3.59 | 3.59 | 2.37 | 12 | 13.87 | 0.866 | 0.79 | 13.7 |
-| 2 | NILKAMAL | 3.12 | 2110.00 | 2008.60 | 4.81 | 4.81 | 0.33 | 18 | 17.97 | 0.848 | 0.09 | 6.7 |
-| 3 | SEAMECLTD | 2.98 | 1716.90 | 1630.50 | 5.03 | 5.03 | 3.42 | 30 | 14.89 | 0.865 | 0.25 | 6.2 |
-| 4 | JYOTICNC | 2.91 | 1020.00 | 967.45 | 5.15 | 5.15 | 0.72 | 23 | 18.78 | 0.794 | 0.50 | 53.8 |
-| 5 | HAPPSTMNDS | 2.82 | 457.00 | 432.75 | 5.31 | 5.31 | 2.00 | 22 | 13.12 | 0.604 | 0.46 | 30.9 |
-| 6 | MOREPENLAB | 2.65 | 98.25 | 92.70 | 5.65 | 5.65 | 0.37 | 20 | 21.75 | 0.736 | 0.50 | 119.6 |
-| 7 | KIRIINDUS | 2.54 | 519.80 | 489.10 | 5.91 | 5.91 | 0.92 | 12 | 30.62 | 0.786 | 0.26 | 7.2 |
-| 8 | GLAXO | 2.49 | 3049.90 | 2866.30 | 6.02 | 6.02 | 0.51 | 30 | 16.60 | 0.716 | 0.36 | 14.3 |
-| 9 | GPPL | 2.43 | 173.72 | 163.00 | 6.17 | 6.17 | 2.42 | 30 | 13.20 | 0.795 | 0.74 | 15.1 |
-| 10 | FCL | 2.27 | 50.90 | 47.53 | 6.62 | 6.62 | 0.16 | 13 | 21.32 | 0.873 | 0.74 | 28.5 |
-| 11 | JNPR | 2.11 | 277.00 | 257.31 | 7.11 | 7.11 | 2.89 | 27 | 17.38 | 0.806 | 0.30 | 31.6 |
-| 12 | MOTILALOFS | 1.98 | 1048.00 | 968.55 | 7.58 | 7.58 | 0.76 | 26 | 12.82 | 0.868 | 0.71 | 53.5 |
-| 13 | INDOBORAX | 1.84 | 524.50 | 481.70 | 8.16 | 8.16 | 3.86 | 24 | 25.34 | 0.489 | 0.22 | 5.1 |
-| 14 | COHANCE | 1.80 | 481.00 | 441.00 | 8.32 | 8.32 | 3.88 | 29 | 10.22 | 0.779 | 0.36 | 24.0 |
-| 15 | ASIANENE | 1.74 | 490.95 | 448.75 | 8.60 | 8.60 | 2.53 | 30 | 30.91 | 0.609 | 0.26 | 11.0 |
-| 16 | AVALON | 1.71 | 2279.30 | 2079.40 | 8.77 | 8.77 | 1.07 | 30 | 22.34 | 0.743 | 0.61 | 55.8 |
-| 17 | RATNAVEER | 1.66 | 286.00 | 260.10 | 9.06 | 9.06 | 2.35 | 16 | 27.77 | 0.598 | 0.64 | 92.0 |
+| # | Symbol | RRR | Entry (lip) | Base low | Depth % | Risk to base low % | Dist from lip % | Base bars | ≈ Sessions | Rally % | R² | Vol ratio | Turnover ₹cr |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | BRIGADE | 4.18 | 671.00 | 646.90 | 3.59 | 3.59 | 2.37 | 12 | **1.7** | 13.87 | 0.866 | 0.79 | 13.7 |
+| 2 | NILKAMAL | 3.12 | 2110.00 | 2008.60 | 4.81 | 4.81 | 0.33 | 18 | 2.6 | 17.97 | 0.848 | 0.09 | 6.7 |
+| 3 | SEAMECLTD | 2.98 | 1716.90 | 1630.50 | 5.03 | 5.03 | 3.42 | 30 | 4.4 | 14.89 | 0.865 | 0.25 | 6.2 |
+| 4 | JYOTICNC | 2.91 | 1020.00 | 967.45 | 5.15 | 5.15 | 0.72 | 23 | 3.3 | 18.78 | 0.794 | 0.50 | 53.8 |
+| 5 | HAPPSTMNDS | 2.82 | 457.00 | 432.75 | 5.31 | 5.31 | 2.00 | 22 | 3.2 | 13.12 | 0.604 | 0.46 | 30.9 |
+| 6 | MOREPENLAB | 2.65 | 98.25 | 92.70 | 5.65 | 5.65 | 0.37 | 20 | 2.9 | 21.75 | 0.736 | 0.50 | 119.6 |
+| 7 | KIRIINDUS | 2.54 | 519.80 | 489.10 | 5.91 | 5.91 | 0.92 | 12 | **1.7** | 30.62 | 0.786 | 0.26 | 7.2 |
+| 8 | GLAXO | 2.49 | 3049.90 | 2866.30 | 6.02 | 6.02 | 0.51 | 30 | 4.4 | 16.60 | 0.716 | 0.36 | 14.3 |
+| 9 | GPPL | 2.43 | 173.72 | 163.00 | 6.17 | 6.17 | 2.42 | 30 | 4.4 | 13.20 | 0.795 | 0.74 | 15.1 |
+| 10 | FCL | 2.27 | 50.90 | 47.53 | 6.62 | 6.62 | 0.16 | 13 | **1.9** | 21.32 | 0.873 | 0.74 | 28.5 |
+| 11 | JNPR | 2.11 | 277.00 | 257.31 | 7.11 | 7.11 | 2.89 | 27 | 3.9 | 17.38 | 0.806 | 0.30 | 31.6 |
+| 12 | MOTILALOFS | 1.98 | 1048.00 | 968.55 | 7.58 | 7.58 | 0.76 | 26 | 4.0 | 12.82 | 0.868 | 0.71 | 53.5 |
+| 13 | INDOBORAX | 1.84 | 524.50 | 481.70 | 8.16 | 8.16 | 3.86 | 24 | 3.5 | 25.34 | 0.489 | 0.22 | 5.1 |
+| 14 | COHANCE | 1.80 | 481.00 | 441.00 | 8.32 | 8.32 | 3.88 | 29 | 4.2 | 10.22 | 0.779 | 0.36 | 24.0 |
+| 15 | ASIANENE | 1.74 | 490.95 | 448.75 | 8.60 | 8.60 | 2.53 | 30 | 4.4 | 30.91 | 0.609 | 0.26 | 11.0 |
+| 16 | AVALON | 1.71 | 2279.30 | 2079.40 | 8.77 | 8.77 | 1.07 | 30 | 4.4 | 22.34 | 0.743 | 0.61 | 55.8 |
+| 17 | RATNAVEER | 1.66 | 286.00 | 260.10 | 9.06 | 9.06 | 2.35 | 16 | 2.3 | 27.77 | 0.598 | 0.64 | 92.0 |
+
+**Read the bar counts as sessions.** These are hourly candles at roughly 6.9 bars
+per NSE session, so the widest base here is **4.4 sessions**, not 30 days — the
+entire 110-bar plot window spans about three weeks. Three names build their whole
+"base" in under two sessions (BRIGADE, KIRIINDUS, FCL), which is thin evidence that
+a base exists at all and is the single biggest caveat on this batch.
 
 **Two boundary passes** — a boundary pass is not the same evidence as a margin pass:
 
@@ -106,12 +112,14 @@ places, which is the point of the step.
 ### Clean structural match (4)
 
 - **MOREPENLAB** (#6) — the best structure in the batch. A sustained 22% multi-bar
-  climb from ₹73 to ₹98, then a shallow, genuinely rounded 20-bar base that dips to
-  ₹93.5 and recovers; both EMAs run under the base and rise through it; price is
-  pressing the lip (0.37% away). Easily the most liquid name here at ₹120cr/day.
-- **GLAXO** (#8) — a textbook 30-bar rounded U: down from ₹3,050 to ₹2,866, curved,
-  and back to ₹3,034, with the fast EMA dipping and rising through. The leg into it
-  was steep, but the base itself is the cleanest rounding on the sheet.
+  climb from ₹73 to ₹98, then a shallow, genuinely rounded 20-bar (≈2.9-session)
+  base that dips to ₹93.5 and recovers; both EMAs run under the base and rise
+  through it; price is pressing the lip (0.37% away). Easily the most liquid name
+  here at ₹120cr/day.
+- **GLAXO** (#8) — a textbook 30-bar (≈4.4-session) rounded U: down from ₹3,050 to
+  ₹2,866, curved, and back to ₹3,034, with the fast EMA dipping and rising through.
+  The leg into it was steep, but the base itself is the cleanest rounding on the
+  sheet.
 - **MOTILALOFS** (#12) — a clean ascending consolidation resolving upward on the
   final bars, EMAs stacked under and rising, ₹53cr/day. **Its rank is depressed by a
   wick** — see the sizing note below.
@@ -125,10 +133,10 @@ places, which is the point of the step.
 - **JYOTICNC** (#4) — strong, orderly uptrend, but **there is no base**: the shaded
   window is still rising. The 5.15% "depth" comes from a dip inside a continuation
   leg. Fine as a trend-continuation name, wrong as a rounded-base match.
-- **FCL** (#10) — tight 13-bar base sitting 0.16% under the lip, but short, and the
-  approach into it is steep.
-- **AVALON** (#16) — a reasonably rounded 30-bar base, undercut by 8.77% depth and
-  the boundary pass on the at-high filter.
+- **FCL** (#10) — tight 13-bar base sitting 0.16% under the lip, but that is only
+  **1.9 sessions**, and the approach into it is steep.
+- **AVALON** (#16) — a reasonably rounded 30-bar (≈4.4-session) base, undercut by
+  8.77% depth and the boundary pass on the at-high filter.
 - **ASIANENE** (#15) — rounds, but deep (8.6%) and it follows a near-vertical 31%
   advance.
 - **SEAMECLTD** (#3) — a flat shelf, not a cup. The fast EMA runs **flat** through
@@ -138,13 +146,13 @@ places, which is the point of the step.
   `max_bar_share` 0.48 against the 0.50 gap-driven floor: nearly half the rally came
   from one bar. It passed that filter by a hair.
 - **BRIGADE** (#1) — **the #1 rank is an artifact.** Its base is only 12 bars, and a
-  short base is mechanically shallow, which is exactly what RRR rewards. What the
-  panel shows is a 12-bar pullback from a spike top, with the fast EMA flat through
-  it. Shallow because brief, not shallow because tight.
+  short base is mechanically shallow, which is exactly what RRR rewards. At ≈6.9 bars
+  per session that is a **1.7-session** pullback from a spike top, with the fast EMA
+  flat through it. Shallow because brief, not shallow because tight.
 - **GPPL** (#9) — flat shelf at ₹163–166, and the ₹173.72 lip is set by a single
   spike candle that price has already fallen 2.4% back from.
-- **KIRIINDUS** (#7) — a near-vertical 31% advance with a 12-bar pause. Thin
-  evidence that a base exists at all.
+- **KIRIINDUS** (#7) — a near-vertical 31% advance with a 12-bar (**1.7-session**)
+  pause. Thin evidence that a base exists at all.
 
 ### Distrust despite passing every filter (4)
 
@@ -153,8 +161,8 @@ places, which is the point of the step.
   There is heavy overhead supply at ₹465–475, rejected twice earlier in the panel.
   This is a failed breakout, structurally the opposite of the setup.
 - **RATNAVEER** (#17) — the V-bounce the skill exists to catch: a sharp 9% drop and
-  an equally sharp recovery over 16 bars, sitting on top of a 37% run. Deepest base
-  in the batch, and the shape is a checkmark, not a saucer.
+  an equally sharp recovery over 16 bars (≈2.3 sessions), sitting on top of a 37%
+  run. Deepest base in the batch, and the shape is a checkmark, not a saucer.
 - **INDOBORAX** (#13) — weakest fit here (R² 0.489, barely over the 0.45 floor), a
   noisy shelf after a near-vertical 25% spike, **and** the boundary liquidity pass.
   Three weak signals stacked.
