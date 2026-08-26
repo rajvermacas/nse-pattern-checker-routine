@@ -5,6 +5,12 @@
 # on the claude/screener-runs branch instead.
 work/
 
+# Captured stdout of a run. The routine redirects run_screener.sh into a log at
+# the repo root so the multi-minute fetch can be tailed while it runs; it is the
+# same derived scratch as work/, just not underneath it. (Mirrors master.)
+work_run.log
+*.log
+
 # Python bytecode. The pipeline scripts run as CLIs; __pycache__ dirs get
 # materialised next to them on import. Nothing durable, and it churns per
 # Python version. (Mirrors the same rule on master.)
