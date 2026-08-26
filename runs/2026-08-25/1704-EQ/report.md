@@ -80,47 +80,63 @@ see §4.
 
 ## 4. Tiers from the visual pass
 
-I opened `hits.png` and read all nine panels. The numbers and the pictures disagree in six of the
-nine cases, which is the point of this step.
+I opened `hits.png` and read all nine panels, then re-rendered six of them one and two to a page,
+because the 3×3 grid is too small to judge EMA behaviour through a base. **Two names moved up on
+that second look — see the note at the end of this section.** Five of the nine are downgraded.
 
-### Clean structural match — 2
+The tier boundary is *"would I act on this chart"*, not *"is this a textbook cup"*. Those are
+different questions, and the first is the one worth reporting: an orderly trend with a shallow,
+controlled pullback that holds its moving averages and turns back up is a setup, even when the
+parabola fitted to it is not a saucer.
+
+### Top tier — 4
+
+**MANIPALHOS** (panel 9) — the best trend in the batch. A 60-bar orderly staircase from 655 to 755
+with no gaps and no dominant candle (`max_bar_share` 0.28), both EMAs rising underneath it the
+whole way. The pullback then holds the slow EMA at ~712, curls, and the fast EMA turns back up
+through it as price makes a new high on the final bar. ₹88.93cr/day, the most liquid name here, so
+the entry is fillable at size, and it sits at 100% of its 60-day high with no supply overhead. Its
+R² 0.804 is the highest in the batch and — unlike the V-bounce trap the skill warns about — it is
+fitting a genuine down-curl-up, not a checkmark. **One caveat that survives the promotion:** the
+9.0% `risk_pct_to_base_low` is inflated by a single wick. `base_low` 699.35 is the low of one bar
+(21 Aug 09:15); no other bar in the window trades below 710.60 and the lowest close is 714.80. The
+honest structural stop is ~710 (7.5%) or 714.80 on a closing basis (7.0%), which also means its
+last-place RRR rank understates it.
 
 **TFCILTD** (panel 7) — the only textbook cup in the batch. A 55-bar flat floor at 110–117, then a
 sustained multi-bar rally to 137, then a 21-bar base that genuinely rounds: down to 130, curls, and
-comes back to a new high on the last bar. Both EMAs run under the base and rise through it. Highest
-turnover-to-geometry quality here (₹86.8cr/day). Caveat: at 0.32% from the lip the breakout is
-effectively happening now, so there is no patient entry left.
+comes back to a new high on the last bar. Both EMAs run under the base and rise through it. Second
+most liquid here (₹86.8cr/day). Caveat: at 0.32% from the lip the breakout is effectively happening
+now, so there is no patient entry left.
 
 **GLAXO** (panel 2) — a 50-bar floor at 2,600, a genuine multi-bar thrust to 3,040 (no single candle
 above 32% of the move), then a 27-bar consolidation that drifts down to 2,900 and rounds back up.
 The base is closer to a downward-sloping shelf than a true saucer, but the structure is honest and
 the rally is real.
 
-### Marginal — 5
+**SGMART** (panel 3) — same shape as MANIPALHOS and the weaker copy of it. A 45-bar shelf at
+710–720, a clean staircase to 825, then a shallow pullback to ~805 and new highs at 845 on the
+final bars. The fast EMA never rolls over — it keeps rising straight through the base, which is
+about as healthy as a continuation gets. Marked down relative to MANIPALHOS on two counts:
+₹11.79cr/day is an order of magnitude thinner, and R² 0.592 is the lowest of the nine because
+there is barely a curve to fit.
+
+### Marginal — 3
 
 **HAPPSTMNDS** (panel 1, top-ranked) — the "base" is a 15-bar (≈2 session) flag after a vertical
-thrust to 452, not a rounded base. `max_bar_share` is 0.48 against a 0.5 gate: nearly half the
-rally is one candle. It is a legitimate high-tight pullback; it is not the pattern this screen is
-named for, and it is ranked first only because a shallow flag mechanically produces the best RRR.
-
-**SGMART** (panel 3) — a clean staircase uptrend with EMAs correctly stacked underneath, but the
-19-bar "base" is a pause in trend rather than a distinct structure, and R² 0.592 reflects that.
-Good chart, thin pattern.
+thrust to 452, and the left half of the window is chop with a dip to 388, not trend. `max_bar_share`
+0.48 against a 0.5 gate: nearly half the rally is one candle. It is a legitimate high-tight
+pullback; it is ranked first only because a shallow flag mechanically produces the best RRR.
 
 **THELEELA** (panel 5) — the rally leg is the best-looking part of the batch (sustained 500 → 575
 over 30 bars). The base is a sharp 15-bar pullback that hasn't stabilised: the fast EMA has rolled
-over and is flat-to-declining through it, and at 3.49% this is the furthest from its lip of the
-nine. Too early.
+over and is flat-to-declining with price chopping underneath it, and at 3.49% this is the furthest
+from its lip of the nine. Too early — this is the one to re-check in a session or two.
 
-**TIMEX** (panel 6) — a flat shelf, not a saucer, and the final hourly candle is already a vertical
-push from 600 to 623. `vol_ratio` 0.81 means there was no volume dry-up in the base. Also note the
-rally leg begins from a 10% drawdown (575 → 520), so a good part of it is recovery rather than
+**TIMEX** (panel 6) — a flat 585–608 shelf, not a saucer, and the final hourly candle is already a
+vertical push from 600 to 623. `vol_ratio` 0.81 means there was no volume dry-up in the base. The
+rally leg also begins from a 10% drawdown (575 → 520), so a good part of it is recovery rather than
 advance, even though it has now cleared to a new 60-day high.
-
-**MANIPALHOS** (panel 9) — the highest R² in the batch (0.804), fitted to a smooth uptrend rather
-than to a base. There is no consolidation of substance; the parabola is describing the trend line.
-The quoted 9% "risk to base low" is a month of trend, not a pattern stop, which makes it the
-weakest RRR here for the right reason.
 
 ### Distrust despite passing every filter — 2
 
@@ -135,6 +151,16 @@ spikes to **680**, then collapses ~14% to 585 before rallying back to 660. The 6
 overhead supply sitting just above the 660.80 entry, and this is precisely what the 60-day-high
 filter exists to reject — it passed at exactly the 97.0% boundary. The base itself is choppy and
 V-ish, with a 610 low mid-window, and the fast EMA is flat through it.
+
+### Revision note
+
+MANIPALHOS and SGMART were originally filed as *marginal* on the grounds that the parabola was
+fitted to a trend rather than a base. That was the wrong test. Re-rendered at full size, both show
+the thing that actually matters — a controlled pullback that holds its moving averages and turns
+back up into new highs — and MANIPALHOS does it with the best trend and the best liquidity in the
+batch. The original call also misdescribed MANIPALHOS as having "no consolidation of substance";
+there is a real four-session pullback (743 → 715 → 764). Both are now top tier. The three names
+left in *marginal* were re-checked at the same size and stay where they were.
 
 ## 5. Risk reality check — the stop-inside-base problem
 
@@ -151,12 +177,20 @@ fixed-percentage stop.
 | TIMEX | 623.95 | 605.23 | 584.80 | 6.27% | 3% stop is mid-cup — incompatible |
 | TFCILTD | 137.94 | 133.80 | 128.18 | 7.08% | 3% stop is mid-cup — incompatible |
 | SHREEJISPG | 660.80 | 640.98 | 610.00 | 7.69% | 3% stop is mid-cup — incompatible |
-| MANIPALHOS | 768.50 | 745.44 | 699.35 | 9.00% | 3% stop is a third of the way in — incompatible |
+| MANIPALHOS | 768.50 | 745.44 | 699.35 | 9.00% | 3% stop is a third of the way in — incompatible. **9.00% is a single wick; see below** |
 
 Honoring the structure means risking 4.3–9.0%, not 3%. On TFCILTD that is 7.08% against an assumed
 3% — position size has to come down by roughly 58% for the same rupee risk, and the reward/risk
 arithmetic changes with it. A 3% stop on any of these sits mid-base and gets taken out by ordinary
 chop **without the pattern having failed at all**.
+
+**MANIPALHOS is the one case where the pipeline's own risk number overstates the structure.**
+`base_low` 699.35 is the low of a single bar (21 Aug 09:15); the next-lowest low in the window is
+710.60 and the lowest close is 714.80. A stop under the wick costs 9.0%; a stop under the body of
+the pullback costs 7.0–7.5%. That also means its 1.67 RRR — last of the nine — is computed off the
+wick and understates it: on a 7.0% stop the same 15% target gives ~2.14, which would place it
+mid-pack rather than bottom. The pipeline is not wrong to use the wick (it is the lowest price the
+structure actually traded); it is just worth knowing which of the two numbers you are sizing off.
 
 ## 6. Regime note
 
