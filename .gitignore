@@ -5,6 +5,12 @@
 # on the claude/screener-runs branch instead.
 work/
 
+# Captured stdout of a run. The routine redirects run_screener.sh into a log at
+# the repo root so a long fetch can be tailed while it runs; it is the same
+# derived-and-regenerable scratch as work/, just not underneath it.
+work_run.log
+*.log
+
 # Python bytecode. The scripts run as CLIs; __pycache__ dirs get materialised
 # next to them whenever anything is imported (obs.py in particular). Nothing
 # durable, and it churns per Python version.
