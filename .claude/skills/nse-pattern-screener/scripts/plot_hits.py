@@ -74,6 +74,12 @@ def main() -> None:
 
     for ax, h in zip(flat, hits):
         g = df.filter(pl.col("symbol") == h["symbol"]).tail(args.bars)
+        tsv = g["ts"].to_list()
+        # Session boundaries drive both the x-axis ticks and the "how many
+        # sessions is this base" translation in the panel title.
+        starts = [0] + [i for i in range(1, len(tsv))
+                        if tsv[i].date() != tsv[i - 1].date()]
+        bars_per_session = len(tsv) / len(starts) if starts else 0
         o = g["open"].to_numpy(); c = g["close"].to_numpy()
         hi = g["high"].to_numpy(); lo = g["low"].to_numpy()
         x = np.arange(len(c))
@@ -91,8 +97,12 @@ def main() -> None:
         if "base_high" in h:
             ax.axhline(h["base_high"], color=MARK, ls="--", lw=1)
 
+        # Quote the base width in sessions as well as bars. On hourly data a
+        # "30-bar base" is about four sessions, not six weeks, and the bar
+        # count alone has been misread as the latter.
+        sess = f"≈{k / bars_per_session:.1f} sess" if k and bars_per_session else ""
         ax.set_title(
-            f"{h['symbol']}  rally {h.get('rally_pct','?')}%  base {k}b  "
+            f"{h['symbol']}  rally {h.get('rally_pct','?')}%  base {k}b {sess}  "
             f"depth {h.get('base_depth_pct','?')}%  R2 {h.get('r2','?')}",
             color="w", fontsize=10)
         ax.set_facecolor(BG)
@@ -100,6 +110,24 @@ def main() -> None:
         for s in ax.spines.values():
             s.set_color("#333")
         ax.grid(alpha=0.12, color="#555")
+
+        # Put real time on the x-axis. A bare 0..N bar index gives a reader no
+        # way to tell an hourly chart from a daily one -- 110 candles reads as
+        # ~5 months of daily bars when it is actually ~3 weeks of hourly ones,
+        # and every "20-bar base" in the report silently reads as 20 days
+        # instead of ~3 sessions. Ticking on session boundaries fixes both: the
+        # dates name the timeframe, and the gaps between them show how many
+        # bars make up a session.
+        for i in starts[1:]:
+            ax.axvline(i - 0.5, color="#4a5464", lw=0.5, alpha=0.55, zorder=0)
+        # Cap the labels at ~8 per panel; at 5.4in wide, more than that
+        # overlaps into an unreadable smear.
+        step = max(1, math.ceil(len(starts) / 8))
+        shown = starts[::step]
+        ax.set_xticks(shown)
+        ax.set_xticklabels([tsv[i].strftime("%d %b") for i in shown],
+                           fontsize=6.5)
+        ax.set_xlim(-1, len(c))
 
     for ax in flat[len(hits):]:
         ax.set_visible(False)
