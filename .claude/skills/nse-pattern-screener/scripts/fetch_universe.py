@@ -19,17 +19,23 @@ import sys
 import pandas as pd
 import requests
 
-# NSE's edge gates on the Chrome major version in the UA, not just on the
-# presence of browser-ish headers. Measured 2026-08-20 against EQUITY_L.csv,
-# unprimed, one request each:
-#     Chrome/124 -> 403      Chrome/131 -> 200
-#     Chrome/126 -> 403      Chrome/139 -> 200
-#     curl/8.5.0 -> timeout  Firefox/130, Safari/17, Edge/131 -> 200
-# So a UA that merely looks like a browser is not enough; it has to look like a
-# CURRENT one. This will rot again as the floor moves -- when the universe
-# stage starts 403ing, bump this before suspecting the network or a block.
-UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-      "(KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36")
+# NSE's edge gates on the UA, not just on the presence of browser-ish headers.
+# The gate is not a simple "is this version current enough" floor: as of
+# 2026-09-03 the whole Chrome/Chromium family is refused regardless of version,
+# while Gecko still passes. Measured 2026-09-03 against EQUITY_L.csv, unprimed,
+# one request each:
+#     Chrome/139 -> 403      Firefox/145 -> 200
+#     Chrome/146 -> 403
+#     Chrome/152 -> 403      Edge/146 (Chromium UA + Edg token) -> 403
+# (Measured 2026-08-20, for contrast, when the gate was a version floor:
+#  Chrome/124 -> 403, Chrome/126 -> 403, Chrome/131 -> 200, Chrome/139 -> 200,
+#  curl/8.5.0 -> timeout.)
+# So a UA that merely looks like a browser is not enough, and neither is a
+# current one -- it has to be a family the edge is not currently refusing. This
+# will rot again as the gate moves: when the universe stage starts 403ing, try
+# another current browser UA here before suspecting the network or a block.
+UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:145.0) "
+      "Gecko/20100101 Firefox/145.0")
 
 # NSE's edge rejects requests that carry only a User-Agent with a bare 403.
 # Sending the rest of what a browser sends -- Accept, Accept-Language, and a
