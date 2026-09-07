@@ -1,0 +1,20 @@
+{
+  "run_ts_ist": "2026-09-08T02:52:18+05:30",
+  "data_snapshot_ist": "2026-09-08T02:57:15.608201+05:30",
+  "last_closed_bar": "2026-09-07 15:15:00",
+  "session_date": "2026-09-07",
+  "session_age_days": 1,
+  "symbols_at_last_bar": 2145,
+  "pct_at_last_bar": 94.6,
+  "consensus_last_bar": "2026-09-07 15:15:00",
+  "consensus_last_bar_symbols": 2145,
+  "market_open_at_run": false,
+  "universe": "EQ",
+  "symbols_in_universe": 2305,
+  "symbols_with_data": 2267,
+  "coverage_pct": 98,
+  "interval": "1h",
+  "raw_hits": 29,
+  "clean_hits": 11,
+  "chart": "hits.png"
+}
